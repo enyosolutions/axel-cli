@@ -1,0 +1,44 @@
+{
+  "extends": ["oclif", "oclif-typescript"],
+  "rules": {
+    "quotes": "off",
+    "@typescript-eslint/quotes": ["error", "single"],
+    "quotemark": [true, "single"],
+    "newline-per-chained-call": [
+      1,
+      {
+        "ignoreChainWithDepth": 3
+      }
+    ],
+    "no-confusing-arrow": "error",
+    "no-mixed-operators": 2,
+    "no-console": [
+      "warn",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
+    "no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "varsIgnorePattern": "[(colors|models)]",
+        "ignoreRestSiblings": false
+      }
+    ],
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 150,
+        "ignoreUrls": true
+      }
+    ]
+  }
+}

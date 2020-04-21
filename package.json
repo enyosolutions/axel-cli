@@ -1,0 +1,64 @@
+{
+  "name": "@esails/cli",
+  "version": "0.0.1",
+  "author": "fb@enyosolutions.com @enyosolutions",
+  "bin": {
+    "esails": "./bin/run"
+  },
+  "bugs": "https://github.com/enyosolutions-team/esails-cli/issues",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "@types/lodash": "^4.14.149",
+    "cli-ux": "^5.4.5",
+    "colors": "^1.4.0",
+    "lodash": "^4.17.15",
+    "mkdirp": "^1.0.4",
+    "replace": "^1.1.5",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@types/node": "^13.11.0",
+    "eslint": "^5.13",
+    "eslint-config-oclif": "^3.1",
+    "eslint-config-oclif-typescript": "^0.1",
+    "globby": "^10",
+    "json-schema-faker": "^0.5.0-rcv.24",
+    "oclif": "^1.15.2",
+    "ts-node": "^8",
+    "typescript": "^3.3"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/enyosolutions-team/esails-cli",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "esails",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "enyosolutions-team/esails-cli",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "echo NO TESTS",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts"
+}
