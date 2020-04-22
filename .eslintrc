@@ -3,7 +3,7 @@
   "rules": {
     "quotes": "off",
     "@typescript-eslint/quotes": ["error", "single"],
-    "quotemark": [2, "single"],
+    "quotemark": [true, "single"],
     "newline-per-chained-call": [
       1,
       {
