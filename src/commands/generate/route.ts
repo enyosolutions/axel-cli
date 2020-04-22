@@ -12,7 +12,7 @@ export default class Generate extends Command {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    secure: flags.help({char: 'h', description: 'The policy to s'}),
+    secure: flags.string({char: 's', description: 'Add secure policies to the app'}),
   };
 
   async run() {
@@ -46,10 +46,9 @@ export default class Generate extends Command {
         `,
       paths: ['./src/config/routes.ts'],
       recursive: false,
-      silent: false,
+      silent: true,
     })
     const message = '✔️ Generated route ' + args.name
-
-    this.log(chalk.green(message.green));
+    this.log(chalk.green(message));
   }
 }

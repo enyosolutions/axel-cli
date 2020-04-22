@@ -1,7 +1,10 @@
 import {Command, flags} from '@oclif/command'
+import * as chalk from 'chalk';
+
 import Route from './route'
 import Model from './model'
 import Controller from './controller'
+
 export default class Generate extends Command {
   static description = 'Generate an api for your esails project';
 
@@ -60,6 +63,6 @@ export default class Generate extends Command {
     await Model.run(modelParams)
     await Controller.run(controllerParams)
     await Route.run([args.name])
-    this.log('\'✔️ all done')
+    this.log(chalk.green('\n✔️ all done'))
   }
 }

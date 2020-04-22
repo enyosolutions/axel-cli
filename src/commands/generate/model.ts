@@ -67,6 +67,7 @@ export default class Generate extends Command {
 
       if (fs.existsSync(filePath) && !flags.force) {
         this.warn(`File ${filePath} already exists. Use --force to overwrite.`)
+        return;
       } else {
         renderTemplate(`${__dirname}/templates/models/${type}.tpl`, filePath, {
           type,
@@ -79,6 +80,6 @@ export default class Generate extends Command {
       }
     }
     const message = `✔️ Generated model ${args.name}\n`
-    this.log(chalk.green(message.green))
+    this.log(chalk.green(message));
   }
 }
