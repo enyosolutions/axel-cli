@@ -1,7 +1,7 @@
 import {Command, flags} from '@oclif/command'
 import * as _ from 'lodash'
 import * as replace from 'replace'
-import * as chalk from 'chalk';
+import * as chalk from 'chalk'
 
 export default class Generate extends Command {
   static description = 'Generate an api for your esails project';
@@ -49,6 +49,6 @@ export default class Generate extends Command {
       silent: true,
     })
     const message = '✔️ Generated route ' + args.name
-    this.log(chalk.green(message));
+    this.log(chalk.green(message))
   }
 }

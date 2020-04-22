@@ -53,7 +53,7 @@ export default class Generate extends Command {
       )
       this.log('When you are done just press enter.')
       fields = await promptFields()
-      console.log(fields);
+      console.log(fields)
     }
 
     const name = args.name.trim()
@@ -67,19 +67,18 @@ export default class Generate extends Command {
 
       if (fs.existsSync(filePath) && !flags.force) {
         this.warn(`File ${filePath} already exists. Use --force to overwrite.`)
-        return;
-      } else {
-        renderTemplate(`${__dirname}/templates/models/${type}.tpl`, filePath, {
-          type,
-          entity,
-          entityClass,
-          filename,
-          fields,
-          isSql: types.indexOf('sql') > -1,
-        })
+        return
       }
+      renderTemplate(`${__dirname}/templates/models/${type}.tpl`, filePath, {
+        type,
+        entity,
+        entityClass,
+        filename,
+        fields,
+        isSql: types.indexOf('sql') > -1,
+      })
     }
     const message = `✔️ Generated model ${args.name}\n`
-    this.log(chalk.green(message));
+    this.log(chalk.green(message))
   }
 }
