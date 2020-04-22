@@ -22,7 +22,7 @@ export function renderTemplate(
   return fs.writeFileSync(path.resolve(dest), text)
 }
 
-export function parseCommaInputs(source: array) {
+export function parseCommaInputs(source: string[]) {
   let output: string[] = []
   source.forEach((item: string) => {
     const tArray = item.split(',').map(_.trim)
