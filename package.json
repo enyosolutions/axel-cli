@@ -10,7 +10,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "@types/lodash": "^4.14.149",
+    "@types/lodash": "^4.14.150",
     "chalk": "^4.0.0",
     "cli-ux": "^5.4.5",
     "lodash": "^4.17.15",
@@ -21,7 +21,7 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1",
     "@types/chalk": "^2.2.0",
-    "@types/node": "^13.11.0",
+    "@types/node": "^13.13.2",
     "eslint": "^5.13",
     "eslint-config-oclif": "^3.1",
     "eslint-config-oclif-typescript": "^0.1",
