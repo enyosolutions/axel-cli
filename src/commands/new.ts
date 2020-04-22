@@ -4,7 +4,8 @@ export default class New extends Command {
   static description = `Create a new esails project.
   - Download the zip of project
   - Unzip it,
-  - Place crud controller, auth controller, and Authservices according to the database system.
+  - install peer dependencies,
+  - Place relevant crud controller, auth controller, and Authservices according to the database system.
   `;
 
   static flags = {

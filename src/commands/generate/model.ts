@@ -62,7 +62,7 @@ export default class Generate extends Command {
     const filename = entity;
 
     for (let type of types) {
-      const filePath = `./src/api/models/${type}/${entityClass}.ts`;
+      const filePath = `./src/api/models/${type === 'sql' ? 'sequelize' : type}/${entityClass}.ts`;
 
       if (fs.existsSync(filePath) && !flags.force) {
         this.warn(`File ${filePath} already exists. Use --force to overwrite.`);
