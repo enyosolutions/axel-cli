@@ -23,7 +23,7 @@
       {
         "vars": "all",
         "args": "after-used",
-        "varsIgnorePattern": "[(colors|models)]",
+        "varsIgnorePattern": "[(models)]",
         "ignoreRestSiblings": false
       }
     ],
@@ -42,3 +42,4 @@
     ]
   }
 }
+
