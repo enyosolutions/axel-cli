@@ -3,6 +3,7 @@
 
 
 
+![](https://github.com/enyosolutions-team/esails-cli/workflows/CI/badge.svg)
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@esails/cli.svg)](https://npmjs.org/package/@esails/cli)
 [![Downloads/week](https://img.shields.io/npm/dw/@esails/cli.svg)](https://npmjs.org/package/@esails/cli)
