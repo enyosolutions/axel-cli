@@ -10,7 +10,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "@types/lodash": "^4.14.149",
+    "@types/lodash": "^4.14.150",
     "chalk": "^4.0.0",
     "cli-ux": "^5.4.5",
     "lodash": "^4.17.15",
