@@ -1,31 +1,31 @@
-import { Command, flags } from '@oclif/command';
-import * as _ from 'lodash';
-import * as replace from 'replace';
-import * as path from 'path';
-const colors = require('colors');
+import {Command, flags} from '@oclif/command'
+import * as _ from 'lodash'
+import * as replace from 'replace'
+import * as chalk from 'chalk';
 
 export default class Generate extends Command {
   static description = 'Generate an api for your esails project';
+
   static target = 'api';
-  static args = [{ name: 'name', required: true }];
+
+  static args = [{name: 'name', required: true}];
 
   static flags = {
-    help: flags.help({ char: 'h' }),
-    secure: flags.help({ char: 'h', description: 'The policy to s' })
+    help: flags.help({char: 'h'}),
+    secure: flags.help({char: 'h', description: 'The policy to s'}),
   };
 
   async run() {
-    const { args, flags } = this.parse(Generate);
+    const {args} = this.parse(Generate)
 
-    let folderPath: any = args.name.split('/');
-    let name = folderPath.pop();
-    folderPath = folderPath.join('/');
-    const route = _.kebabCase(name);
-    const file = _.startCase(name).replace(/ /g, '');
+    let folderPath: any = args.name.split('/')
+    const name = folderPath.pop()
+    folderPath = folderPath.join('/')
+    const route = _.kebabCase(name)
+    const file = _.startCase(name).replace(/ /g, '')
     replace({
       regex: 'routes: ?{',
-      replacement:
-      `routes: {
+      replacement: `routes: {
 
         // Endpoints for ${_.startCase(name)}
         'GET /api/${route}/stats': '${folderPath}/${file}Controller.stats',
@@ -44,14 +44,12 @@ export default class Generate extends Command {
 
 
         `,
-      paths: [
-          './src/config/routes.ts'
-      ],
+      paths: ['./src/config/routes.ts'],
       recursive: false,
-      silent: false
-    });
-    const message = '✔️ Generated route ' + args.name;
-    // @ts-ignore
-    this.log(message.green);
+      silent: false,
+    })
+    const message = '✔️ Generated route ' + args.name
+
+    this.log(chalk.green(message.green));
   }
 }

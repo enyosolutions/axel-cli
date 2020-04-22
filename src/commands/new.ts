@@ -11,18 +11,18 @@ export default class New extends Command {
   static flags = {
     help: flags.help({char: 'h'}),
     type: flags.string({char: 'n', description: 'name to print',
-    options: ['mongodb', 'sql']
-  }),
+      options: ['mongodb', 'sql'],
+    }),
   }
 
   static args = [{name: 'projectName'}]
 
   async run() {
-    const {args, flags} = this.parse(New);
+    const {args} = this.parse(New)
 
-    const name = args.projectName;
+    const name = args.projectName
     this.log(
       `hello ${name} from /Users/faou/Projects/esails-cli/src/commands/new.ts`,
-    );
+    )
   }
 }

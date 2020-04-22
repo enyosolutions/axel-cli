@@ -1,13 +1,16 @@
-import { Command, flags } from '@oclif/command';
-import Route from './route';
-import Model from './model';
-import Controller from './controller';
+import {Command, flags} from '@oclif/command'
+import Route from './route'
+import Model from './model'
+import Controller from './controller'
 export default class Generate extends Command {
   static description = 'Generate an api for your esails project';
+
   static target = 'api';
-  static args = [{ name: 'name', required: true }];
+
+  static args = [{name: 'name', required: true}];
+
   static flags = {
-    help: flags.help({ char: 'h' }),
+    help: flags.help({char: 'h'}),
     // flag with a value (-n, --name=VALUE)
     type: flags.string({
       char: 't',
@@ -15,7 +18,7 @@ export default class Generate extends Command {
       options: ['sql', 'mongo'],
       default: 'sql',
     }),
-    interactive: flags.boolean({ char: 'i', required: false }),
+    interactive: flags.boolean({char: 'i', required: false}),
     // flag with a value (-n, --name=VALUE)
     'with-schema': flags.boolean({
       description:
@@ -36,27 +39,27 @@ export default class Generate extends Command {
   };
 
   async run() {
-    const { args, flags } = this.parse(Generate);
+    const {args, flags} = this.parse(Generate)
 
-    const modelType = flags.type === 'mongo' ? 'schema' : 'sql';
+    const modelType = flags.type === 'mongo' ? 'schema' : 'sql'
 
     const modelParams = [
       args.name,
       '--types',
       flags['with-schema'] ? 'all' : modelType,
-    ];
+    ]
 
-    const controllerParams = [args.name, '--type', flags.type];
+    const controllerParams = [args.name, '--type', flags.type]
     if (flags.interactive) {
-      modelParams.push('-i');
+      modelParams.push('-i')
     }
     if (flags.force) {
-      modelParams.push('--force');
-      controllerParams.push('--force');
+      modelParams.push('--force')
+      controllerParams.push('--force')
     }
-    await Model.run(modelParams);
-    await Controller.run(controllerParams);
-    await Route.run([args.name]);
-    this.log(`'✔️ all done`);
+    await Model.run(modelParams)
+    await Controller.run(controllerParams)
+    await Route.run([args.name])
+    this.log('\'✔️ all done')
   }
 }
