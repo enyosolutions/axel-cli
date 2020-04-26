@@ -232,3 +232,15 @@ OPTIONS
 
 _See code: [src/commands/run.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/run.ts)_
 <!-- commandsstop -->
+
+
+
+## Features
+
+- [x] Generate models, routes, controllers anf api
+- [ ] Init a project
+- [X] Generate models from the sequelize-auto template
+- [ ] Hook into sequelize cli commands
+- [X] use config from rc files to locate folders
+- [ ] Generate mongo controllers
+- [X] Generate bare controllers

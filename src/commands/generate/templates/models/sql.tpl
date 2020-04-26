@@ -17,7 +17,6 @@ const Sequelize = require('sequelize');
 
 const <%= entityClass %> = {
   identity: '<%= entity %>',
-  tableName: '<%= entity %>',
   entity: {
     attributes: {
       _id: {

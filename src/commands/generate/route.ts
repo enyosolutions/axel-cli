@@ -1,7 +1,7 @@
 import {Command, flags} from '@oclif/command'
 import * as _ from 'lodash'
-import * as replace from 'replace'
 import * as chalk from 'chalk'
+import * as replace from 'replace'
 
 export default class Generate extends Command {
   static description = 'Generate an api for your esails project';
@@ -28,6 +28,7 @@ export default class Generate extends Command {
       replacement: `routes: {
 
         // Endpoints for ${_.startCase(name)}
+        // If you don't need some of them, be sure to delete the route AND the action in the controller...
         'GET /api/${route}/stats': '${folderPath}/${file}Controller.stats',
         'GET /api/${route}': '${folderPath}/${file}Controller.list',
         'GET /api/${route}/:id': '${folderPath}/${file}Controller.get',

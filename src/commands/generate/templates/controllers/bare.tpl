@@ -1,525 +1,163 @@
 /**
- * Api/<%= filename %>
+ * <%= folder %>/<%= entityClass %>
  *
- * @description :: Server-side logic for managing <%= entity %> endpoints
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+ * @description :: Server-side logic for managing <%= entityClass %> entities
  */
 
+/**
+ * UserSqlController
+ *
+ * @description :: Server-side logic for managing users
+ * @help        :: See http://links.esails.s.org/docs/controllers
+ */
 
-module.exports = {
-  stats(req, resp) {
-    const output = {};
-    const endpoint = '<%= entity %>';
+/**
+ * Api/CrudSqlController
+ *
+ * @description :: Server-side logic for managing all entitys
+ * @help        :: See http://esails.s.org/#!/documentation/concepts/Controllers
+ */
+import { Request, Response, NextFunction } from 'express';
+import Utils from '../../common/services/Utils'; // adjust path as needed
+import EnyoError from '../../common/services/EnyoError'; // adjust path as needed
+/*
+Uncomment if you need the following features:
+- Create import template for users
+- Import from excel
+- Export to excel
 
-    if (!sails.models[endpoint].repository) {
-      return resp.status(404).json({
-        errors: [{
-          message: 'not_found',
-          stack: 'not_found'
-        }],
-        message: 'not_found'
-      });
-    }
-    const tableName = sails.models[endpoint].tableName;
-    sails.models[endpoint].repository
-      .unifiedCount({})
-      .then((data) => {
-        // TOTAL
-        output.total = data;
+*/
+// import DocumentManager from '../../services/DocumentManager';
+// import ExcelService from '../../services/ExcelService';
 
-        // THIS MONTH
-        return sails.sqldb.query(
-          `SELECT COUNT(*)  as month
-             FROM ` + tableName + `}
-             WHERE
-             createdOn >= SUBDATE(CURDATE(), DAYOFMONTH(CURDATE())-1)`, {
-            type: sails.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data) => {
-        if (data && data.length > 0 && data[0].month) {
-          output.month = data[0].month;
-        } else {
-          output.month = 0;
-        }
+declare const esails: any;
 
-        // THIS WEEK
-        return sails.sqldb.query(
-          `SELECT COUNT(*) as week
-             FROM ` + tableName + `}
-             WHERE
-             YEARWEEK(createdOn) = YEARWEEK(CURRENT_TIMESTAMP)`, {
-            type: sails.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data) => {
-        if (data && data.length > 0 && data[0].week) {
-          output.week = data[0].week;
-        } else {
-          output.week = 0;
-        }
+const primaryKey = esails.config.framework.primaryKey;
+const entity = '<%= entity %>';
 
-        // TODAY
-        return sails.sqldb.query(
-          `SELECT COUNT(*) as today
-             FROM ` + tableName + `}
-             WHERE
-             DATE(createdOn) = DATE(NOW())`, {
-            type: sails.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data) => {
-        if (data && data.length > 0 && data[0].today) {
-          output.today = data[0].today;
-        } else {
-          output.today = 0;
-        }
+class <%= entityClass %>Controller {
+  stats(request: Request, response: Response, next: NextFunction) {
+      // your route related code goes here.
 
-        return resp.status(200).json({
-          body: output
-        });
-      })
-      .catch((err) => {
-        sails.tracer.warn(err);
-        Tools.errorCallback(err, resp);
-      });
-  },
+      // This sends the requestuest the default crud controller, delete if you implement your own action code.
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - stats');
+      }
+  }
+
+  list(request: Request, response: Response, next: NextFunction) {
+       // your route related code goes here.
+
+      // This sends the requestuest the default crud controller, delete if you implement your own action code.
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - list');
+      }
+  }
+
+  get(request: Request, response: Response, next: NextFunction) {
+       // your route related code goes here.
+
+      // This sends the requestuest the default crud controller, delete if you implement your own action code.
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - get');
+      }
+  }
+
+  post(request: Request, response: Response, next: NextFunction) {
+        // your route related code goes here.
+
+      // This sends the requestuest the default crud controller, delete if you implement your own action code.
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - post');
+      }
+  }
 
   /**
-    * [list description]
-    * [description]
-    * @method
-    * @param  {[type]} req  [description]
-    * @param  {[type]} resp [description]
-    * @return {[type]}      [description]
-    */
-  list(req, resp) {
-    let items = [];
-    const {
-      listOfValues, startPage, limit, offset, order
-    } = Tools.injectPaginationQuery(req);
-    const query = Tools.injectQueryParams(req);
+   * [put description]
+   * [description]
+   * @method
+   * @param  {[type]} request  [description]
+   * @param  {[type]} response [description]
+   * @return {[type]}      [description]
+   */
+  put(request: Request, response: Response, next: NextFunction) {
+       // your route related code goes here.
 
-    const repository = Tools.getEntityManager('<%= entity %>', resp);
-    repository
-      .findAndCountAll({
-        where: query,
-        order,
-        limit,
-        offset,
-      }).then((result) => {
-        items = result.rows;
-        if (listOfValues) {
-          items = items.map(item => ({
-            _id: item.id,
-            label: item.title || item.name || item.label
-            || (item.firstname ? item.firstname + ' ' + item.lastname : '' ),
-          }));
-        }
-        return result.count || 0;
-      })
-      .catch((err) => {
-        sails.tracer.warn(err);
-        throw new EnyoError({
-          code: 404,
-          errors: [{
-            message: err.message || 'not_found',
-            stack: err.stack || 'not_found'
-          }],
-          message: err.message || 'not_found'
-        });
-      })
-      .then(totalCount => resp.status(200).json({
-        body: items,
-        page: startPage,
-        count: limit,
-        totalCount: (totalCount && totalCount.length > 0) ? totalCount[0]['COUNT(*)'] : totalCount
-      }))
-      .catch((err) => {
-        sails.tracer.warn(err);
-        Tools.errorCallback(err, resp);
-      });
-  },
-
+      // This sends the requestuest the default crud controller, delete if you implement your own action code.
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - put');
+      }
+  }
 
   /**
-    * [GET description]
-    * [description]
-    * @method
-    * @param  {[type]} req  [description]
-    * @param  {[type]} resp [description]
-    * @return {[type]}      [description]
-    */
-  get(req, resp) {
-    const id = req.param('id');
-    if (!id) {
-      return false;
-    }
-    const listOfValues = req.query.listOfValues ? req.query.listOfValues : false;
+   * [delete Item]
+   * [description]
+   * @method
+   * @param  {[type]} request  [description]
+   * @param  {[type]} response [description]
+   * @return {[type]}      [description]
+   */
+  delete(request: Request, response: Response, next: NextFunction) {
+ // your route related code goes here.
 
-    const repository = Tools.getEntityManager('<%= entity %>', resp);
-    repository
-      .findByPk(id)
+      // This sends the requestuest the default crud controller, delete if you implement your own action code.
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - delete');
+      }
+  }
 
-      .catch((err) => {
-        sails.tracer.warn(err);
-        throw new EnyoError({
-          code: 404,
-          errors: [{
-            message: err.message || 'not_found',
-            stack: err.stack || 'not_found'
-          }],
-          message: err.message || 'not_found'
-        });
-      })
-      .then((item) => {
-        if (item) {
-          if (listOfValues) {
-            item = {
-              _id: item._id,
-              label: item.title || item.name || item.label
-              || (item.firstname ? item.firstname + ' ' + item.lastname : '' ),
+  export(request: Request, response: Response, next: NextFunction) {
 
-            };
-          }
-          return resp.status(200).json({
-            body: item
-          });
-        }
-        return resp.status(404).json({
-          errors: [{
-            message: 'not_found',
-            stack: 'not_found'
-          }],
-          message: 'not_found'
-        });
-      })
-      .catch((err) => {
-        sails.tracer.warn(err);
-        Tools.errorCallback(err, resp);
-      });
-  },
+      // your route related code goes here.
 
-  post(req, resp) {
-    const data = Tools.injectUserId(req.body, req.token);
+      // This sends the requestuest the default crud controller, delete if you implement your own action code.
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - export');
+      }
+  }
 
-    const repository = Tools.getEntityManager('<%= entity %>', resp);
-    repository
-      .create(data)
+  importTemplate(request: Request, response: Response, next: NextFunction) {
+       // your route related code goes here.
 
-      .then(result => resp.status(200).json({
-        body: result
-      }))
-      .catch((err) => {
-        sails.tracer.warn(err);
-        if (err && err.name === 'SequelizeValidationError') {
-          resp.status(400).json({
-            errors: err.errors && err.errors.map(e => e.message),
-            message: 'validation_error'
-          });
-          return false;
-        }
-        Tools.errorCallback(err, resp);
-      });
-  },
+      // This sends the requestuest the default crud controller, delete if you implement your own action code.
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - generate import template');
+      }
+  }
 
-  /**
-    * [put description]
-    * [description]
-    * @method
-    * @param  {[type]} req  [description]
-    * @param  {[type]} resp [description]
-    * @return {[type]}      [description]
-    */
-  put(req, resp) {
-    const id = req.param('id');
-    const data = req.body;
+  import(request: Request, response: Response, next: NextFunction) {
+         // sends the requestuest the default crud controller
+      if (next) {
+          next();
+      }
+      else {
+          response.send('<%= entityClass %> - import');
+      }
+  }
+}
 
-    const repository = Tools.getEntityManager('<%= entity %>', resp);
-    repository
-      .findByPk(id)
-      .then((result) => {
-        if (result) {
-          return repository.update(data, {
-            where: {
-              _id: id
-            }
-          });
-        }
-        throw new EnyoError({
-          code: 404,
-          stack: 'not_found',
-          message: 'not_found',
-          errors: ['not_found']
-        });
-      })
-      .then(() => repository.findByPk(id))
-      .then((result) => {
-        if (result) {
-          return resp.status(200).json({
-            body: result
-          });
-        }
-        throw new EnyoError({
-          code: 404,
-          stack: 'not_found',
-          message: 'not_found',
-          errors: ['not_found'],
-        });
-      })
-      .catch((err) => {
-        sails.tracer.warn(err);
-        if (err && err.name === 'SequelizeValidationError') {
-          return resp.status(400).json({
-            errors: err.errors && err.errors.map(e => e.message),
-            message: 'validation_error'
-          });
-        }
-        Tools.errorCallback(err, resp);
-      });
-  },
-
-
-  /**
-    * [delete Item]
-    * [description]
-    * @method
-    * @param  {[type]} req  [description]
-    * @param  {[type]} resp [description]
-    * @return {[type]}      [description]
-    */
-  delete(req, resp) {
-    const id = req.param('id');
-
-    const repository = Tools.getEntityManager('<%= entity %>', resp);
-    repository.findByPk(id)
-      .then((result) => {
-        if (result) {
-          return repository
-            .destroy({
-              where: {
-                _id: id,
-              },
-            });
-        }
-        throw new EnyoError({
-          code: 404,
-          stack: 'not_found',
-          message: 'not_found',
-          errors: ['not_found'],
-        });
-      })
-      .then((result) => {
-        if (result) {
-          resp.status(200).json({
-            status: 'OK',
-          });
-        }
-      })
-      .catch((err) => {
-        sails.tracer.warn(err);
-        Tools.errorCallback(err, resp);
-      });
-  },
-
-  /**
-    * [Export Item]
-    * [description]
-    * @method
-    * @param  {[type]} req  [description]
-    * @param  {[type]} resp [description]
-    * @return {[type]}      [description]
-    */
-  export(req, resp) {
-    const repository = Tools.getEntityManager('<%= entity %>', resp);
-    const endpoint = '<%= entity %>';
-    let data = [];
-
-
-    const url = '<%= entity %>_export';
-    const options = {};
-
-    repository
-      .findAll()
-      .then((result) => {
-        data = result;
-        // eslint-disable-next-line no-undef
-        return ExcelService.export(data, url, options);
-      })
-      .then((result) => {
-        if (result) {
-          if (result.errno) {
-            return resp.status(500).json({
-              errors: [
-                {
-                  message: 'export_failed',
-                },
-              ],
-              message: 'export_failed',
-            });
-          }
-
-          return resp.status(200).json({
-            status: 'OK',
-            url: result,
-          });
-        }
-        throw new EnyoError({
-          code: 400,
-          errors: [{
-            message: 'export_selection_error',
-            stack: 'export_selection_error'
-          }],
-          message: 'export_selection_error'
-        });
-      })
-      .catch((err) => {
-        sails.tracer.warn(err);
-        Tools.errorCallback(err, resp);
-      });
-  },
-
-
-
-   importTemplate(req, resp) {
-    const repository = Tools.getEntityManager('<%= entity %>', resp);
-    if (!repository) {
-      throw new Error('table_model_not_found_error_O');
-    }
-
-    let data = [];
-
-    const url = `${entity}_template`;
-    const options = {};
-    const query = {};
-
-    Promise.resolve()
-      .then(() => {
-        return repository.findAll({
-          limit: 1,
-        });
-      })
-      .then((result) => {
-        data = result;
-        return ExcelService.export(data, url, options);
-      })
-      .then((result) => {
-        if (result) {
-          if (result.errno) {
-            return resp.status(500).json({
-              errors: ['export_failed'],
-              message: 'export_failed',
-            });
-          }
-
-          return resp.status(200).json({
-            status: 'OK',
-            url: result,
-          });
-        }
-        return resp.status(404).json({
-          errors: ['not_found'],
-          message: 'not_found',
-        });
-      })
-      .catch((err) => {
-        sails.tracer.warn(err);
-        Tools.errorCallback(err, resp);
-      });
-  },
-
-
-  /**
-    * [Import Item]
-    * [description]
-    * @method
-    * @param  {[type]} req  [description]
-    * @param  {[type]} resp [description]
-    * @return {[type]}      [description]
-    */
-  import(req, resp) {
-    const repository = Tools.getEntityManager('<%= entity %>', resp);
-    const endpoint = '<%= entity %>';
-    const properData = [];
-    const improperData = [];
-    let doc;
-    DocumentManager.httpUpload(req, {
-      path: 'updloads/excel',
-    })
-      .then((document) => {
-        if (document && document.length > 0) {
-          doc = document;
-          return ExcelService.parse(doc[0].fd, {
-            columns: {},
-            eager: false,
-          });
-        }
-        throw new EnyoError({
-          code: 404,
-          stack: 'no_file_uploaded',
-          message: 'no_file_uploaded',
-          errors: ['no_file_uploaded'],
-        });
-      })
-      .then((result) => {
-        if (result) {
-          result.forEach((item) => {
-            if (!item.code || !item.designation || !item.family || !item.numberOfPoints) {
-              improperData.push(item);
-            } else {
-              item.title = item.designation;
-              properData.push(item);
-            }
-          });
-          if (properData.length > 0) {
-            return repository.bulkCreate(properData);
-          }
-          return true;
-        }
-        throw new EnyoError({
-          code: 404,
-          stack: 'parse_error',
-          message: 'parse_error',
-          errors: ['parse_error'],
-        });
-      })
-      .catch((err) => {
-        sails.tracer.warn(err && err.message ? err.message : err);
-        throw new EnyoError({
-          errors: [
-            {
-              message: err.message || 'create_error',
-              stack: err.stack || 'create_error',
-            },
-          ],
-          message: err.message || 'create_error',
-        });
-      })
-      .then(() => DocumentManager.delete(doc[0].fd))
-      .catch((err) => {
-        sails.tracer.warn(err && err.message ? err.message : err);
-        throw new EnyoError({
-          code: 500,
-          errors: [
-            {
-              message: err.message || 'delete_error',
-              stack: err.stack || 'delete_error',
-            },
-          ],
-          message: err.message || 'delete_error',
-        });
-      })
-      .then(() => resp.json({
-        body: 'ok',
-        properData,
-        improperData,
-      }))
-      .catch((err) => {
-        sails.tracer.warn(err && err.message ? err.message : err);
-        Tools.errorCallback(err, resp);
-      });
-  },
-};
+export default new <%= entityClass %>Controller();

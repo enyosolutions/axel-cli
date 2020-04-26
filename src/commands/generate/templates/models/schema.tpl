@@ -1,11 +1,11 @@
 module.exports = {
   identity: '<%= entity %>',
   collectionName: '<%= entity %>',
-  url: '/crud/<%= entity %>', // url for front api
+  url: '/<%= entity %>', // url for front api
   additionalProperties: false,
   autoValidate: true,
   schema: {
-    $id: 'http://enyosolutions.com/schemas/<%= entity %>.json',
+    $id: 'http://acme.com/schemas/<%= entity %>.json',
     type: 'object',
     properties: {
       _id: {

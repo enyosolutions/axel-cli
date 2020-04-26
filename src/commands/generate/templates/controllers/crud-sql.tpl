@@ -40,7 +40,7 @@ class CrudSqlController {
     }
     const { repository, tableName } = esails.models[endpoint];
     repository
-      .unifiedCount({})
+      .count({})
       .then((data: number) => {
         // TOTAL
         output.total = data;

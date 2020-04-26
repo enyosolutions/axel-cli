@@ -17,7 +17,7 @@ export default class Generate extends Command {
     type: flags.string({
       char: 't',
       description: 'type of project',
-      options: ['sql', 'mongo'],
+      options: ['sql', 'mongo', 'bare'],
       required: true,
     }),
     // flag with no value (-f, --force)

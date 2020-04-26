@@ -1,7 +1,7 @@
 /**
  * <%= folder %>/<%= entityClass %>
  *
- * @description :: Server-side logic for managing <%= entityClass %> entitys
+ * @description :: Server-side logic for managing <%= entityClass %> entities
  */
 
 /**
@@ -22,12 +22,13 @@ import Utils from '../../common/services/Utils'; // adjust path as needed
 import EnyoError from '../../common/services/EnyoError'; // adjust path as needed
 /*
 Uncomment if you need the following features:
+- Create import template for users
 - Import from excel
 - Export to excel
-- Create import template
+
 */
 // import DocumentManager from '../../services/DocumentManager';
-.. import ExcelService from '../../services/ExcelService';
+// import ExcelService from '../../services/ExcelService';
 
 declare const esails: any;
 
@@ -47,7 +48,7 @@ class <%= entityClass %>Controller {
     }
     const { repository, tableName } = esails.models[entity];
     repository
-      .unifiedCount({})
+      .count({})
       .then((data: number) => {
         // TOTAL
         output.total = data;
@@ -56,6 +57,7 @@ class <%= entityClass %>Controller {
         return esails.sqldb.query(
           `SELECT COUNT(*)  as month
         FROM
+        FROM ${tableName}
         WHERE
         createdOn >= SUBDATE(CURDATE(), DAYOFMONTH(CURDATE())-1)`,
           {
@@ -73,6 +75,7 @@ class <%= entityClass %>Controller {
         // THIS WEEK
         return esails.sqldb.query(
           `SELECT COUNT(*) as week
+          FROM ${tableName}
         WHERE
         YEARWEEK(createdOn) = YEARWEEK(CURRENT_TIMESTAMP)`,
           {
@@ -90,6 +93,7 @@ class <%= entityClass %>Controller {
         // TODAY
         return esails.sqldb.query(
           `SELECT COUNT(*) as today
+          FROM ${tableName}
         WHERE
         DATE(createdOn) = DATE(NOW())`,
           {
