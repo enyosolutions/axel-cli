@@ -39,49 +39,29 @@ class <%= entityClass %>Controller {
   stats(request: Request, response: Response, next: NextFunction) {
       // your route related code goes here.
 
-      // This sends the requestuest the default crud controller, delete if you implement your own action code.
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - stats');
-      }
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 
   list(request: Request, response: Response, next: NextFunction) {
        // your route related code goes here.
 
-      // This sends the requestuest the default crud controller, delete if you implement your own action code.
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - list');
-      }
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 
   get(request: Request, response: Response, next: NextFunction) {
        // your route related code goes here.
 
-      // This sends the requestuest the default crud controller, delete if you implement your own action code.
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - get');
-      }
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 
   post(request: Request, response: Response, next: NextFunction) {
         // your route related code goes here.
 
-      // This sends the requestuest the default crud controller, delete if you implement your own action code.
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - post');
-      }
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 
   /**
@@ -95,13 +75,8 @@ class <%= entityClass %>Controller {
   put(request: Request, response: Response, next: NextFunction) {
        // your route related code goes here.
 
-      // This sends the requestuest the default crud controller, delete if you implement your own action code.
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - put');
-      }
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 
   /**
@@ -115,48 +90,30 @@ class <%= entityClass %>Controller {
   delete(request: Request, response: Response, next: NextFunction) {
  // your route related code goes here.
 
-      // This sends the requestuest the default crud controller, delete if you implement your own action code.
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - delete');
-      }
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 
   export(request: Request, response: Response, next: NextFunction) {
 
       // your route related code goes here.
 
-      // This sends the requestuest the default crud controller, delete if you implement your own action code.
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - export');
-      }
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 
   importTemplate(request: Request, response: Response, next: NextFunction) {
        // your route related code goes here.
 
-      // This sends the requestuest the default crud controller, delete if you implement your own action code.
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - generate import template');
-      }
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 
   import(request: Request, response: Response, next: NextFunction) {
-         // sends the requestuest the default crud controller
-      if (next) {
-          next();
-      }
-      else {
-          response.send('<%= entityClass %> - import');
-      }
+      // your route related code goes here.
+
+      // This sends the request to the default crud controller, delete if you implement your own action code.
+      next();
   }
 }
 

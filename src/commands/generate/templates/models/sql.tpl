@@ -19,7 +19,7 @@ const <%= entityClass %> = {
   identity: '<%= entity %>',
   entity: {
     attributes: {
-      _id: {
+      id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
@@ -81,4 +81,5 @@ const <%= entityClass %> = {
   }
 };
 
-export default <%= entityClass %>;
+
+module.exports = '<%= entityClass %>';

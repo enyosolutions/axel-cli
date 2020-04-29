@@ -8,8 +8,8 @@ module.exports = {
     $id: 'http://acme.com/schemas/<%= entity %>.json',
     type: 'object',
     properties: {
-      _id: {
-        $id: '_id',
+      id: {
+        $id: 'id',
         <% if (isSql) { %>type: 'number',<% } else { %>type: ['object', 'string'],<% } %>
         title: '<%= entity %> id', // serves for front form fields
         description: 'The id of this item' // serves for front form hint

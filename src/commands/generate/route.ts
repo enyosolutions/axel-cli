@@ -20,8 +20,11 @@ export default class Generate extends Command {
 
     let folderPath: any = args.name.split('/')
     const name = folderPath.pop()
-    folderPath = folderPath.join('/')
-    const route = _.kebabCase(name)
+    folderPath = folderPath.join('/');
+    if (folderPath) {
+        folderPath += '/';
+    }
+     const route = _.kebabCase(name);
     const file = _.startCase(name).replace(/ /g, '')
     replace({
       regex: 'routes: ?{',
@@ -29,18 +32,18 @@ export default class Generate extends Command {
 
         // Endpoints for ${_.startCase(name)}
         // If you don't need some of them, be sure to delete the route AND the action in the controller...
-        'GET /api/${route}/stats': '${folderPath}/${file}Controller.stats',
-        'GET /api/${route}': '${folderPath}/${file}Controller.list',
-        'GET /api/${route}/:id': '${folderPath}/${file}Controller.get',
-        'POST /api/${route}': '${folderPath}/${file}Controller.post',
-        'PUT /api/${route}/:id': '${folderPath}/${file}Controller.put',
-        'DELETE /api/${route}/:id': '${folderPath}/${file}Controller.delete',
+        'GET /api/${route}/stats': '${folderPath}${file}Controller.stats',
+        'GET /api/${route}': '${folderPath}${file}Controller.list',
+        'GET /api/${route}/:id': '${folderPath}${file}Controller.get',
+        'POST /api/${route}': '${folderPath}${file}Controller.post',
+        'PUT /api/${route}/:id': '${folderPath}${file}Controller.put',
+        'DELETE /api/${route}/:id': '${folderPath}${file}Controller.delete',
 
         /*
         // UNCOMMENT IF YOU NEED IMPORT AND EXPORT FORM EXCEL FEATURES
-        'GET /api/${route}/export': '${folderPath}/${file}Controller.export',
-        'POST /api/${route}/import': '${folderPath}/${file}Controller.import',
-        'GET /api/${route}/import-template': '${folderPath}/${file}Controller.importTemplate',
+        'GET /api/${route}/export': '${folderPath}${file}Controller.export',
+        'POST /api/${route}/import': '${folderPath}${file}Controller.import',
+        'GET /api/${route}/import-template': '${folderPath}${file}Controller.getImportTemplate',
         */
 
 
@@ -48,7 +51,7 @@ export default class Generate extends Command {
       paths: ['./src/config/routes.ts'],
       recursive: false,
       silent: true,
-    })
+    });
     const message = '✔️ Generated route ' + args.name
     this.log(chalk.green(message))
   }

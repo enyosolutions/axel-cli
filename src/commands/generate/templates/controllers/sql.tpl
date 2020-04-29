@@ -17,23 +17,26 @@
  * @description :: Server-side logic for managing all entitys
  * @help        :: See http://esails.s.org/#!/documentation/concepts/Controllers
  */
+
 import { Request, Response } from 'express';
 import Utils from '../../common/services/Utils'; // adjust path as needed
 import EnyoError from '../../common/services/EnyoError'; // adjust path as needed
+
 /*
 Uncomment if you need the following features:
 - Create import template for users
 - Import from excel
 - Export to excel
-
 */
+
 // import DocumentManager from '../../services/DocumentManager';
 // import ExcelService from '../../services/ExcelService';
 
 declare const esails: any;
 
-const primaryKey = esails.config.framework.primaryKey;
 const entity = '<%= entity %>';
+const primaryKey = esails.models[entity] && esails.models[entity].primaryKeyField ? esails.models[entity].primaryKeyField : esails.config.framework.primaryKey;
+
 
 class <%= entityClass %>Controller {
   stats(req: Request, resp: Response) {
@@ -138,7 +141,7 @@ class <%= entityClass %>Controller {
         modelName: req.params.entity
       });
     }
-    console.log(query, limit, offset, order);
+    query = Utils.cleanSqlQuery(query);
     repository
       .findAndCountAll({
         // where: req.query.filters,
@@ -429,7 +432,7 @@ class <%= entityClass %>Controller {
       });
   }
 
-  importTemplate(req: Request, resp: Response) {
+  getImportTemplate(req: Request, resp: Response) {
 
 
     const repository = Utils.getEntityManager(req, resp);

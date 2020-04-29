@@ -235,12 +235,16 @@ _See code: [src/commands/run.ts](https://github.com/enyosolutions-team/esails-cl
 
 
 
-## Features
+## Features / Todo
 
-- [x] Generate models, routes, controllers anf api
+- [x] Generate models, routes, controllers and api
 - [ ] Init a project
 - [X] Generate models from the sequelize-auto template
 - [ ] Hook into sequelize cli commands
 - [X] use config from rc files to locate folders
 - [ ] Generate mongo controllers
 - [X] Generate bare controllers
+- [X] Generate bare controllers
+- [ ] Better associations How to define relationships => https://docs.forestadmin.com/documentation/v/v6/reference-guide/relationships#lumber-relationship-generation-rules
+
+- [ ] use primary from config when generating models
