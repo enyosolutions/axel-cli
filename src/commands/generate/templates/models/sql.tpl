@@ -6,7 +6,7 @@
  *                 how this model works and what it represents here.
  */
 
-const Sequelize = require('sequelize');
+import { DataTypes } from 'sequelize';
 
 /*
   // event hooks => http://docs.sequelizejs.com/manual/tutorial/hooks.html
@@ -20,22 +20,16 @@ const <%= entityClass %> = {
   entity: {
     attributes: {
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
       <% for (var i = 0; i < fields.length; i++) { %>
       <%=fields[i] %>: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },<% } %>
 
-      createdBy: {
-        type: Sequelize.INTEGER,
-      },
-      lastModifiedBy: {
-        type: Sequelize.INTEGER,
-      }
     },
     options: {
       // disable the modification of tablenames; By default, sequelize will automatically
@@ -82,4 +76,4 @@ const <%= entityClass %> = {
 };
 
 
-module.exports = '<%= entityClass %>';
+module.exports = <%= entityClass %>;

@@ -1,25 +1,31 @@
-const { request } = require('supertest');
+import request from 'supertest';
+import faker from 'faker';
 const jsf = require('json-schema-faker');
-const expect = require('chai').expect;
-const schema = require('../../../api/models/schema/amibo').schema;
-jsf.extend('faker', () => require('faker'));
+import {expect} from 'chai';
 
+const model = require('../../src/api/models/schema/<%= entity %>');
+
+jsf.extend('faker', () => faker);
 jsf.option('optionalsProbability', 0.3);
-const entity = '<%= entity %>';
 
 // @ts-ignore
 const esails = global.esails;
+// @ts-ignore
+const testConfig = global.testConfig;
 
-console.log('TESTS:: Starting tests on ', entity);
 
-describe(entity.toUpperCase() + ' APIS :: ', () => {
+describe('<%= entity %> APIS :: ', () => {
+  const entity = '<%= entity %>';
+  const entityApiUrl = '/api/<%= entityApiUrl || entity %>';
   let testStore: any = {};
+
+  console.log('TESTS:: Starting tests on ', entity);
   before(async () => {
     const data = {
       // insert your test preparation data here
     };
     const response: any = await request(esails.app)
-      .post('/api/' + entity)
+      .post(entityApiUrl)
       .set('Authorization', 'Bearer ' + esails.config.auth)
       .send(data);
 
@@ -29,9 +35,9 @@ describe(entity.toUpperCase() + ' APIS :: ', () => {
   describe('#POST() :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
-        const data = jsf.generate(schema);
+        const data = jsf.generate(model.schema);
         request(esails.app)
-          .post('/api/' + entity)
+          .post(entityApiUrl)
           .set('Authorization', 'Bearer ' + global.testConfig.someApiAuth)
           .send(data)
           .expect(401)

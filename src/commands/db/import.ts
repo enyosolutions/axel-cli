@@ -1,23 +1,18 @@
-import { Command, flags } from '@oclif/command';
-import * as path from 'path';
-import * as fs from 'fs-extra';
-import cli from 'cli-ux';
-import * as SequelizeAuto from 'sequelize-auto';
-import * as _ from 'lodash';
-import { cpus } from 'os';
-import * as replace from 'replace';
-import { migrateSequelizeModels } from '../../services/models';
+import Command from '../../base'
+import {flags} from '@oclif/command'
+import * as path from 'path'
+import * as fs from 'fs-extra'
+import * as SequelizeAuto from 'sequelize-auto'
+import {migrateSequelizeModels} from '../../services/models'
 
-const modelsLocation = `${process.cwd()}/src/api/models/sequelize`;
-const schemaLocation = `${process.cwd()}/src/api/models/schema`;
-
+const modelsLocation = `${process.cwd()}/src/api/models/sequelize`
 
 export default class Import extends Command {
   static description =
     'Generate sequelize models and json schemas from database';
 
   static flags = {
-    help: flags.help({ char: 'h' }),
+    help: flags.help({char: 'h'}),
     force: flags.boolean({
       char: 'f',
       description:
@@ -37,14 +32,10 @@ export default class Import extends Command {
   };
 
   async run() {
-    const { flags } = this.parse(Import);
-    const dbImportConfig = import(
-      path.resolve(process.cwd(), 'src/resources/sequelize/models')
-    );
-    const force = flags.force;
-    const schemas = flags.schemas;
-    let tables = flags.tables;
- console.log(flags.tables);
+    const {flags} = this.parse(Import)
+    const force = flags.force
+    const schemas = flags.schemas
+    const tables = flags.tables
     // if (force && !silent) {
     //   const confirm = await cli.confirm(
     //     'Are you sure you want to overwrite tables ? (this operation is irreversible...)'
@@ -56,9 +47,9 @@ export default class Import extends Command {
     // }
     import(
       path.resolve(process.cwd(), 'src/resources/sequelize/config/config')
-    ).then((config) => {
-      const env = process.env.NODE_ENV || 'development';
-      var auto = new SequelizeAuto(
+    ).then(config => {
+      const env = process.env.NODE_ENV || 'development'
+      const auto = new SequelizeAuto(
         config[env].database,
         config[env].username,
         config[env].password,
@@ -73,43 +64,43 @@ export default class Import extends Command {
             freezeTableName: true,
             createdAt: 'createdOn',
             updatedAt: 'lastModifiedOn',
-            //...
+            // ...
           },
           tables: flags.tables,
-          //...
+          // ...
         }
-      );
+      )
 
       auto.run((err: Error) => {
         if (err) {
-          this.error(err.message);
-          return;
+          this.error(err.message)
+          return
         }
-        console.log("auto", auto.foreignKeys);
+        console.log('auto', auto.foreignKeys)
         fs.moveSync(
           path.resolve(modelsLocation, 'db.d.ts'),
           path.resolve(process.cwd(), 'src/types/models.d.ts'),
-          { overwrite: true }
-        );
+          {overwrite: true}
+        )
         fs.moveSync(
           path.resolve(modelsLocation, 'db.tables.ts'),
           path.resolve(process.cwd(), 'src/types/ModelsList.d.ts'),
-          { overwrite: true }
-        );
-        Object.keys(auto.tables).forEach((table) =>
+          {overwrite: true}
+        )
+        Object.keys(auto.tables).forEach(table =>
           migrateSequelizeModels(
             path.resolve(
               process.cwd(),
               'src/api/models/sequelize',
               table + '.ts'
             ),
-            { force, schemas, tables }
+            {force, schemas, tables}
           )
-        );
+        )
 
         // for each table run the migrator.
         // if schema is true
-      });
-    });
+      })
+    })
   }
 }

@@ -28,100 +28,6 @@ const typeMap = {
   DATEONLY: 'string',
 }
 
-export const migrateSequelizeModels = async (
-  file: string,
-  options: any = {}
-) => {
-  await replace({
-    regex: /import.+from '.\/db';\n/,
-    replacement: '',
-    paths: [file],
-    recursive: true,
-    silent: true,
-  })
-
-  await replace({
-    regex: 'module.exports = function.+\n.+\\(',
-    replacement: `
-module.exports = {\n\tidentity:`,
-    paths: [file],
-    recursive: true,
-    silent: true,
-  })
-
-  await replace({
-    regex: /identity:(.+), {/,
-    replacement: '\n\tidentity: $1,\n\tentity: {\n\t\tattributes:{\n\t\t',
-    paths: [file],
-    recursive: true,
-    silent: true,
-  })
-
-  await replace({
-    regex: /}\);/,
-    replacement: `}
-                }
-                `,
-    paths: [file],
-    recursive: true,
-    silent: true,
-  })
-
-  await replace({
-    regex: /DataTypes.INTEGER\(1\)/g,
-    replacement: 'DataTypes.BOOLEAN',
-    paths: [file],
-    recursive: true,
-    silent: true,
-  })
-
-  await replace({
-    regex: /DataTypes.INTEGER\(.+\)/g,
-    replacement: 'DataTypes.INTEGER',
-    paths: [file],
-    recursive: true,
-    silent: true,
-  })
-
-  await replace({
-    regex: /}, {/,
-    replacement: `
-      },
-      associations: (models: {[key: string]: any}) => {
-        // models.address.belongsTo(models.user, {
-        //     foreignKey: 'userId',
-        //     targetKey: 'id',
-        // });
-      },
-      options: {
-    `,
-    paths: [file],
-    recursive: true,
-    silent: true,
-  })
-
-  //   replace({
-  //     regex: 'tableName',
-  //     replacement: `
-  //       freezeTableName: true,
-  //       timestamps: true,
-  //       createdAt: 'createdOn',
-  //       updatedAt: 'lastModifiedOn',
-  //       tableName`,
-  //     paths: [file],
-  //     recursive: true,
-  //     silent: options.silent,
-  //   });
-
-  // replace({
-  //   regex: "DataTypes",
-  //   replacement: `Sequelize`,
-  //   paths: [file],
-  //   recursive: true,
-  //   silent: false,
-  // });
-}
-
 export function generateSchemaFromModel(
   file: string,
   target: string,
@@ -252,6 +158,98 @@ export function generateSchemaFromModel(
   }
 }
 
-if (options.schemas) {
-  generateSchemaFromModel(file, file.replace('sequelize', 'schema'), options)
+export const migrateSequelizeModels = async (
+  file: string,
+  options: any = {}
+) => {
+  await replace({
+    regex: /import.+from '.\/db';\n/,
+    replacement: '',
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
+
+  await replace({
+    regex: 'module.exports = function.+\n.+\\(',
+    replacement: `
+module.exports = {\n\tidentity:`,
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
+
+  await replace({
+    regex: /identity:(.+), {/,
+    replacement: '\n\tidentity: $1,\n\tentity: {\n\t\tattributes:{\n\t\t',
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
+
+  await replace({
+    regex: /}\);/,
+    replacement: `}
+                }
+                `,
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
+
+  await replace({
+    regex: /DataTypes.INTEGER\(1\)/g,
+    replacement: 'DataTypes.BOOLEAN',
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
+
+  await replace({
+    regex: /DataTypes.INTEGER\(.+\)/g,
+    replacement: 'DataTypes.INTEGER',
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
+
+  await replace({
+    regex: /}, {/,
+    replacement: `
+      },
+      associations: (models: {[key: string]: any}) => {
+        // models.address.belongsTo(models.user, {
+        //     foreignKey: 'userId',
+        //     targetKey: 'id',
+        // });
+      },
+      options: {
+    `,
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
+  if (options.schemas) {
+    generateSchemaFromModel(file, file.replace('sequelize', 'schema'), options)
+  }
+  //   replace({
+  //     regex: 'tableName',
+  //     replacement: `
+  //       freezeTableName: true,
+  //       timestamps: true,
+  //       createdAt: 'createdOn',
+  //       updatedAt: 'lastModifiedOn',
+  //       tableName`,
+  //     paths: [file],
+  //     recursive: true,
+  //     silent: options.silent,
+  //   });
+
+  // replace({
+  //   regex: "DataTypes",
+  //   replacement: `Sequelize`,
+  //   paths: [file],
+  //   recursive: true,
+  //   silent: false,
+  // });
 }

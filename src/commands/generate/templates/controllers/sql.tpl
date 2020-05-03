@@ -34,7 +34,7 @@ Uncomment if you need the following features:
 
 declare const esails: any;
 
-const entity = '<%= entity %>';
+const entity = '<%= entityCamelCased %>';
 const primaryKey = esails.models[entity] && esails.models[entity].primaryKeyField ? esails.models[entity].primaryKeyField : esails.config.framework.primaryKey;
 
 
@@ -132,7 +132,7 @@ class <%= entityClass %>Controller {
       order
     } = Utils.injectPaginationQuery(req);
     let query = Utils.injectQueryParams(req);
-    const repository = Utils.getEntityManager(req, resp);
+    const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       return;
     }
@@ -188,7 +188,7 @@ class <%= entityClass %>Controller {
       ? req.query.listOfValues
       : false;
 
-    const repository = Utils.getEntityManager(req, resp);
+    const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       return;
     }
@@ -245,7 +245,7 @@ class <%= entityClass %>Controller {
   post(req: Request, resp: Response) {
     const data = Utils.injectUserId(req.body, req.token);
 
-    const repository = Utils.getEntityManager(req, resp);
+    const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       return;
     }
@@ -283,7 +283,7 @@ class <%= entityClass %>Controller {
     let data = req.body;
 
 
-    const repository = Utils.getEntityManager(req, resp);
+    const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       return;
     }
@@ -352,7 +352,7 @@ class <%= entityClass %>Controller {
   delete(req: Request, resp: Response) {
     const id = req.param('id');
 
-    const repository = Utils.getEntityManager(req, resp);
+    const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       return;
     }
@@ -394,7 +394,7 @@ class <%= entityClass %>Controller {
 
     Promise.resolve()
       .then(() => {
-        repository = Utils.getEntityManager(req, resp);
+        repository = Utils.getEntityManager(entity, resp);
         if (!repository) {
           throw new Error('table_model_not_found_error_O');
         }
@@ -435,7 +435,7 @@ class <%= entityClass %>Controller {
   getImportTemplate(req: Request, resp: Response) {
 
 
-    const repository = Utils.getEntityManager(req, resp);
+    const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       throw new Error('table_model_not_found_error_O');
     }
@@ -482,7 +482,7 @@ class <%= entityClass %>Controller {
   }
 
   import(req: Request, resp: Response) {
-    const repository = Utils.getEntityManager(req, resp);
+    const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       return;
     }

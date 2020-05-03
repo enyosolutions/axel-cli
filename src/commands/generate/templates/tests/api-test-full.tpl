@@ -1,41 +1,49 @@
-const request = require('supertest');
+import request from 'supertest';
+import faker from 'faker';
 const jsf = require('json-schema-faker');
-const expect = require('chai').expect;
-const schema = require('../../src/api/models/schema/amibo').schema;
-jsf.extend('faker', () => require('faker'));
+import {expect} from 'chai';
 
+const model = require('../../src/api/models/schema/<%= entity %>');
+
+jsf.extend('faker', () => faker);
 jsf.option('optionalsProbability', 0.3);
-const entity = '<%= entity %>';
 
 // @ts-ignore
 const esails = global.esails;
+// @ts-ignore
+const testConfig = global.testConfig;
 
-console.log('TESTS:: Starting tests on ', entity);
 
-describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
+
+describe('<%= entity %> APIS TESTING :: ', () => {
   let testStore: any = {};
-  before('BEFORE TESTS', async (done) => {
-    const data = jsf.generate(schema);
-    try {
-      const response: any = await request(esails.app)
-        .post('/api/' + entity)
-        .set('Authorization', 'Bearer ' + esails.config.auth)
-        .send(data);
+  const entity = '<%= entity %>';
+  const entityApiUrl = '/api/<%= entityApiUrl || entity %>';
+  const primaryKey = esails.config.framework.primaryKey;
 
-      testStore.savedData = response.body['body'];
-      done();
-    } catch (err) {
-      console.error(err.message);
-      done(err);
-    }
+  console.log('TESTS:: Starting tests on ', entity);
+  before('BEFORE TESTS', (done) => {
+    const data = jsf.generate(model.schema);
+      request(esails.app)
+        .post(entityApiUrl)
+        .set('Authorization', 'Bearer ' + esails.config.auth)
+        .send(data)
+        .then((response: any) => {
+           testStore.savedData = response.body['body'];
+          done();
+        })
+        .catch((err: Error) => {
+          console.error(err);
+          done(err);
+        });
   });
   // POST
   describe('#POST() :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
-        const data = jsf.generate(schema);
+        const data = jsf.generate(model.schema);
         request(esails.app)
-          .post('/api/' + entity)
+          .post(entityApiUrl)
           .send(data)
           .expect(401)
           .then((response: any) => {
@@ -50,13 +58,13 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
     });
 
     describe('WITHOUT FIELD :: ', () => {
-      schema.required.forEach((field: string) => {
+      model.schema.required.forEach((field: string) => {
         describe(field + ' :: ', () => {
           it('should give 400 error', (done) => {
-            const data = jsf.generate(schema);
+            const data = jsf.generate(model.schema);
             delete data[field];
             request(esails.app)
-              .post('/api/' + entity)
+              .post(entityApiUrl)
               .set('Authorization', 'Bearer ' + esails.config.auth)
               .send(data)
               .expect(400)
@@ -75,16 +83,16 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
 
     describe('WITH PROPER DATA :: ', () => {
       it('should add values and return the data', (done) => {
-        const data = jsf.generate(schema);
+        const data = jsf.generate(model.schema);
         request(esails.app)
-          .post('/api/' + entity)
+          .post(entityApiUrl)
           .set('Authorization', 'Bearer ' + esails.config.auth)
           .send(data)
           .expect(200)
           .then((response: any) => {
             expect(response.body['body']).to.not.be.undefined;
             for (const key in response.body['body']) {
-              if (['_id', 'lastModifiedOn', 'createdOn'].indexOf(key) !== -1) {
+              if ([primaryKey, 'lastModifiedOn', 'createdOn'].indexOf(key) !== -1) {
                 continue;
               }
               expect(response.body['body'][key]).to.equals(data[key] as any);
@@ -99,16 +107,16 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
 
       // ADD SECOND DATA WITH DIFFERENT POST VALUES
       it('should add values and return the data', (done) => {
-        const data = jsf.generate(schema);
+        const data = jsf.generate(model.schema);
         request(esails.app)
-          .post('/api/' + entity)
+          .post(entityApiUrl)
           .set('Authorization', 'Bearer ' + esails.config.auth)
           .send(data)
           .expect(200)
           .then((response: any) => {
             expect(response.body['body']).to.not.be.undefined;
             for (const key in response.body['body']) {
-              if (['_id', 'lastModifiedOn', 'createdOn'].indexOf(key) !== -1) {
+              if ([primaryKey, 'lastModifiedOn', 'createdOn'].indexOf(key) !== -1) {
                 continue;
               }
               expect(response.body['body'][key]).to.equals(data[key] as any);
@@ -128,7 +136,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
         request(esails.app)
-          .get('/api/' + entity)
+          .get(entityApiUrl)
           .expect(401)
           .then((response: any) => {
             expect(response.body['body']).to.be.undefined;
@@ -145,7 +153,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('WITHOUT LOV :: ', () => {
         it('should give list with default pagination', (done) => {
           request(esails.app)
-            .get('/api/' + entity)
+            .get(entityApiUrl)
             .set('Authorization', 'Bearer ' + esails.config.auth)
             .expect(200)
             .then((response: any) => {
@@ -167,7 +175,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('WITH LOV :: ', () => {
         it('should give list with lov pagination', (done) => {
           request(esails.app)
-            .get('/api/' + entity + '?listOfValues=true')
+            .get(entityApiUrl + '?listOfValues=true')
             .set('Authorization', 'Bearer ' + esails.config.auth)
             .expect(200)
             .then((response: any) => {
@@ -192,9 +200,9 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
   describe('#UPDATE() :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
-        const data = jsf.generate(schema);
+        const data = jsf.generate(model.schema);
         request(esails.app)
-          .put('/api/' + entity + '/' + testStore.savedData._id)
+          .put(entityApiUrl + '/' + testStore.savedData[primaryKey])
           .send(data)
           .expect(401)
           .then((response: any) => {
@@ -210,9 +218,9 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
 
     describe('WRONG ID :: ', () => {
       it('should give 404 error', (done) => {
-        const data = jsf.generate(schema);
+        const data = jsf.generate(model.schema);
         request(esails.app)
-          .put('/api/' + entity + '/wrong' + testStore.savedData._id)
+          .put(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
           .set('Authorization', 'Bearer ' + esails.config.auth)
           .send(data)
           .expect(404)
@@ -232,7 +240,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('WITHOUT TOKEN :: ', () => {
         it('should give 401', (done) => {
           request(esails.app)
-            .get('/api/' + entity + '/' + testStore.savedData._id)
+            .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
             .expect(401)
             .then((response: any) => {
               expect(response.body['body']).to.be.undefined;
@@ -248,7 +256,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('WRONG ID :: ', () => {
         it('should give 404 error', (done) => {
           request(esails.app)
-            .get('/api/' + entity + '/wrong' + testStore.savedData._id)
+            .get(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
             .set('Authorization', 'Bearer ' + esails.config.auth)
             .expect(404)
             .then((response: any) => {
@@ -265,13 +273,13 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('PROPER DATA :: ', () => {
         it('should return value', (done) => {
           request(esails.app)
-            .get('/api/' + entity + '/' + testStore.savedData._id)
+            .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
             .set('Authorization', 'Bearer ' + esails.config.auth)
             .expect(200)
             .then((response: any) => {
               for (const key in response.body['body']) {
                 if (
-                  ['_id', 'lastModifiedOn', 'createdOn'].indexOf(key) !== -1
+                  [primaryKey, 'lastModifiedOn', 'createdOn'].indexOf(key) !== -1
                 ) {
                   continue;
                 }
@@ -299,7 +307,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('WITHOUT TOKEN :: ', () => {
         it('should give 401', (done) => {
           request(esails.app)
-            .delete('/api/' + entity + '/' + testStore.savedData._id)
+            .delete(entityApiUrl + '/' + testStore.savedData[primaryKey])
             .expect(401)
             .then((response: any) => {
               expect(response.body['body']).to.be.undefined;
@@ -315,7 +323,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('WRONG ID :: ', () => {
         it('should give 404 error', (done) => {
           request(esails.app)
-            .delete('/api/' + entity + '/wrong' + testStore.savedData._id)
+            .delete(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
             .set('Authorization', 'Bearer ' + esails.config.auth)
             .expect(404)
             .then((response: any) => {
@@ -332,7 +340,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('PROPER DATA :: ', () => {
         it('should return value', (done) => {
           request(esails.app)
-            .delete('/api/' + entity + '/' + testStore.savedData._id)
+            .delete(entityApiUrl + '/' + testStore.savedData[primaryKey])
             .set('Authorization', 'Bearer ' + esails.config.auth)
             .expect(200)
             .then((response: any) => {
@@ -349,7 +357,7 @@ describe(entity.toUpperCase() + ' APIS TESTING :: ', () => {
       describe('CHECK IF DELETED :: ', () => {
         it('should give 404 error', (done) => {
           request(esails.app)
-            .get('/api/' + entity + '/' + testStore.savedData._id)
+            .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
             .set('Authorization', 'Bearer ' + esails.config.auth)
             .expect(404)
             .then((response: any) => {

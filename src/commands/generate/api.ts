@@ -1,4 +1,5 @@
-import {Command, flags} from '@oclif/command'
+import Command from '../../base'
+import {flags} from '@oclif/command'
 import * as chalk from 'chalk'
 
 import Route from './route'

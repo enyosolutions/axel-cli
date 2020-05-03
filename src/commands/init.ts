@@ -1,25 +1,34 @@
 import {Command, flags} from '@oclif/command'
+const {cosmiconfigSync} = require('cosmiconfig')
+import * as fs from 'fs'
 
 export default class Init extends Command {
-  static description = 'describe the command here'
+  static description = 'describe the command here';
 
   static flags = {
     help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
     // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
-  }
+  };
 
-  static args = [{name: 'file'}]
+  static args = [{name: 'file'}];
 
   async run() {
     const {args, flags} = this.parse(Init)
+    const moduleName = 'esails'
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from /Users/faou/Projects/esails-cli/src/commands/init.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    const explorer = cosmiconfigSync(moduleName, {})
+    explorer.clearCaches()
+    const searchedFor = explorer.search()
+    this.log(searchedFor)
+    if (searchedFor &&  !searchedFor.isEmpty) {
+      this.error(
+        'Config file already initialized'
+      )
+      return new Error('config_already_exists')
     }
+    fs.writeFileSync('esails.config.json', 'module.exports = {"da":  true};\n', {
+      encoding: 'utf8',
+    })
+    this.log('Config done.')
   }
 }
