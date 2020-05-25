@@ -8,14 +8,14 @@
  * UserSqlController
  *
  * @description :: Server-side logic for managing users
- * @help        :: See http://links.esails.s.org/docs/controllers
+ * @help        :: See http://links.axel.s.org/docs/controllers
  */
 
 /**
  * Api/CrudSqlController
  *
  * @description :: Server-side logic for managing all entitys
- * @help        :: See http://esails.s.org/#!/documentation/concepts/Controllers
+ * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
  */
 
 import { Request, Response } from 'express';
@@ -32,10 +32,10 @@ Uncomment if you need the following features:
 // import DocumentManager from '../../services/DocumentManager';
 // import ExcelService from '../../services/ExcelService';
 
-declare const esails: any;
+declare const axel: any;
 
 const entity = '<%= entityCamelCased %>';
-const primaryKey = esails.models[entity] && esails.models[entity].primaryKeyField ? esails.models[entity].primaryKeyField : esails.config.framework.primaryKey;
+const primaryKey = axel.models[entity] && axel.models[entity].primaryKeyField ? axel.models[entity].primaryKeyField : axel.config.framework.primaryKey;
 
 
 class <%= entityClass %>Controller {
@@ -43,13 +43,13 @@ class <%= entityClass %>Controller {
     const output: { total?: any; month?: any; week?: any; today?: any } = {};
 
 
-    if (!esails.models[entity] || !esails.models[entity].repository) {
+    if (!axel.models[entity] || !axel.models[entity].repository) {
       return resp.status(404).json({
         errors: ['not_found'],
         message: 'not_found'
       });
     }
-    const { repository, tableName } = esails.models[entity];
+    const { repository, tableName } = axel.models[entity];
     repository
       .count({})
       .then((data: number) => {
@@ -57,14 +57,14 @@ class <%= entityClass %>Controller {
         output.total = data;
 
         // THIS MONTH
-        return esails.sqldb.query(
+        return axel.sqldb.query(
           `SELECT COUNT(*)  as month
         FROM
         FROM ${tableName}
         WHERE
         createdOn >= SUBDATE(CURDATE(), DAYOFMONTH(CURDATE())-1)`,
           {
-            type: esails.sqldb.QueryTypes.SELECT
+            type: axel.sqldb.QueryTypes.SELECT
           }
         );
       })
@@ -76,13 +76,13 @@ class <%= entityClass %>Controller {
         }
 
         // THIS WEEK
-        return esails.sqldb.query(
+        return axel.sqldb.query(
           `SELECT COUNT(*) as week
           FROM ${tableName}
         WHERE
         YEARWEEK(createdOn) = YEARWEEK(CURRENT_TIMESTAMP)`,
           {
-            type: esails.sqldb.QueryTypes.SELECT
+            type: axel.sqldb.QueryTypes.SELECT
           }
         );
       })
@@ -94,13 +94,13 @@ class <%= entityClass %>Controller {
         }
 
         // TODAY
-        return esails.sqldb.query(
+        return axel.sqldb.query(
           `SELECT COUNT(*) as today
           FROM ${tableName}
         WHERE
         DATE(createdOn) = DATE(NOW())`,
           {
-            type: esails.sqldb.QueryTypes.SELECT
+            type: axel.sqldb.QueryTypes.SELECT
           }
         );
       })
@@ -116,7 +116,6 @@ class <%= entityClass %>Controller {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
         Utils.errorCallback(err, resp);
       });
   }
@@ -174,13 +173,12 @@ class <%= entityClass %>Controller {
         })
       )
       .catch((err: Error) => {
-        esails.logger.warn(err);
         Utils.errorCallback(err, resp);
       });
   }
 
   get(req: Request, resp: Response) {
-    const id = req.param('id');
+    const id = parseInt(req.params.id);
     if (!id) {
       return false;
     }
@@ -198,7 +196,9 @@ class <%= entityClass %>Controller {
         raw: false
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err);
+        }
         throw new EnyoError({
           code: 404,
           errors: [
@@ -237,7 +237,6 @@ class <%= entityClass %>Controller {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
         Utils.errorCallback(err, resp);
       });
   }
@@ -257,7 +256,9 @@ class <%= entityClass %>Controller {
         })
       )
       .catch((err: EnyoError) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err);
+        }
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
@@ -279,7 +280,7 @@ class <%= entityClass %>Controller {
    * @return {[type]}      [description]
    */
   put(req: Request, resp: Response) {
-    const id = req.param('id');
+    const id = parseInt(req.params.id);
     let data = req.body;
 
 
@@ -290,7 +291,9 @@ class <%= entityClass %>Controller {
     repository
       .findByPk(id)
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err);
+        }
         throw new EnyoError({
           code: 404,
           errors: [
@@ -328,7 +331,6 @@ class <%= entityClass %>Controller {
         });
       })
       .catch((err: EnyoError) => {
-        esails.logger.warn(err);
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
@@ -350,7 +352,7 @@ class <%= entityClass %>Controller {
    * @return {[type]}      [description]
    */
   delete(req: Request, resp: Response) {
-    const id = req.param('id');
+    const id = parseInt(req.params.id);
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
@@ -363,20 +365,24 @@ class <%= entityClass %>Controller {
         }
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err);
+        }
         throw new EnyoError({
           code: 400,
           errors: [err || 'delete_error'],
           message: err.message || 'delete_error'
         });
       })
-      .then(() =>
+      .then((a: any) => {
+        if (!a) {
+          return resp.status(404).json();
+        }
         resp.status(200).json({
-          status: 'OK'
-        })
-      )
+          status: 'OK',
+        });
+      })
       .catch((err: Error) => {
-        esails.logger.warn(err);
         Utils.errorCallback(err, resp);
       });
   }
@@ -385,7 +391,7 @@ class <%= entityClass %>Controller {
   export(req: Request, resp: Response) {
 
     let repository;
-    const schema = esails.models[entity] && esails.models[entity].schema;
+    const schema = axel.models[entity] && axel.models[entity].schema;
     let data = [];
 
     const url = `${entity}_export`;
@@ -427,7 +433,6 @@ class <%= entityClass %>Controller {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
         Utils.errorCallback(err, resp);
       });
   }
@@ -476,7 +481,6 @@ class <%= entityClass %>Controller {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
         Utils.errorCallback(err, resp);
       });
   }
@@ -526,7 +530,9 @@ class <%= entityClass %>Controller {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err && err.message ? err.message : err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err);
+        }
         throw new EnyoError({
           errors: [
             {
@@ -538,7 +544,10 @@ class <%= entityClass %>Controller {
       })
       .then(() => DocumentManager.delete(doc[0].fd))
       .catch((err: Error) => {
-        esails.logger.warn(err && err.message ? err.message : err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         throw new EnyoError({
           code: 500,
           errors: [
@@ -557,7 +566,6 @@ class <%= entityClass %>Controller {
         })
       )
       .catch((err: Error) => {
-        esails.logger.warn(err && err.message ? err.message : err);
         Utils.errorCallback(err, resp);
       });
   }

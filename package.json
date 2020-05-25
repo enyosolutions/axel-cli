@@ -1,9 +1,9 @@
 {
-  "name": "@esails/cli",
-  "version": "0.0.1",
+  "name": "@axel/cli",
+  "version": "0.0.2",
   "author": "fb@enyosolutions.com @enyosolutions",
   "bin": {
-    "esails": "./bin/run"
+    "axel": "./bin/run"
   },
   "bugs": "https://github.com/enyosolutions-team/esails-cli/issues",
   "dependencies": {
@@ -46,7 +46,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/enyosolutions-team/esails-cli",
+  "homepage": "https://github.com/enyosolutions-team/axel-cli",
   "keywords": [
     "oclif"
   ],
@@ -59,7 +59,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "enyosolutions-team/esails-cli",
+  "repository": "enyosolutions-team/axle-cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",

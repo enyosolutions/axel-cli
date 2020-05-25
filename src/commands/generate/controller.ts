@@ -6,7 +6,7 @@ import * as fs from 'fs'
 import * as chalk from 'chalk'
 
 export default class Generate extends Command {
-  static description = 'Generate a controller for your esails project';
+  static description = 'Generate a controller for your axel project';
 
   static target = 'controller';
 

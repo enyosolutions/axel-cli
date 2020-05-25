@@ -8,14 +8,14 @@
  * UserSqlController
  *
  * @description :: Server-side logic for managing users
- * @help        :: See http://links.esails.s.org/docs/controllers
+ * @help        :: See http://links.axel.s.org/docs/controllers
  */
 
 /**
  * Api/CrudSqlController
  *
  * @description :: Server-side logic for managing all entitys
- * @help        :: See http://esails.s.org/#!/documentation/concepts/Controllers
+ * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
  */
 import { Request, Response, NextFunction } from 'express';
 import Utils from '../../common/services/Utils'; // adjust path as needed
@@ -30,9 +30,9 @@ Uncomment if you need the following features:
 // import DocumentManager from '../../services/DocumentManager';
 // import ExcelService from '../../services/ExcelService';
 
-declare const esails: any;
+declare const axel: any;
 
-const primaryKey = esails.config.framework.primaryKey;
+const primaryKey = axel.config.framework.primaryKey;
 const entity = '<%= entity %>';
 
 class <%= entityClass %>Controller {

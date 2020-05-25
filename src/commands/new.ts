@@ -1,7 +1,7 @@
 import {Command, flags} from '@oclif/command'
 
 export default class New extends Command {
-  static description = `Create a new esails project.
+  static description = `Create a new axel project.
   - Download the zip of project
   - Unzip it,
   - install peer dependencies,
@@ -22,7 +22,7 @@ export default class New extends Command {
 
     const name = args.projectName
     this.log(
-      `hello ${name} from /Users/faou/Projects/esails-cli/src/commands/new.ts`,
+      `hello ${name} from /Users/faou/Projects/axel-cli/src/commands/new.ts`,
     )
   }
 }

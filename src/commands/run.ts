@@ -17,7 +17,7 @@ export default class Run extends Command {
     const {args, flags} = this.parse(Run)
 
     const name = flags.name || 'world'
-    this.log(`hello ${name} from /Users/faou/Projects/esails-cli/src/commands/run.ts`)
+    this.log(`hello ${name} from /Users/faou/Projects/axel-cli/src/commands/run.ts`)
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }

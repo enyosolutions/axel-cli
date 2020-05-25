@@ -13,7 +13,7 @@ const modelsLocation = `${process.cwd()}/src/api/models/sequelize`
 const schemasLocation = `${process.cwd()}/src/api/models/schema`
 
 export default class Generate extends Command {
-  static description = 'Generate a model for your esails project';
+  static description = 'Generate a model for your axel project';
 
   static target = 'model';
 

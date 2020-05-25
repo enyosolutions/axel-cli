@@ -1,13 +1,13 @@
-@esails/cli
+@axel/cli
 ===========
 
 
 
-![](https://github.com/enyosolutions-team/esails-cli/workflows/CI/badge.svg)
+![](https://github.com/enyosolutions-team/axel-cli/workflows/CI/badge.svg)
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@esails/cli.svg)](https://npmjs.org/package/@esails/cli)
-[![Downloads/week](https://img.shields.io/npm/dw/@esails/cli.svg)](https://npmjs.org/package/@esails/cli)
-[![License](https://img.shields.io/npm/l/@esails/cli.svg)](https://github.com/enyosolutions-team/esails-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@axel/cli.svg)](https://npmjs.org/package/@axel/cli)
+[![Downloads/week](https://img.shields.io/npm/dw/@axel/cli.svg)](https://npmjs.org/package/@axel/cli)
+[![License](https://img.shields.io/npm/l/@axel/cli.svg)](https://github.com/enyosolutions-team/axel-cli/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -16,38 +16,38 @@
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g @esails/cli
-$ esails COMMAND
+$ npm install -g @axel/cli
+$ axel COMMAND
 running command...
-$ esails (-v|--version|version)
-@esails/cli/0.0.1 darwin-x64 node-v12.11.1
-$ esails --help [COMMAND]
+$ axel (-v|--version|version)
+@axel/cli/0.0.1 darwin-x64 node-v12.11.1
+$ axel --help [COMMAND]
 USAGE
-  $ esails COMMAND
+  $ axel COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`esails db:sync`](#esails-dbsync)
-* [`esails generate TARGET`](#esails-generate-target)
-* [`esails generate:api NAME`](#esails-generateapi-name)
-* [`esails generate:controller NAME`](#esails-generatecontroller-name)
-* [`esails generate:model NAME`](#esails-generatemodel-name)
-* [`esails generate:route NAME`](#esails-generateroute-name)
-* [`esails hello [FILE]`](#esails-hello-file)
-* [`esails help [COMMAND]`](#esails-help-command)
-* [`esails init [FILE]`](#esails-init-file)
-* [`esails new [PROJECTNAME]`](#esails-new-projectname)
-* [`esails run [FILE]`](#esails-run-file)
+* [`axel db:sync`](#axel-dbsync)
+* [`axel generate TARGET`](#axel-generate-target)
+* [`axel generate:api NAME`](#axel-generateapi-name)
+* [`axel generate:controller NAME`](#axel-generatecontroller-name)
+* [`axel generate:model NAME`](#axel-generatemodel-name)
+* [`axel generate:route NAME`](#axel-generateroute-name)
+* [`axel hello [FILE]`](#axel-hello-file)
+* [`axel help [COMMAND]`](#axel-help-command)
+* [`axel init [FILE]`](#axel-init-file)
+* [`axel new [PROJECTNAME]`](#axel-new-projectname)
+* [`axel run [FILE]`](#axel-run-file)
 
-## `esails db:sync`
+## `axel db:sync`
 
 Sync sequelize models to the database
 
 ```
 USAGE
-  $ esails db:sync
+  $ axel db:sync
 
 OPTIONS
   -a, --alter   Alter table columns if they already exist.
@@ -56,15 +56,15 @@ OPTIONS
   -s, --silent  Do not ask for confirmation
 ```
 
-_See code: [src/commands/db/sync.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/db/sync.ts)_
+_See code: [src/commands/db/sync.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/db/sync.ts)_
 
-## `esails generate TARGET`
+## `axel generate TARGET`
 
-Generate various documents for your esails project
+Generate various documents for your axel project
 
 ```
 USAGE
-  $ esails generate TARGET
+  $ axel generate TARGET
 
 OPTIONS
   -f, --force
@@ -72,15 +72,15 @@ OPTIONS
   -t, --type=  [default: sql] type of project
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate.ts)_
 
-## `esails generate:api NAME`
+## `axel generate:api NAME`
 
-Generate an api for your esails project
+Generate an api for your axel project
 
 ```
 USAGE
-  $ esails generate:api NAME
+  $ axel generate:api NAME
 
 OPTIONS
   -h, --help            show CLI help
@@ -91,15 +91,15 @@ OPTIONS
   --with-schema         Whether to generate schema model also when generating an sql model
 ```
 
-_See code: [src/commands/generate/api.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/generate/api.ts)_
+_See code: [src/commands/generate/api.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate/api.ts)_
 
-## `esails generate:controller NAME`
+## `axel generate:controller NAME`
 
-Generate a controller for your esails project
+Generate a controller for your axel project
 
 ```
 USAGE
-  $ esails generate:controller NAME
+  $ axel generate:controller NAME
 
 OPTIONS
   -f, --force
@@ -107,15 +107,15 @@ OPTIONS
   -t, --type=sql|mongo  (required) type of project
 ```
 
-_See code: [src/commands/generate/controller.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/generate/controller.ts)_
+_See code: [src/commands/generate/controller.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate/controller.ts)_
 
-## `esails generate:model NAME`
+## `axel generate:model NAME`
 
-Generate a model for your esails project
+Generate a model for your axel project
 
 ```
 USAGE
-  $ esails generate:model NAME
+  $ axel generate:model NAME
 
 OPTIONS
   -f, --force
@@ -125,30 +125,30 @@ OPTIONS
   --fields=fields             List of fields to declare
 ```
 
-_See code: [src/commands/generate/model.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/generate/model.ts)_
+_See code: [src/commands/generate/model.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate/model.ts)_
 
-## `esails generate:route NAME`
+## `axel generate:route NAME`
 
-Generate an api for your esails project
+Generate an api for your axel project
 
 ```
 USAGE
-  $ esails generate:route NAME
+  $ axel generate:route NAME
 
 OPTIONS
   -h, --help           show CLI help
   -s, --secure=secure  Add secure policies to the app
 ```
 
-_See code: [src/commands/generate/route.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/generate/route.ts)_
+_See code: [src/commands/generate/route.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate/route.ts)_
 
-## `esails hello [FILE]`
+## `axel hello [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ esails hello [FILE]
+  $ axel hello [FILE]
 
 OPTIONS
   -f, --force
@@ -156,19 +156,19 @@ OPTIONS
   -n, --name=name  name to print
 
 EXAMPLE
-  $ esails hello
+  $ axel hello
   hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/hello.ts)_
+_See code: [src/commands/hello.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/hello.ts)_
 
-## `esails help [COMMAND]`
+## `axel help [COMMAND]`
 
-display help for esails
+display help for axel
 
 ```
 USAGE
-  $ esails help [COMMAND]
+  $ axel help [COMMAND]
 
 ARGUMENTS
   COMMAND  command to show help for
@@ -179,13 +179,13 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
 
-## `esails init [FILE]`
+## `axel init [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ esails init [FILE]
+  $ axel init [FILE]
 
 OPTIONS
   -f, --force
@@ -193,15 +193,15 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/init.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/init.ts)_
 
-## `esails new [PROJECTNAME]`
+## `axel new [PROJECTNAME]`
 
-Create a new esails project.
+Create a new axel project.
 
 ```
 USAGE
-  $ esails new [PROJECTNAME]
+  $ axel new [PROJECTNAME]
 
 OPTIONS
   -h, --help              show CLI help
@@ -214,15 +214,15 @@ DESCRIPTION
      - Place relevant crud controller, auth controller, and Authservices according to the database system.
 ```
 
-_See code: [src/commands/new.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/new.ts)_
+_See code: [src/commands/new.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/new.ts)_
 
-## `esails run [FILE]`
+## `axel run [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ esails run [FILE]
+  $ axel run [FILE]
 
 OPTIONS
   -f, --force
@@ -230,7 +230,7 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/run.ts](https://github.com/enyosolutions-team/esails-cli/blob/v0.0.1/src/commands/run.ts)_
+_See code: [src/commands/run.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/run.ts)_
 <!-- commandsstop -->
 
 

@@ -9,7 +9,7 @@ jsf.extend('faker', () => faker);
 jsf.option('optionalsProbability', 0.3);
 
 // @ts-ignore
-const esails = global.esails;
+const axel = global.axel;
 // @ts-ignore
 const testConfig = global.testConfig;
 
@@ -24,9 +24,9 @@ describe('<%= entity %> APIS :: ', () => {
     const data = {
       // insert your test preparation data here
     };
-    const response: any = await request(esails.app)
+    const response: any = await request(axel.app)
       .post(entityApiUrl)
-      .set('Authorization', 'Bearer ' + esails.config.auth)
+      .set('Authorization', 'Bearer ' + testConfig.someApiAuth)
       .send(data);
 
     testStore.savedData = response.body['body'];
@@ -36,9 +36,9 @@ describe('<%= entity %> APIS :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
         const data = jsf.generate(model.schema);
-        request(esails.app)
+        request(axel.app)
           .post(entityApiUrl)
-          .set('Authorization', 'Bearer ' + global.testConfig.someApiAuth)
+          .set('Authorization', 'Bearer ' + 'fake_api_auth')
           .send(data)
           .expect(401)
           .then((response: any) => {

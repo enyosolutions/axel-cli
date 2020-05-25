@@ -13,7 +13,7 @@ export default abstract class extends Command {
                  async init() {
                    // do some initialization
                    this.log('load config')
-                   const explorer = cosmiconfigSync('esails')
+                   const explorer = cosmiconfigSync('axel')
                    const searchedFor = explorer.search()
                    if (!searchedFor || searchedFor.isEmpty) {
                      this.error(

@@ -8,14 +8,14 @@
  * UserSqlController
  *
  * @description :: Server-side logic for managing users
- * @help        :: See http://links.esails.s.org/docs/controllers
+ * @help        :: See http://links.axel.s.org/docs/controllers
  */
 
 /**
  * Api/CrudSqlController
  *
  * @description :: Server-side logic for managing all endpoints
- * @help        :: See http://esails.s.org/#!/documentation/concepts/Controllers
+ * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
  */
 import { Request, Response } from 'express';
 import Utils from '../../../common/services/Utils';
@@ -23,22 +23,22 @@ import EnyoError from '../../../common/services/EnyoError';
 import DocumentManager from '../../services/DocumentManager';
 import ExcelService from '../../services/ExcelService';
 
-declare const esails: any;
+declare const axel: any;
 
-const primaryKey = esails.config.enyo.primaryKey;
+const primaryKey = axel.config.enyo.primaryKey;
 
 class CrudSqlController {
   stats(req: Request, resp: Response) {
     const output: { total?: any; month?: any; week?: any; today?: any } = {};
     const endpoint = req.param('endpoint');
 
-    if (!esails.models[endpoint] || !esails.models[endpoint].repository) {
+    if (!axel.models[endpoint] || !axel.models[endpoint].repository) {
       return resp.status(404).json({
         errors: ['not_found'],
         message: 'not_found'
       });
     }
-    const { repository, tableName } = esails.models[endpoint];
+    const { repository, tableName } = axel.models[endpoint];
     repository
       .count({})
       .then((data: number) => {
@@ -46,13 +46,13 @@ class CrudSqlController {
         output.total = data;
 
         // THIS MONTH
-        return esails.sqldb.query(
+        return axel.sqldb.query(
           `SELECT COUNT(*)  as month
         FROM ${tableName}
         WHERE
         createdOn >= SUBDATE(CURDATE(), DAYOFMONTH(CURDATE())-1)`,
           {
-            type: esails.sqldb.QueryTypes.SELECT
+            type: axel.sqldb.QueryTypes.SELECT
           }
         );
       })
@@ -64,13 +64,13 @@ class CrudSqlController {
         }
 
         // THIS WEEK
-        return esails.sqldb.query(
+        return axel.sqldb.query(
           `SELECT COUNT(*) as week
         FROM ${tableName}
         WHERE
         YEARWEEK(createdOn) = YEARWEEK(CURRENT_TIMESTAMP)`,
           {
-            type: esails.sqldb.QueryTypes.SELECT
+            type: axel.sqldb.QueryTypes.SELECT
           }
         );
       })
@@ -82,13 +82,13 @@ class CrudSqlController {
         }
 
         // TODAY
-        return esails.sqldb.query(
+        return axel.sqldb.query(
           `SELECT COUNT(*) as today
         FROM ${tableName}
         WHERE
         DATE(createdOn) = DATE(NOW())`,
           {
-            type: esails.sqldb.QueryTypes.SELECT
+            type: axel.sqldb.QueryTypes.SELECT
           }
         );
       })
@@ -104,7 +104,10 @@ class CrudSqlController {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         Utils.errorCallback(err, resp);
       });
   }
@@ -162,7 +165,9 @@ class CrudSqlController {
         })
       )
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
         Utils.errorCallback(err, resp);
       });
   }
@@ -186,7 +191,10 @@ class CrudSqlController {
         raw: false
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         throw new EnyoError({
           code: 404,
           errors: [
@@ -225,7 +233,10 @@ class CrudSqlController {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         Utils.errorCallback(err, resp);
       });
   }
@@ -245,7 +256,10 @@ class CrudSqlController {
         })
       )
       .catch((err: EnyoError) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
@@ -278,7 +292,10 @@ class CrudSqlController {
     repository
       .findByPk(id)
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         throw new EnyoError({
           code: 404,
           errors: [
@@ -316,7 +333,10 @@ class CrudSqlController {
         });
       })
       .catch((err: EnyoError) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
@@ -351,7 +371,9 @@ class CrudSqlController {
         }
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
         throw new EnyoError({
           code: 400,
           errors: [err || 'delete_error'],
@@ -364,7 +386,10 @@ class CrudSqlController {
         })
       )
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         Utils.errorCallback(err, resp);
       });
   }
@@ -372,7 +397,7 @@ class CrudSqlController {
   export(req: Request, resp: Response) {
     const endpoint = req.param('endpoint');
     let repository;
-    const schema = esails.models[endpoint] && esails.models[endpoint].schema;
+    const schema = axel.models[endpoint] && axel.models[endpoint].schema;
     let data = [];
 
     const url = `${endpoint}_export`;
@@ -421,7 +446,10 @@ class CrudSqlController {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         Utils.errorCallback(err, resp);
       });
   }
@@ -470,7 +498,10 @@ class CrudSqlController {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         Utils.errorCallback(err, resp);
       });
   }
@@ -520,7 +551,10 @@ class CrudSqlController {
         });
       })
       .catch((err: Error) => {
-        esails.logger.warn(err && err.message ? err.message : err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         throw new EnyoError({
           errors: [
             {
@@ -532,7 +566,10 @@ class CrudSqlController {
       })
       .then(() => DocumentManager.delete(doc[0].fd))
       .catch((err: Error) => {
-        esails.logger.warn(err && err.message ? err.message : err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         throw new EnyoError({
           code: 500,
           errors: [
@@ -551,7 +588,10 @@ class CrudSqlController {
         })
       )
       .catch((err: Error) => {
-        esails.logger.warn(err && err.message ? err.message : err);
+        if (process.env.NODE_ENV === 'development') {
+          axel.logger.warn(err && err.message ? err.message : err);
+        }
+
         Utils.errorCallback(err, resp);
       });
   }

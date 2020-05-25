@@ -1,7 +1,7 @@
 import {Command, flags} from '@oclif/command'
 
 export default class Generate extends Command {
-  static description = 'Generate various documents for your esails project';
+  static description = 'Generate various documents for your axel project';
 
   static args = [
     {
@@ -29,7 +29,7 @@ export default class Generate extends Command {
 
     const type = flags.type
     this.log(
-      `hello ${args.target} ${type} from /Users/faou/Projects/esails-cli/src/commands/generate.ts`
+      `hello ${args.target} ${type} from /Users/faou/Projects/axel-cli/src/commands/generate.ts`
     )
   }
 }

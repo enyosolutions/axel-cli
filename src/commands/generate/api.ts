@@ -7,7 +7,7 @@ import Model from './model'
 import Controller from './controller'
 
 export default class Generate extends Command {
-  static description = 'Generate an api for your esails project';
+  static description = 'Generate an api for your axel project';
 
   static target = 'api';
 

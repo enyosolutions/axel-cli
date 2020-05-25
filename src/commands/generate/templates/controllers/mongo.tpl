@@ -144,7 +144,7 @@ module.exports = {
 
   get(req, resp) {
     const endpoint = '<%= entity %>';
-    const id = req.param('id');
+    const id = req.params.id;
     if (!Tools.checkIsMongoId(id, resp)) {
       return false;
     }
@@ -239,7 +239,7 @@ module.exports = {
    */
   put(req, resp) {
     const endpoint = '<%= entity %>';
-    const id = req.param('id');
+    const id = req.params.id;
     let original;
     let updatee;
     if (!Tools.checkIsMongoId(id, resp)) {
@@ -323,7 +323,7 @@ module.exports = {
 
     collection
       .findOne({
-        _id: req.param('id')
+        _id: req.params.id
       })
       .then((o) => {
         if (o) {
@@ -352,7 +352,7 @@ module.exports = {
               /* eslint-enable prefer-template */
               ActivityLog.log(original, data, {
                 userId,
-                entityId: req.param('id'),
+                entityId: req.params.id,
                 entity: endpoint
               });
             })
@@ -385,7 +385,7 @@ module.exports = {
   delete(req, resp) {
     const endpoint = '<%= entity %>';
 
-    const id = req.param('id');
+    const id = req.params.id;
     if (!Tools.checkIsMongoId(id, resp)) {
       return false;
     }
@@ -399,23 +399,6 @@ module.exports = {
       .then((data) => {
         resp.status(200).json({
           status: 'OK'
-        });
-
-        const userId = req.token ? req.token._id : 'ANONYMOUS';
-        /* eslint-disable prefer-template */
-        EventManager.bus.publish(endpoint.toUpperCase() + '_DELETED', {
-          userId,
-          data,
-          entity: endpoint,
-          entityId: id
-        });
-        /* eslint-enable prefer-template */
-        ActivityLog.log({
-          _id: req.param('id')
-        }, null, {
-          userId,
-          entityId: id,
-          entity: endpoint
         });
       })
       .catch((err) => {

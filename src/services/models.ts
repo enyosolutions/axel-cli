@@ -95,7 +95,7 @@ export function generateSchemaFromModel(
         break
       case 'DATE':
         schema.field.format = 'date-time'
-        schema.column.type = 'datetime'
+        schema.column.type = 'date'
         schema.field.type = 'dateTime'
         break
       case 'DATEONLY':
@@ -133,6 +133,7 @@ export function generateSchemaFromModel(
         if (!destination.schema.properties[field]) {
           destination.schema.properties[field] = {
             type: 'string',
+            format: 'date-time',
             column: {
               type: 'datetime',
             },

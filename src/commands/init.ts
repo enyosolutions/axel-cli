@@ -14,7 +14,7 @@ export default class Init extends Command {
 
   async run() {
     const {args, flags} = this.parse(Init)
-    const moduleName = 'esails'
+    const moduleName = 'axel'
 
     const explorer = cosmiconfigSync(moduleName, {})
     explorer.clearCaches()
@@ -26,7 +26,7 @@ export default class Init extends Command {
       )
       return new Error('config_already_exists')
     }
-    fs.writeFileSync('esails.config.json', 'module.exports = {"da":  true};\n', {
+    fs.writeFileSync('axel.config.json', 'module.exports = {"da":  true};\n', {
       encoding: 'utf8',
     })
     this.log('Config done.')

@@ -4,7 +4,7 @@ import * as chalk from 'chalk'
 import * as replace from 'replace'
 
 export default class Generate extends Command {
-  static description = 'Generate an api for your esails project';
+  static description = 'Generate an api for your axel project';
 
   static target = 'api';
 

@@ -4,7 +4,7 @@ export default class Hello extends Command {
   static description = 'describe the command here'
 
   static examples = [
-    `$ esails hello
+    `$ axel hello
 hello world from ./src/hello.ts!
 `,
   ]
