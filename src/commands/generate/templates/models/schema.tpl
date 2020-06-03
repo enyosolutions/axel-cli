@@ -1,6 +1,6 @@
 module.exports = {
-  identity: '<%= entity %>',
-  collectionName: '<%= entity %>',
+  identity: '<%= identity %>',
+  collectionName: '<%= identity %>',
   url: '/<%= entity %>', // url for front api
   additionalProperties: false,
   autoValidate: true,
@@ -11,7 +11,7 @@ module.exports = {
       id: {
         $id: 'id',
         <% if (isSql) { %>type: 'number',<% } else { %>type: ['object', 'string'],<% } %>
-        title: '<%= entity %> id', // serves for front form fields
+        title: '<%= entityClass %> id', // serves for front form fields
         description: 'The id of this item' // serves for front form hint
       },<% for (var i = 0; i < fields.length; i++) { %>
       <%=fields[i] %>: {
@@ -20,16 +20,16 @@ module.exports = {
       createdOn: {
         type: ['string', 'object'],
         format: 'date-time',
-        field: { readonly: true },
-        column: {
+        edit: { readonly: true },
+        display: {
           type: 'datetime'
         }
       },
       lastModifiedOn: {
         type: ['string', 'object'],
         format: 'date-time',
-        field: { readonly: true },
-        column: {
+        edit: { readonly: true },
+        display: {
           type: 'datetime'
         }
       },
@@ -37,15 +37,15 @@ module.exports = {
         type: ['string'],
         relation: '/user',
         foreignKey: '_id',
-        column: {},
-        field: { readonly: true },
+        display: {},
+        edit: { readonly: true },
       },
       lastModifiedBy: {
         type: ['string'],
         relation: '/user',
         foreignKey: '_id',
-        column: {},
-        field: { readonly: true },
+        display: {},
+        edit: { readonly: true },
       }
     },
     required: []

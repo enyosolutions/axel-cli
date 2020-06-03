@@ -19,6 +19,7 @@ const typeMap = {
   TEXT: 'string',
 
   JSON: 'object',
+  JSONTYPE: 'object',
   JSONB: 'object',
 
   ARRAY: 'array',
@@ -183,6 +184,14 @@ module.exports = {\n\tidentity:`,
   await replace({
     regex: /identity:(.+), {/,
     replacement: '\n\tidentity: $1,\n\tentity: {\n\t\tattributes:{\n\t\t',
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
+
+  await replace({
+    regex: `identity: '${options.tableName}'`,
+    replacement: `identity: '${options.identity}'`,
     paths: [file],
     recursive: true,
     silent: true,

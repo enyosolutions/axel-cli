@@ -1,5 +1,6 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
+import * as _ from 'lodash'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import * as SequelizeAuto from 'sequelize-auto'
@@ -12,6 +13,7 @@ export default class Import extends Command {
     'Generate sequelize models and json schemas from database';
 
   static flags = {
+    ...Command.flags,
     help: flags.help({char: 'h'}),
     force: flags.boolean({
       char: 'f',
@@ -20,8 +22,8 @@ export default class Import extends Command {
     }),
     schemas: flags.boolean({
       char: 's',
-      default: false,
       description: 'Also generate schemas',
+      required: false,
     }),
     tables: flags.string({
       char: 't',
@@ -76,7 +78,18 @@ export default class Import extends Command {
           this.error(err.message)
           return
         }
-        console.log('auto', auto.foreignKeys)
+
+        const format: 'camelCase' | 'kebabCase' | 'snakeCase' =
+          this.projectConfig && this.projectConfig.modelIdentityFormat
+        if (!format || !_[format]) {
+          this.log(format)
+          this.log(this.projectConfig)
+          this.error(
+            'Unsupported value in project config [modelIdentityFormat]'
+          )
+          return
+        }
+        // console.log('auto', auto.foreignKeys)
         fs.moveSync(
           path.resolve(modelsLocation, 'db.d.ts'),
           path.resolve(process.cwd(), 'src/types/models.d.ts'),
@@ -87,16 +100,34 @@ export default class Import extends Command {
           path.resolve(process.cwd(), 'src/types/ModelsList.d.ts'),
           {overwrite: true}
         )
-        Object.keys(auto.tables).forEach(table =>
+        Object.keys(auto.tables).forEach(table => {
+          const filename = _.upperFirst(_.camelCase(table))
+          console.log(filename, table)
+          if (table !== filename) {
+            fs.renameSync(
+              path.resolve(modelsLocation, table + '.ts'),
+              path.resolve(modelsLocation, filename + '.ts'),
+            )
+          }
+
           migrateSequelizeModels(
             path.resolve(
               process.cwd(),
               'src/api/models/sequelize',
-              table + '.ts'
+              filename + '.ts'
             ),
-            {force, schemas, tables}
+            {
+              force,
+              schemas,
+              tables,
+              format,
+              filename,
+              tableName: table,
+              entityClass: filename,
+              identity: _[format](table),
+            }
           )
-        )
+        })
 
         // for each table run the migrator.
         // if schema is true

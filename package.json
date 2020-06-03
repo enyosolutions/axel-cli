@@ -5,7 +5,7 @@
   "bin": {
     "axel": "./bin/run"
   },
-  "bugs": "https://github.com/enyosolutions-team/esails-cli/issues",
+  "bugs": "https://github.com/enyosolutions-team/axel-cli/issues",
   "dependencies": {
     "@commitlint/cli": "^8.3.5",
     "@oclif/command": "^1",
@@ -16,6 +16,7 @@
     "cli-ux": "^5.4.5",
     "cosmiconfig": "^6.0.0",
     "fs-extra": "^9.0.0",
+    "inquirer": "^7.1.0",
     "lodash": "^4.17.15",
     "mkdirp": "^1.0.4",
     "mysql": "^2.18.1",
@@ -54,7 +55,7 @@
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "esails",
+    "bin": "axel",
     "plugins": [
       "@oclif/plugin-help"
     ]

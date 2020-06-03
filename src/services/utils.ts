@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as _ from 'lodash'
 import cli from 'cli-ux'
+import * as inquirer from 'inquirer'
 
 const mkdirp = require('mkdirp')
 
@@ -46,4 +47,18 @@ export async function promptFields(
     fields.push(input.trim())
   } while (hasInput)
   return fields
+}
+
+export async function promptInit(fields: any[]) {
+  const fieldsFormatted = fields.map(field => {
+    return typeof field === 'string' ?
+      {
+        name: field,
+        message: _.startCase(field),
+        type: 'srting',
+      } :
+      field
+  })
+  const fieldsValues: { [key: string]: any } = await inquirer.prompt(fieldsFormatted)
+  return fieldsValues
 }

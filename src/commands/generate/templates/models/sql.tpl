@@ -16,7 +16,7 @@ import { DataTypes } from 'sequelize';
 */
 
 const <%= entityClass %> = {
-  identity: '<%= entity %>',
+  identity: '<%= identity %>',
   entity: {
     attributes: {
       id: {
@@ -37,7 +37,7 @@ const <%= entityClass %> = {
       // if you don't want that, set the following
       freezeTableName: true,
       // Table Name
-      tableName: '<%= entity %>',
+      tableName: '<%= tableName %>',
       // Enable TimeStamp
       timestamps: true,
       // createdAt should be createdOn
@@ -62,7 +62,7 @@ const <%= entityClass %> = {
     // Create relations
     // @ts-ignore
     associations: (models) => {
-      //  models.user.hasMany(models.<%= entity %>, {
+      //  models.user.hasMany(models.<%= identity %>, {
       //   foreignKey: 'createdBy',
       //   targetKey: 'id'
       // });
