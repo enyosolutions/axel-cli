@@ -20,11 +20,11 @@ export default class Generate extends Command {
 
     let folderPath: any = args.name.split('/')
     const name = folderPath.pop()
-    folderPath = folderPath.join('/');
+    folderPath = folderPath.join('/')
     if (folderPath) {
-        folderPath += '/';
+      folderPath += '/'
     }
-     const route = _.kebabCase(name);
+    const route = _.kebabCase(name)
     const file = _.startCase(name).replace(/ /g, '')
     replace({
       regex: 'routes: ?{',
@@ -51,7 +51,7 @@ export default class Generate extends Command {
       paths: ['./src/config/routes.ts'],
       recursive: false,
       silent: true,
-    });
+    })
     const message = '✔️ Generated route ' + args.name
     this.log(chalk.green(message))
   }

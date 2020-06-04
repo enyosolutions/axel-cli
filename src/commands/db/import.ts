@@ -83,7 +83,6 @@ export default class Import extends Command {
           this.projectConfig && this.projectConfig.modelIdentityFormat
         if (!format || !_[format]) {
           this.log(format)
-          this.log(this.projectConfig)
           this.error(
             'Unsupported value in project config [modelIdentityFormat]'
           )

@@ -16,11 +16,11 @@
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g @axel/cli
+$ npm install -g axel-cli
 $ axel COMMAND
 running command...
 $ axel (-v|--version|version)
-@axel/cli/0.0.1 darwin-x64 node-v12.11.1
+axel-cli/0.0.4 darwin-x64 node-v14.3.0
 $ axel --help [COMMAND]
 USAGE
   $ axel COMMAND
@@ -29,17 +29,36 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`axel db:import`](#axel-dbimport)
 * [`axel db:sync`](#axel-dbsync)
 * [`axel generate TARGET`](#axel-generate-target)
 * [`axel generate:api NAME`](#axel-generateapi-name)
 * [`axel generate:controller NAME`](#axel-generatecontroller-name)
 * [`axel generate:model NAME`](#axel-generatemodel-name)
 * [`axel generate:route NAME`](#axel-generateroute-name)
+* [`axel generate:test NAME`](#axel-generatetest-name)
 * [`axel hello [FILE]`](#axel-hello-file)
 * [`axel help [COMMAND]`](#axel-help-command)
 * [`axel init [FILE]`](#axel-init-file)
 * [`axel new [PROJECTNAME]`](#axel-new-projectname)
 * [`axel run [FILE]`](#axel-run-file)
+
+## `axel db:import`
+
+Generate sequelize models and json schemas from database
+
+```
+USAGE
+  $ axel db:import
+
+OPTIONS
+  -f, --force          Overwrite models if present before recreating them (Do not use in production...)
+  -h, --help           show CLI help
+  -s, --schemas        Also generate schemas
+  -t, --tables=tables  list of tables to import
+```
+
+_See code: [src/commands/db/import.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/db/import.ts)_
 
 ## `axel db:sync`
 
@@ -56,7 +75,7 @@ OPTIONS
   -s, --silent  Do not ask for confirmation
 ```
 
-_See code: [src/commands/db/sync.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/db/sync.ts)_
+_See code: [src/commands/db/sync.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/db/sync.ts)_
 
 ## `axel generate TARGET`
 
@@ -72,7 +91,7 @@ OPTIONS
   -t, --type=  [default: sql] type of project
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/generate.ts)_
 
 ## `axel generate:api NAME`
 
@@ -91,7 +110,7 @@ OPTIONS
   --with-schema         Whether to generate schema model also when generating an sql model
 ```
 
-_See code: [src/commands/generate/api.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate/api.ts)_
+_See code: [src/commands/generate/api.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/generate/api.ts)_
 
 ## `axel generate:controller NAME`
 
@@ -103,11 +122,11 @@ USAGE
 
 OPTIONS
   -f, --force
-  -h, --help            show CLI help
-  -t, --type=sql|mongo  (required) type of project
+  -h, --help                 show CLI help
+  -t, --type=sql|mongo|bare  (required) type of project
 ```
 
-_See code: [src/commands/generate/controller.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate/controller.ts)_
+_See code: [src/commands/generate/controller.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/generate/controller.ts)_
 
 ## `axel generate:model NAME`
 
@@ -123,9 +142,10 @@ OPTIONS
   -i, --interactive
   -t, --types=sql|schema|all  (required) type of project
   --fields=fields             List of fields to declare
+  --from-sequelize            Generate the schema from the sequelize model
 ```
 
-_See code: [src/commands/generate/model.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate/model.ts)_
+_See code: [src/commands/generate/model.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/generate/model.ts)_
 
 ## `axel generate:route NAME`
 
@@ -140,7 +160,23 @@ OPTIONS
   -s, --secure=secure  Add secure policies to the app
 ```
 
-_See code: [src/commands/generate/route.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/generate/route.ts)_
+_See code: [src/commands/generate/route.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/generate/route.ts)_
+
+## `axel generate:test NAME`
+
+Generate a controller for your axel project
+
+```
+USAGE
+  $ axel generate:test NAME
+
+OPTIONS
+  -f, --force
+  -h, --help            show CLI help
+  -t, --type=bare|full  (required) type of test
+```
+
+_See code: [src/commands/generate/test.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/generate/test.ts)_
 
 ## `axel hello [FILE]`
 
@@ -160,7 +196,7 @@ EXAMPLE
   hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/hello.ts)_
+_See code: [src/commands/hello.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/hello.ts)_
 
 ## `axel help [COMMAND]`
 
@@ -188,12 +224,10 @@ USAGE
   $ axel init [FILE]
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/init.ts)_
 
 ## `axel new [PROJECTNAME]`
 
@@ -214,7 +248,7 @@ DESCRIPTION
      - Place relevant crud controller, auth controller, and Authservices according to the database system.
 ```
 
-_See code: [src/commands/new.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/new.ts)_
+_See code: [src/commands/new.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/new.ts)_
 
 ## `axel run [FILE]`
 
@@ -230,7 +264,7 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/run.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.1/src/commands/run.ts)_
+_See code: [src/commands/run.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.0.4/src/commands/run.ts)_
 <!-- commandsstop -->
 
 

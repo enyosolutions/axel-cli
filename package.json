@@ -1,6 +1,6 @@
 {
-  "name": "@axel/cli",
-  "version": "0.0.2",
+  "name": "axel-cli",
+  "version": "0.0.4",
   "author": "fb@enyosolutions.com @enyosolutions",
   "bin": {
     "axel": "./bin/run"
@@ -28,6 +28,7 @@
     "@oclif/dev-cli": "^1",
     "@types/chalk": "^2.2.0",
     "@types/fs-extra": "^8.1.0",
+    "@types/inquirer": "^6.5.0",
     "@types/node": "^13.13.2",
     "eslint": "^5.13",
     "eslint-config-oclif": "^3.1",
@@ -60,7 +61,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "enyosolutions-team/axle-cli",
+  "repository": "enyosolutions-team/axel-cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",

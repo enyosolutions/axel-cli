@@ -1,6 +1,6 @@
-import * as path from 'path'
 import * as fs from 'fs-extra'
-import * as _ from 'lodash'
+// import * as path from 'path'
+// import * as _ from 'lodash'
 import * as replace from 'replace'
 
 const typeMap = {
@@ -58,8 +58,10 @@ export function generateSchemaFromModel(
       },
     }
 
+    // ts-ignore
     for (const key in model.entity.attributes) {
       const field = model.entity.attributes[key]
+
       let type = field.type.toString()
       type = type.replace(/\(\d+\)/, '')
       // @ts-ignore
@@ -118,9 +120,6 @@ export function generateSchemaFromModel(
         if (field.type.options) {
           schema.maxLength = field.type.options.length
         }
-
-      case 'BOOLEAN':
-        break
       }
 
       destination.schema.properties[key] = schema
@@ -155,7 +154,7 @@ export function generateSchemaFromModel(
         {flag: options.force ? 'w' : 'wx'}
       )
     } catch (e) {
-      console.log('[MIGRATON]', `${tableName}.ts`, e.message)
+      console.warn('[MIGRATON]', `${tableName}.ts`, e.message)
     }
   }
 }
