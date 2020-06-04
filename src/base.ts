@@ -1,10 +1,10 @@
-import Command, {flags} from '@oclif/command'
+import Command  from '@oclif/command'
 const {cosmiconfigSync} = require('cosmiconfig')
 
 export default abstract class extends Command {
-  static flags = {
+  // static flags = {
 
-  };
+  // };
 
   projectConfig: { [key: string]: any } = {};
 

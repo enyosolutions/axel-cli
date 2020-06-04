@@ -58,17 +58,19 @@ export function generateSchemaFromModel(
       },
     }
 
-    // ts-ignore
-    for (const key in model.entity.attributes) {
+    Object.keys(model.entity.attributes).forEach(key => {
       const field = model.entity.attributes[key]
 
       let type = field.type.toString()
       type = type.replace(/\(\d+\)/, '')
+      // eslint-disable-next-line
       // @ts-ignore
       if (!typeMap[type]) {
         console.log('field.type', field.type, type)
         throw new Error('unkown_type_' + type)
       }
+
+      // eslint-disable-next-line
       const schema: any = {
         // @ts-ignore
         type: typeMap[type],
@@ -123,7 +125,7 @@ export function generateSchemaFromModel(
       }
 
       destination.schema.properties[key] = schema
-    }
+    })
     if (
       model.entity &&
       model.entity.options &&
@@ -153,8 +155,8 @@ export function generateSchemaFromModel(
         `module.exports = ${JSON.stringify(destination, null, 2)}`,
         {flag: options.force ? 'w' : 'wx'}
       )
-    } catch (e) {
-      console.warn('[MIGRATON]', `${tableName}.ts`, e.message)
+    } catch (error) {
+      console.warn('[MIGRATON]', `${tableName}.ts`, error.message)
     }
   }
 }
