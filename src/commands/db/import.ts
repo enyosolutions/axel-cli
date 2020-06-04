@@ -101,7 +101,7 @@ export default class Import extends Command {
         )
         Object.keys(auto.tables).forEach(table => {
           const filename = _.upperFirst(_.camelCase(table))
-          console.log(filename, table)
+          this.log(filename, table)
           if (table !== filename) {
             fs.renameSync(
               path.resolve(modelsLocation, table + '.ts'),
