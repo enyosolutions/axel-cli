@@ -38,7 +38,7 @@ export function generateSchemaFromModel(
     const model = require(file)
 
     if (!model.entity) {
-      this.error(file, model)
+      console.error(file, model)
       throw new Error('missing_tablename_' + file)
     }
     const tableName = model.entity.options.tableName
@@ -65,7 +65,7 @@ export function generateSchemaFromModel(
       type = type.replace(/\(\d+\)/, '')
       // @ts-ignore
       if (!typeMap[type]) {
-        this.error('field.type', field.type, type)
+        console.error('field.type', field.type, type)
         throw new Error('unkown_type_' + type)
       }
 
