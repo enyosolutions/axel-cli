@@ -1,6 +1,7 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import * as path from 'path'
+import * as fs from 'fs'
 import cli from 'cli-ux'
 
 export default class Sync extends Command {
@@ -27,8 +28,13 @@ export default class Sync extends Command {
 
   async run() {
     const {flags} = this.parse(Sync)
+    this.log('Running DB:sync based on models in the dis folder. Please make sure you compile your code before running this command')
+    if (!fs.existsSync(path.resolve(process.cwd(), 'dist/resources/sequelize/models'))) {
+      this.error('models resources not found ! . Please make sure you compile your code before running axel')
+      return;
+    }
     const dbImportConfig = import(
-      path.resolve(process.cwd(), 'src/resources/sequelize/models')
+      path.resolve(process.cwd(), 'dist/resources/sequelize/models')
     )
     const alter = flags.alter
     const force = flags.force
