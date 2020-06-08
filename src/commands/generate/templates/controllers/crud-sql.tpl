@@ -125,6 +125,7 @@ class CrudSqlController {
     let query = Utils.injectQueryParams(req);
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
+      resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
       return;
     }
     if (req.query.search) {
@@ -183,6 +184,7 @@ class CrudSqlController {
 
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
+      resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
       return;
     }
     repository
@@ -246,7 +248,24 @@ class CrudSqlController {
 
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
+      resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
       return;
+    }
+    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema) {
+      try {
+        const result = SchemaValidator.validate(data, req.params.endpoint);
+        if (!result.isValid) {
+          console.warn('[SCHEMA VALIDATION ERROR]', req.params.endpoint, result, data);
+          resp.status(400).json({
+            message: 'data_validation_error',
+            errors: result.formatedErrors,
+          });
+          debug('formatting error', result);
+          return;
+        }
+      } catch (err) {
+        throw new Error('error_wrong_json_format_for_model_definition');
+      }
     }
     repository
       .create(data)
@@ -287,7 +306,24 @@ class CrudSqlController {
     const endpoint = req.param('endpoint');
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
+      resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
       return;
+    }
+    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema) {
+      try {
+        const result = SchemaValidator.validate(data, req.params.endpoint);
+        if (!result.isValid) {
+          console.warn('[SCHEMA VALIDATION ERROR]', req.params.endpoint, result, data);
+          resp.status(400).json({
+            message: 'data_validation_error',
+            errors: result.formatedErrors,
+          });
+          debug('formatting error', result);
+          return;
+        }
+      } catch (err) {
+        throw new Error('error_wrong_json_format_for_model_definition');
+      }
     }
     repository
       .findByPk(id)
@@ -362,6 +398,7 @@ class CrudSqlController {
 
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
+      resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
       return;
     }
     repository
@@ -396,7 +433,11 @@ class CrudSqlController {
 
   export(req: Request, resp: Response) {
     const endpoint = req.param('endpoint');
-    let repository;
+    let repository = Utils.getEntityManager(req, resp);
+    if (!repository) {
+      resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
+      return;
+    }
     const schema = axel.models[endpoint] && axel.models[endpoint].schema;
     let data = [];
 
@@ -404,16 +445,8 @@ class CrudSqlController {
     const options = {};
     const query = {};
 
-    Promise.resolve()
-      .then(() => {
-        repository = Utils.getEntityManager(req, resp);
-        if (!repository) {
-          throw new Error('table_model_not_found_error_O');
-        }
-
-        return repository.findAll({
-          where: query
-        });
+    repository.findAll({
+        where: query
       })
       .then(result => {
         data = result;
@@ -459,7 +492,8 @@ class CrudSqlController {
 
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
-      throw new Error('table_model_not_found_error_O');
+      resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
+      return;
     }
 
     let data = [];
@@ -509,6 +543,7 @@ class CrudSqlController {
   import(req: Request, resp: Response) {
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
+      resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
       return;
     }
     const endpoint = req.param('endpoint');
