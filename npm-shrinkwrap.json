@@ -1,6 +1,6 @@
 {
   "name": "@esails/cli",
-  "version": "0.0.2",
+  "version": "0.0.6",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -478,6 +478,14 @@
         "ansi-styles": "^3.2.1",
         "supports-color": "^5.4.0",
         "tslib": "^1"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.0",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+          "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw==",
+          "dev": true
+        }
       }
     },
     "@oclif/command": {
@@ -502,6 +510,13 @@
         "@oclif/parser": "^3.8.0",
         "debug": "^4.1.1",
         "tslib": "^1.9.3"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.0",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+          "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw=="
+        }
       }
     },
     "@oclif/dev-cli": {
@@ -534,6 +549,12 @@
             "jsonfile": "^4.0.0",
             "universalify": "^0.1.0"
           }
+        },
+        "tslib": {
+          "version": "1.14.0",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+          "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw==",
+          "dev": true
         }
       }
     },
@@ -615,6 +636,13 @@
       "requires": {
         "@oclif/linewrap": "^1.0.0",
         "tslib": "^1.9.3"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.0",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+          "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw=="
+        }
       }
     },
     "@oclif/plugin-help": {
@@ -738,6 +766,12 @@
                 "jsonfile": "^4.0.0",
                 "universalify": "^0.1.0"
               }
+            },
+            "tslib": {
+              "version": "1.14.0",
+              "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+              "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw==",
+              "dev": true
             }
           }
         }
@@ -828,6 +862,16 @@
         "@types/node": "*"
       }
     },
+    "@types/inquirer": {
+      "version": "6.5.0",
+      "resolved": "https://registry.npmjs.org/@types/inquirer/-/inquirer-6.5.0.tgz",
+      "integrity": "sha512-rjaYQ9b9y/VFGOpqBEXRavc3jh0a+e6evAbI31tMda8VlPaSy0AZJfXsvmIe3wklc7W6C3zCSfleuMXR7NOyXw==",
+      "dev": true,
+      "requires": {
+        "@types/through": "*",
+        "rxjs": "^6.4.0"
+      }
+    },
     "@types/json-schema": {
       "version": "7.0.4",
       "resolved": "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.4.tgz",
@@ -865,6 +909,15 @@
       "version": "4.0.0",
       "resolved": "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.0.tgz",
       "integrity": "sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA=="
+    },
+    "@types/through": {
+      "version": "0.0.30",
+      "resolved": "https://registry.npmjs.org/@types/through/-/through-0.0.30.tgz",
+      "integrity": "sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==",
+      "dev": true,
+      "requires": {
+        "@types/node": "*"
+      }
     },
     "@typescript-eslint/eslint-plugin": {
       "version": "2.26.0",
@@ -1686,6 +1739,11 @@
             "is-fullwidth-code-point": "^2.0.0",
             "strip-ansi": "^5.1.0"
           }
+        },
+        "tslib": {
+          "version": "1.14.0",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+          "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw=="
         }
       }
     },
@@ -5285,6 +5343,14 @@
         "yeoman-environment": "^2.3.4",
         "yeoman-generator": "^3.2.0",
         "yosay": "^2.0.2"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.0",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+          "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw==",
+          "dev": true
+        }
       }
     },
     "once": {
@@ -6174,6 +6240,13 @@
       "integrity": "sha512-WfQI+1gohdf0Dai/Bbmk5L5ItH5tYqm3ki2c5GdWhKjalzjg93N3avFjVStyZZz+A2Em+ZxKH5bNghw9UeylGQ==",
       "requires": {
         "tslib": "^1.9.0"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.0",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+          "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw=="
+        }
       }
     },
     "safe-buffer": {
@@ -7536,9 +7609,9 @@
       }
     },
     "tslib": {
-      "version": "1.11.1",
-      "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.11.1.tgz",
-      "integrity": "sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA=="
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.0.2.tgz",
+      "integrity": "sha512-wAH28hcEKwna96/UacuWaVspVLkg4x1aDM9JlzqaQTOFczCktkVAb5fmXChgandR1EraDPs2w8P+ozM+oafwxg=="
     },
     "tsutils": {
       "version": "3.17.1",
@@ -7547,6 +7620,14 @@
       "dev": true,
       "requires": {
         "tslib": "^1.8.1"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.0",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.0.tgz",
+          "integrity": "sha512-+Zw5lu0D9tvBMjGP8LpvMb0u2WW2QV3y+D8mO6J+cNzCYIN4sVy43Bf9vl92nqFahutN0I8zHa7cc4vihIshnw==",
+          "dev": true
+        }
       }
     },
     "tunnel-agent": {
