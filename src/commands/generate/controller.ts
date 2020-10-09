@@ -60,12 +60,16 @@ export default class Generate extends Command {
                        `${__dirname}/templates/controllers/${type}.tpl`,
                        controllerPath,
                        {
-                         entity,
-                         type,
+                         entityIdentity,
                          controller,
+                         entity,
+                         entityCamelCased: entityIdentity,
+                         entityApiUrl: entityKebabCased,
                          entityClass,
+                         entityKebabCased,
                          filename,
                          folder,
+                         type,
                        }
                      )
                    }
@@ -82,15 +86,16 @@ export default class Generate extends Command {
                        `${__dirname}/templates/tests/api-test-full.tpl`,
                        testPath,
                        {
-                         entity,
-                         type,
-                         controller,
-                         entityClass,
                          entityIdentity,
+                         controller,
+                         entity,
                          entityCamelCased: entityIdentity,
+                         entityApiUrl: entityKebabCased,
+                         entityClass,
                          entityKebabCased,
                          filename,
                          folder,
+                         type,
                        }
                      )
                      const message = `✔️ Generated controller ${args.name}\n`
