@@ -15,7 +15,6 @@ export function renderTemplate(
   _.templateSettings.evaluate = /<%([\s\S]+?)%>/g
 
   const template = _.template(fs.readFileSync(source, {encoding: 'utf8'}))
-  console.log(data)
   const text: string = template(data)
   let folder: any = dest.split('/')
   folder.pop()
