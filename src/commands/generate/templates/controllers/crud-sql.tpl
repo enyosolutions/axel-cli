@@ -19,7 +19,7 @@
  */
 import { Request, Response } from 'express';
 import Utils from '../../../common/services/Utils';
-import EnyoError from '../../../common/services/EnyoError';
+import ExtendedError from '../../../axel'; // adjust path as needed
 import DocumentManager from '../../services/DocumentManager';
 import ExcelService from '../../services/ExcelService';
 
@@ -197,7 +197,7 @@ class CrudSqlController {
           axel.logger.warn(err && err.message ? err.message : err);
         }
 
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           errors: [
             {
@@ -224,7 +224,7 @@ class CrudSqlController {
             body: item
           });
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           errors: [
             {
@@ -274,7 +274,7 @@ class CrudSqlController {
           body: result
         })
       )
-      .catch((err: EnyoError) => {
+      .catch((err: ExtendedError) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -282,7 +282,7 @@ class CrudSqlController {
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
-            errors: err.errors && err.errors.map((e: EnyoError) => e.message),
+            errors: err.errors && err.errors.map((e: ExtendedError) => e.message),
             message: 'validation_error'
           });
           return false;
@@ -332,7 +332,7 @@ class CrudSqlController {
           axel.logger.warn(err && err.message ? err.message : err);
         }
 
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           errors: [
             {
@@ -350,7 +350,7 @@ class CrudSqlController {
             }
           });
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           message: 'not_found',
           errors: ['not_found']
@@ -368,7 +368,7 @@ class CrudSqlController {
           message: 'not_found'
         });
       })
-      .catch((err: EnyoError) => {
+      .catch((err: ExtendedError) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -376,7 +376,7 @@ class CrudSqlController {
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
-            errors: err.errors && err.errors.map((e: EnyoError) => e.message),
+            errors: err.errors && err.errors.map((e: ExtendedError) => e.message),
             message: 'validation_error'
           });
           return false;
@@ -411,7 +411,7 @@ class CrudSqlController {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 400,
           errors: [err || 'delete_error'],
           message: err.message || 'delete_error'
@@ -562,7 +562,7 @@ class CrudSqlController {
             eager: false
           });
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           message: 'no_file_uploaded',
           errors: ['no_file_uploaded']
@@ -579,7 +579,7 @@ class CrudSqlController {
           }
           return true;
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           message: 'parse_error',
           errors: ['parse_error']
@@ -590,7 +590,7 @@ class CrudSqlController {
           axel.logger.warn(err && err.message ? err.message : err);
         }
 
-        throw new EnyoError({
+        throw new ExtendedError({
           errors: [
             {
               message: err.message || 'create_error'
@@ -605,7 +605,7 @@ class CrudSqlController {
           axel.logger.warn(err && err.message ? err.message : err);
         }
 
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 500,
           errors: [
             {

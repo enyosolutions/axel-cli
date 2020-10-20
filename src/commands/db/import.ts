@@ -3,7 +3,8 @@ import {flags} from '@oclif/command'
 import * as _ from 'lodash'
 import * as path from 'path'
 import * as fs from 'fs-extra'
-import * as SequelizeAuto from 'sequelize-auto'
+// import * as SequelizeAuto from 'sequelize-auto'
+const SequelizeAuto = require('sequelize-auto')
 import {migrateSequelizeModels} from '../../services/models'
 
 const modelsLocation = `${process.cwd()}/src/api/models/sequelize`

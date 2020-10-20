@@ -1,10 +1,48 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
 import * as chalk from 'chalk'
+import {
+  promptFields,
+} from '../../services/utils'
+import {generateRoute} from './route'
+import {generateModel, ModelType} from './model'
+import  {generateController} from './controller'
 
-import Route from './route'
-import Model from './model'
-import Controller from './controller'
+export type ApiType = 'mongo' | 'sql';
+
+type ApiOptionsType = {
+  name: string;
+  type: ApiType;
+  force?: boolean | number;
+  withSchema?: boolean | number;
+  fields?: string[] | { [key: string]: any }[];
+  types?: string[];
+};
+
+export const generateApi = async ({
+  name,
+  type,
+  force,
+  fields,
+  withSchema,
+}: ApiOptionsType) => {
+  const modelType: ModelType = type === 'mongo' ? 'schema' : 'sql'
+  const types: ModelType[] = withSchema ? ['schema', 'sql'] : [modelType]
+  console.warn('ModelType', modelType, types)
+  const modelParams: any = [name, '--types ' +  types.join(',')]
+  const controllerParams = [name, '--type', type]
+  if (force) {
+    modelParams.push('--force')
+    controllerParams.push('--force')
+  }
+  if (fields && fields.length > 0) {
+    modelParams.push('--fields ' + fields.join(','))
+  }
+  console.log('modelParams', modelParams, fields)
+  await generateModel({name, types, fields})
+  await generateController({name, type, force})
+  await generateRoute(name)
+}
 
 export default class Generate extends Command {
   static description = 'Generate an api for your axel project';
@@ -45,25 +83,18 @@ export default class Generate extends Command {
   async run() {
     const {args, flags} = this.parse(Generate)
 
-    const modelType = flags.type === 'mongo' ? 'schema' : 'sql'
-
-    const modelParams = [
-      args.name,
-      '--types',
-      flags['with-schema'] ? 'all' : modelType,
-    ]
-
-    const controllerParams = [args.name, '--type', flags.type]
+    const {name} = args
+    const {interactive, force} = flags
+    let fields = flags.fields
+    const type: ApiType = flags.type as ApiType
     if (flags.interactive) {
-      modelParams.push('-i')
+      this.log(
+        'Type in the field name that you need in your model, one field at a time.'
+      )
+      this.log('When you are done just press enter.')
+      fields = await promptFields()
     }
-    if (flags.force) {
-      modelParams.push('--force')
-      controllerParams.push('--force')
-    }
-    await Model.run(modelParams)
-    await Controller.run(controllerParams)
-    await Route.run([args.name])
+    generateApi({name, type, force, fields, withSchema: flags['with-schema']})
     this.log(chalk.green('\n✔️ all done'))
   }
 }

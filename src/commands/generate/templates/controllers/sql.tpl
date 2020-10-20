@@ -20,7 +20,7 @@
 
 import { Request, Response } from 'express';
 import Utils from '../../common/services/Utils'; // adjust path as needed
-import EnyoError from '../../common/services/EnyoError'; // adjust path as needed
+import ExtendedError from '../../axel'; // adjust path as needed
 
 /*
 Uncomment if you need the following features:
@@ -199,7 +199,7 @@ class <%= entityClass %>Controller {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           errors: [
             {
@@ -226,7 +226,7 @@ class <%= entityClass %>Controller {
             body: item
           });
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           errors: [
             {
@@ -255,14 +255,14 @@ class <%= entityClass %>Controller {
           body: result
         })
       )
-      .catch((err: EnyoError) => {
+      .catch((err: ExtendedError) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
-            errors: err.errors && err.errors.map((e: EnyoError) => e.message),
+            errors: err.errors && err.errors.map((e: ExtendedError) => e.message),
             message: 'validation_error'
           });
           return false;
@@ -294,7 +294,7 @@ class <%= entityClass %>Controller {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           errors: [
             {
@@ -312,7 +312,7 @@ class <%= entityClass %>Controller {
             }
           });
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           message: 'not_found',
           errors: ['not_found']
@@ -330,11 +330,11 @@ class <%= entityClass %>Controller {
           message: 'not_found'
         });
       })
-      .catch((err: EnyoError) => {
+      .catch((err: ExtendedError) => {
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
-            errors: err.errors && err.errors.map((e: EnyoError) => e.message),
+            errors: err.errors && err.errors.map((e: ExtendedError) => e.message),
             message: 'validation_error'
           });
           return false;
@@ -368,7 +368,7 @@ class <%= entityClass %>Controller {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 400,
           errors: [err || 'delete_error'],
           message: err.message || 'delete_error'
@@ -506,7 +506,7 @@ class <%= entityClass %>Controller {
             eager: false
           });
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           message: 'no_file_uploaded',
           errors: ['no_file_uploaded']
@@ -523,7 +523,7 @@ class <%= entityClass %>Controller {
           }
           return true;
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           message: 'parse_error',
           errors: ['parse_error']
@@ -533,7 +533,7 @@ class <%= entityClass %>Controller {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
-        throw new EnyoError({
+        throw new ExtendedError({
           errors: [
             {
               message: err.message || 'create_error'
@@ -548,7 +548,7 @@ class <%= entityClass %>Controller {
           axel.logger.warn(err && err.message ? err.message : err);
         }
 
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 500,
           errors: [
             {

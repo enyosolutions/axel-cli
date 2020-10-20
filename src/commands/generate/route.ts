@@ -1,34 +1,20 @@
 import {Command, flags} from '@oclif/command'
 import * as _ from 'lodash'
 import * as chalk from 'chalk'
-import * as replace from 'replace'
+const replace = require('replace')
 
-export default class Generate extends Command {
-  static description = 'Generate an api for your axel project';
-
-  static target = 'api';
-
-  static args = [{name: 'name', required: true}];
-
-  static flags = {
-    help: flags.help({char: 'h'}),
-    secure: flags.string({char: 's', description: 'Add secure policies to the app'}),
-  };
-
-  async run() {
-    const {args} = this.parse(Generate)
-
-    let folderPath: any = args.name.split('/')
-    const name = folderPath.pop()
-    folderPath = folderPath.join('/')
-    if (folderPath) {
-      folderPath += '/'
-    }
-    const route = _.kebabCase(name)
-    const file = _.startCase(name).replace(/ /g, '')
-    replace({
-      regex: 'routes: ?{',
-      replacement: `routes: {
+export const generateRoute = (routeName: string) => {
+  let folderPath: any = routeName.split('/')
+  const name = folderPath.pop()
+  folderPath = folderPath.join('/')
+  if (folderPath) {
+    folderPath += '/'
+  }
+  const route = _.kebabCase(name)
+  const file = _.startCase(name).replace(/ /g, '')
+  replace({
+    regex: 'routes: ?{',
+    replacement: `routes: {
 
         // Endpoints for ${_.startCase(name)}
         // If you don't need some of them, be sure to delete the route AND the action in the controller...
@@ -48,10 +34,26 @@ export default class Generate extends Command {
 
 
         `,
-      paths: ['./src/config/routes.ts'],
-      recursive: false,
-      silent: true,
-    })
+    paths: ['./src/config/routes.ts'],
+    recursive: false,
+    silent: true,
+  })
+}
+export default class Generate extends Command {
+  static description = 'Generate an api for your axel project';
+
+  static target = 'api';
+
+  static args = [{name: 'name', required: true}];
+
+  static flags = {
+    help: flags.help({char: 'h'}),
+    secure: flags.string({char: 's', description: 'Add secure policies to the app'}),
+  };
+
+  async run() {
+    const {args} = this.parse(Generate)
+    generateRoute(args.name)
     const message = '✔️ Generated route ' + args.name
     this.log(chalk.green(message))
   }

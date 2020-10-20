@@ -8,12 +8,15 @@ module.exports = {
     $id: 'http://acme.com/schemas/<%= entity %>.json',
     type: 'object',
     properties: {
+      <% if (!fields || fields.length === 0) {%>
       id: {
         $id: 'id',
         <% if (isSql) { %>type: 'number',<% } else { %>type: ['object', 'string'],<% } %>
         title: '<%= entityClass %> id', // serves for front form fields
         description: 'The id of this item' // serves for front form hint
-      },<% for (var i = 0; i < fields.length; i++) { %>
+      },
+      <% } %>
+      <% for (var i = 0; i < fields.length; i++) { %>
       <%=fields[i] %>: {
         type: 'string',
       },<% } %>

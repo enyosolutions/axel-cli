@@ -13,7 +13,7 @@ export function renderTemplate(
 ) {
   _.templateSettings.interpolate = /<%=([\s\S]+?)%>/g
   _.templateSettings.evaluate = /<%([\s\S]+?)%>/g
-
+  console.log('renderTempalte', source, dest, data)
   const template = _.template(fs.readFileSync(source, {encoding: 'utf8'}))
   const text: string = template(data)
   let folder: any = dest.split('/')

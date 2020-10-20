@@ -64,7 +64,8 @@ export default class Test extends Command {
         }
       )
       const message = `✔️ Generated test ${args.name}\n`
-      this.log(chalk.green(message))
+      // this.log(chalk.green(message))
+      this.log((message))
     }
   }
 }

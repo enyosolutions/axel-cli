@@ -10,7 +10,7 @@
     "typeRoots": [ "./types", "./node_modules/@types"]
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "api.ts"
   ],
   "exclude": ["node_modules", "typings"]
 }

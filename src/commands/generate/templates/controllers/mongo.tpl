@@ -21,7 +21,7 @@ module.exports = {
                                                     - currentDate.getDay()));
 
     if (!collection) {
-      throw new EnyoError({
+      throw new ExtendedError({
         code: 404,
         errors: [{
           message: 'not_found',
@@ -170,7 +170,7 @@ module.exports = {
             body: doc
           });
         } else {
-          throw new EnyoError({
+          throw new ExtendedError({
             code: 404,
             errors: [{
               message: 'not_found',
@@ -255,7 +255,7 @@ module.exports = {
       })
       .catch((err) => {
         console.warn(err);
-        throw new EnyoError({
+        throw new ExtendedError({
           code: 404,
           errors: [{
             message: err.message || 'not_found',
@@ -278,7 +278,7 @@ module.exports = {
       })
       .catch((err) => {
         console.warn(err);
-        throw new EnyoError({
+        throw new ExtendedError({
           code: err && err.code < 504 ? err.code : 500,
           errors: err.errors || [{
             message: err.message,
@@ -360,7 +360,7 @@ module.exports = {
               console.warn(err);
             });
         } else {
-          throw new EnyoError({
+          throw new ExtendedError({
             code: 404,
             errors: [{
               message: 'not_found',

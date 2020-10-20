@@ -19,7 +19,7 @@
  */
 import { Request, Response, NextFunction } from 'express';
 import Utils from '../../common/services/Utils'; // adjust path as needed
-import EnyoError from '../../common/services/EnyoError'; // adjust path as needed
+import ExtendedError from '../../../axel'; // adjust path as needed
 /*
 Uncomment if you need the following features:
 - Create import template for users

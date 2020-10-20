@@ -19,12 +19,15 @@ const <%= entityClass %> = {
   identity: '<%= identity %>',
   entity: {
     attributes: {
+      <% if (!fields || fields.length === 0) {%>
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
+      <% } %>
+
       <% for (var i = 0; i < fields.length; i++) { %>
       <%=fields[i] %>: {
         type: DataTypes.STRING,
