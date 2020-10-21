@@ -11,10 +11,10 @@ export default class Init extends Command {
     // flag with no value (-f, --force)
   };
 
-  static args = [{name: 'file'}];
+  static args = [{name: 'name'}];
 
   async run() {
-    // const {args, flags} = this.parse(Init)
+    const {args} = this.parse(Init)
     const moduleName = 'axel'
 
     const explorer = cosmiconfigSync(moduleName, {})
@@ -23,10 +23,15 @@ export default class Init extends Command {
     this.log(searchedFor)
     if (searchedFor && !searchedFor.isEmpty) {
       this.error('Config file already initialized', searchedFor)
+
       return new Error('config_already_exists')
     }
     const config = await promptInit([
-      'projectName',
+      {
+        name: 'projectName',
+        message: 'Project name',
+        default: args.name,
+      },
       {
         name: 'modelIdentityFormat',
         message: 'identity format (camelCase | snakeCase)',
