@@ -100,7 +100,7 @@ export default class New extends Command {
       let content = readFileSync(`${name}/package.json`, {
         encoding: 'utf8',
       })
-      content = content.replace('{{name}}', name)
+      content = content.replace('{{name}}', name).replace('--name--', name)
       writeFileSync(`${name}/package.json`, content, {
         encoding: 'utf8',
       })
@@ -109,7 +109,7 @@ export default class New extends Command {
         let content2 = readFileSync(`${name}/axel.config.js`, {
           encoding: 'utf8',
         })
-        content2 = content2.replace('{{name}}', name)
+        content2 = content2.replace('{{name}}', name).replace('--name--', name)
         writeFileSync(`${name}/axel.config.js`, content2, {
           encoding: 'utf8',
         })
