@@ -1,6 +1,6 @@
 {
   "name": "axel-cli",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": "fb@enyosolutions.com @enyosolutions",
   "bin": {
     "axel": "./bin/run"
@@ -72,5 +72,5 @@
     "lint:fix": "npx eslint ./src/**/*.ts --fix",
     "version": "oclif-dev readme && git add README.md"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/api.d.ts"
 }
