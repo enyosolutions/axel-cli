@@ -19,7 +19,7 @@
  */
 import { Request, Response, NextFunction } from 'express';
 import Utils from '../../common/services/Utils'; // adjust path as needed
-import ExtendedError from '../../../axel'; // adjust path as needed
+import ExtendedError from 'axel-core'; // adjust path as needed
 /*
 Uncomment if you need the following features:
 - Create import template for users
@@ -29,8 +29,6 @@ Uncomment if you need the following features:
 */
 // import DocumentManager from '../../services/DocumentManager';
 // import ExcelService from '../../services/ExcelService';
-
-declare const axel: any;
 
 const primaryKey = axel.config.framework.primaryKey;
 const entity = '<%= entity %>';

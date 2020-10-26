@@ -90,23 +90,23 @@ export default class Import extends Command {
           return
         }
         // console.log('auto', auto.foreignKeys)
-        fs.moveSync(
-          path.resolve(modelsLocation, 'db.d.ts'),
-          path.resolve(process.cwd(), 'src/types/models.d.ts'),
-          {overwrite: true}
-        )
-        fs.moveSync(
-          path.resolve(modelsLocation, 'db.tables.ts'),
-          path.resolve(process.cwd(), 'src/types/ModelsList.d.ts'),
-          {overwrite: true}
-        )
+        // fs.moveSync(
+        //   path.resolve(modelsLocation, 'db.d.js'),
+        //   path.resolve(process.cwd(), 'src/types/models.d.js'),
+        //   {overwrite: true}
+        // )
+        // fs.moveSync(
+        //   path.resolve(modelsLocation, 'db.tables.js'),
+        //   path.resolve(process.cwd(), 'src/types/ModelsList.d.js'),
+        //   {overwrite: true}
+        // )
         Object.keys(auto.tables).forEach(table => {
           const filename = _.upperFirst(_.camelCase(table))
           this.log(filename, table)
           if (table !== filename) {
             fs.renameSync(
-              path.resolve(modelsLocation, table + '.ts'),
-              path.resolve(modelsLocation, filename + '.ts'),
+              path.resolve(modelsLocation, table + '.mjs'),
+              path.resolve(modelsLocation, filename + '.mjs'),
             )
           }
 
@@ -114,7 +114,7 @@ export default class Import extends Command {
             path.resolve(
               process.cwd(),
               'src/api/models/sequelize',
-              filename + '.ts'
+              filename + '.mjs'
             ),
             {
               force,

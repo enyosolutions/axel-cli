@@ -34,7 +34,7 @@ export const generateRoute = (routeName: string) => {
 
 
         `,
-    paths: ['./src/config/routes.ts'],
+    paths: ['./src/config/routes.mjs', './src/config/routes.ts'],
     recursive: false,
     silent: true,
   })

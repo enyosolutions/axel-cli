@@ -28,13 +28,13 @@ export default class Sync extends Command {
 
   async run() {
     const {flags} = this.parse(Sync)
-    this.log('Running DB:sync based on models in the dis folder. Please make sure you compile your code before running this command')
-    if (!fs.existsSync(path.resolve(process.cwd(), 'dist/resources/sequelize/models'))) {
+    this.log('Running db:sync based on models.')
+    if (!fs.existsSync(path.resolve(process.cwd(), 'src/resources/sequelize/models'))) {
       this.error('models resources not found ! . Please make sure you compile your code before running axel')
       return;
     }
     const dbImportConfig = import(
-      path.resolve(process.cwd(), 'dist/resources/sequelize/models')
+      path.resolve(process.cwd(), 'src/resources/sequelize/models')
     )
     const alter = flags.alter
     const force = flags.force

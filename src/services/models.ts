@@ -34,7 +34,7 @@ export function generateSchemaFromModel(
   target: string,
   options: any = {}
 ) {
-  if (file.endsWith('.js') || file.endsWith('.ts')) {
+  if (file.endsWith('.js') || file.endsWith('.mjs')) {
     const model = require(file)
 
     if (!model.entity) {
