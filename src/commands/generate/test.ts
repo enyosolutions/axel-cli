@@ -3,7 +3,6 @@ import {flags} from '@oclif/command'
 import {renderTemplate} from '../../services/utils'
 import * as _ from 'lodash'
 import * as fs from 'fs'
-import * as chalk from 'chalk'
 
 export default class Test extends Command {
   static description = 'Generate a controller for your axel project';

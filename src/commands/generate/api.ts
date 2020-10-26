@@ -1,6 +1,5 @@
 import Command from '../../base'
 import {flags} from '@oclif/command'
-import * as chalk from 'chalk'
 import {
   promptFields,
 } from '../../services/utils'
@@ -95,6 +94,6 @@ export default class Generate extends Command {
       fields = await promptFields()
     }
     generateApi({name, type, force, fields, withSchema: flags['with-schema']})
-    this.log(chalk.green('\n✔️ all done'))
+    this.log('\n✔️ all done')
   }
 }

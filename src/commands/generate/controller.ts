@@ -3,7 +3,6 @@ import {flags} from '@oclif/command'
 import {renderTemplate} from '../../services/utils'
 import * as _ from 'lodash'
 import * as fs from 'fs'
-import * as chalk from 'chalk'
 
 type ControllerType = 'sql' | 'mongo' | 'bare';
 type OptionsType = {
@@ -100,7 +99,7 @@ export default class Generate extends Command {
     const name = args.name.trim()
     generateController({name, type, force})
     const message = `✔️ Generated controller ${args.name}\n`
-    this.log(chalk.green(message))
+    this.log(message)
   }
 }
 

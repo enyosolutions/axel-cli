@@ -7,7 +7,6 @@ import {
 } from '../../services/utils'
 import * as _ from 'lodash'
 import * as fs from 'fs'
-import * as chalk from 'chalk'
 import {generateSchemaFromModel} from '../../services/models'
 
 const modelsLocation = `${process.cwd()}/src/api/models/sequelize`
@@ -147,6 +146,6 @@ export default class Generate extends Command {
       projectConfig: this.projectConfig,
     })
     const message = `✔️ Generated model ${args.name}\n`
-    this.log(chalk.green(message))
+    this.log(message)
   }
 }

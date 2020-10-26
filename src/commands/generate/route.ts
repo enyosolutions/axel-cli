@@ -1,6 +1,5 @@
 import {Command, flags} from '@oclif/command'
 import * as _ from 'lodash'
-import * as chalk from 'chalk'
 const replace = require('replace')
 
 export const generateRoute = (routeName: string) => {
@@ -55,6 +54,6 @@ export default class Generate extends Command {
     const {args} = this.parse(Generate)
     generateRoute(args.name)
     const message = '✔️ Generated route ' + args.name
-    this.log(chalk.green(message))
+    this.log(message)
   }
 }
