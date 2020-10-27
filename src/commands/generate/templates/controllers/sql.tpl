@@ -32,15 +32,13 @@ Uncomment if you need the following features:
 // import DocumentManager from '../../services/DocumentManager';
 // import ExcelService from '../../services/ExcelService';
 
-declare const axel: any;
-
 const entity = '<%= entityCamelCased %>';
 const primaryKey = axel.models[entity] && axel.models[entity].primaryKeyField ? axel.models[entity].primaryKeyField : axel.config.framework.primaryKey;
 
 
 class <%= entityClass %>Controller {
-  stats(req: Request, resp: Response) {
-    const output: { total?: any; month?: any; week?: any; today?: any } = {};
+  stats(req, resp) {
+    const output = {};
 
 
     if (!axel.models[entity] || !axel.models[entity].repository) {
@@ -52,7 +50,7 @@ class <%= entityClass %>Controller {
     const { repository, tableName } = axel.models[entity];
     repository
       .count({})
-      .then((data: number) => {
+      .then((data) => {
         // TOTAL
         output.total = data;
 
@@ -68,7 +66,7 @@ class <%= entityClass %>Controller {
           }
         );
       })
-      .then((data: [{ month: number }]) => {
+      .then((data) => {
         if (data && data.length > 0 && data[0].month) {
           output.month = data[0].month;
         } else {
@@ -86,7 +84,7 @@ class <%= entityClass %>Controller {
           }
         );
       })
-      .then((data: [{ week: number }]) => {
+      .then((data) => {
         if (data && data.length > 0 && data[0].week) {
           output.week = data[0].week;
         } else {
@@ -104,7 +102,7 @@ class <%= entityClass %>Controller {
           }
         );
       })
-      .then((data: [{ today: number }]) => {
+      .then((data) => {
         if (data && data.length > 0 && data[0].today) {
           output.today = data[0].today;
         } else {
@@ -115,13 +113,13 @@ class <%= entityClass %>Controller {
           body: output
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         Utils.errorCallback(err, resp);
       });
   }
 
-  list(req: Request, resp: Response) {
-    let items: Array<object> = [];
+  list(req, resp) {
+    let items = [];
 
     const {
       listOfValues,
@@ -149,10 +147,10 @@ class <%= entityClass %>Controller {
         limit,
         offset
       })
-      .then((result: { rows: [object]; count: number }) => {
+      .then((result: ) => {
         items = result.rows;
         if (listOfValues) {
-          items = items.map((item: any) => ({
+          items = items.map((item) => ({
             [primaryKey]: item[primaryKey],
             label:
               item.title ||
@@ -162,9 +160,8 @@ class <%= entityClass %>Controller {
           }));
         }
         return result.count || 0;
-      })
-
-      .then((totalCount?: number) =>
+      }):
+      .then((totalCount) =>
         resp.status(200).json({
           body: items,
           page: startPage,
@@ -172,12 +169,12 @@ class <%= entityClass %>Controller {
           totalCount: totalCount
         })
       )
-      .catch((err: Error) => {
+      .catch((err) => {
         Utils.errorCallback(err, resp);
       });
   }
 
-  get(req: Request, resp: Response) {
+  get(req, resp) {
     const id = parseInt(req.params.id);
     if (!id) {
       return false;
@@ -195,7 +192,7 @@ class <%= entityClass %>Controller {
         where: { [primaryKey]: id },
         raw: false
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
@@ -209,7 +206,7 @@ class <%= entityClass %>Controller {
           message: err.message || 'not_found'
         });
       })
-      .then((item: any) => {
+      .then((item) => {
         if (item) {
           item = item.get();
           if (listOfValues) {
@@ -236,12 +233,12 @@ class <%= entityClass %>Controller {
           message: 'not_found'
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         Utils.errorCallback(err, resp);
       });
   }
 
-  post(req: Request, resp: Response) {
+  post(req, resp) {
     const data = Utils.injectUserId(req.body, req.token);
 
     const repository = Utils.getEntityManager(entity, resp);
@@ -250,19 +247,19 @@ class <%= entityClass %>Controller {
     }
     repository
       .create(data)
-      .then((result: any) =>
+      .then((result) =>
         resp.status(200).json({
           body: result
         })
       )
-      .catch((err: ExtendedError) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
-            errors: err.errors && err.errors.map((e: ExtendedError) => e.message),
+            errors: err.errors && err.errors.map((e) => e.message),
             message: 'validation_error'
           });
           return false;
@@ -279,7 +276,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  put(req: Request, resp: Response) {
+  put(req, resp) {
     const id = parseInt(req.params.id);
     let data = req.body;
 
@@ -290,7 +287,7 @@ class <%= entityClass %>Controller {
     }
     repository
       .findByPk(id)
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
@@ -304,7 +301,7 @@ class <%= entityClass %>Controller {
           message: err.message || 'not_found'
         });
       })
-      .then((result: any) => {
+      .then((result) => {
         if (result) {
           return repository.update(data, {
             where: {
@@ -319,7 +316,7 @@ class <%= entityClass %>Controller {
         });
       })
       .then(() => repository.findByPk(id))
-      .then((result: any) => {
+      .then((result) => {
         if (result) {
           return resp.status(200).json({
             body: result
@@ -330,11 +327,11 @@ class <%= entityClass %>Controller {
           message: 'not_found'
         });
       })
-      .catch((err: ExtendedError) => {
+      .catch((err) => {
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
-            errors: err.errors && err.errors.map((e: ExtendedError) => e.message),
+            errors: err.errors && err.errors.map((e) => e.message),
             message: 'validation_error'
           });
           return false;
@@ -351,7 +348,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  delete(req: Request, resp: Response) {
+  delete(req, resp) {
     const id = parseInt(req.params.id);
 
     const repository = Utils.getEntityManager(entity, resp);
@@ -364,7 +361,7 @@ class <%= entityClass %>Controller {
           [primaryKey]: id
         }
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
@@ -374,7 +371,7 @@ class <%= entityClass %>Controller {
           message: err.message || 'delete_error'
         });
       })
-      .then((a: any) => {
+      .then((a) => {
         if (!a) {
           return resp.status(404).json();
         }
@@ -382,13 +379,13 @@ class <%= entityClass %>Controller {
           status: 'OK',
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         Utils.errorCallback(err, resp);
       });
   }
 
   /*
-  export(req: Request, resp: Response) {
+  export(req, resp) {
 
     let repository;
     const schema = axel.models[entity] && axel.models[entity].schema;
@@ -432,12 +429,12 @@ class <%= entityClass %>Controller {
           message: 'not_found'
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         Utils.errorCallback(err, resp);
       });
   }
 
-  getImportTemplate(req: Request, resp: Response) {
+  getImportTemplate(req, resp) {
 
 
     const repository = Utils.getEntityManager(entity, resp);
@@ -480,12 +477,12 @@ class <%= entityClass %>Controller {
           message: 'not_found'
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         Utils.errorCallback(err, resp);
       });
   }
 
-  import(req: Request, resp: Response) {
+  import(req, resp) {
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       return;
@@ -493,12 +490,12 @@ class <%= entityClass %>Controller {
 
     const properData: [] = [];
     const improperData: [] = [];
-    let doc: any;
+    let doc;
     DocumentManager.httpUpload(req, {
       path: 'updloads/excel'
     })
       // @ts-ignore
-      .then((document?: any[]) => {
+      .then((document?[]) => {
         if (document && document.length > 0) {
           doc = document[0];
           return ExcelService.parse(doc.fd, {
@@ -529,7 +526,7 @@ class <%= entityClass %>Controller {
           errors: ['parse_error']
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
@@ -543,7 +540,7 @@ class <%= entityClass %>Controller {
         });
       })
       .then(() => DocumentManager.delete(doc[0].fd))
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -565,7 +562,7 @@ class <%= entityClass %>Controller {
           improperData
         })
       )
-      .catch((err: Error) => {
+      .catch((err) => {
         Utils.errorCallback(err, resp);
       });
   }

@@ -28,7 +28,7 @@ declare const axel: any;
 const primaryKey = axel.config.enyo.primaryKey;
 
 class CrudSqlController {
-  stats(req: Request, resp: Response) {
+  stats(req, resp) {
     const output: { total?: any; month?: any; week?: any; today?: any } = {};
     const endpoint = req.param('endpoint');
 
@@ -112,7 +112,7 @@ class CrudSqlController {
       });
   }
 
-  list(req: Request, resp: Response) {
+  list(req, resp) {
     let items: Array<object> = [];
 
     const {
@@ -173,7 +173,7 @@ class CrudSqlController {
       });
   }
 
-  get(req: Request, resp: Response) {
+  get(req, resp) {
     const id = req.param('id');
     if (!id) {
       return false;
@@ -243,7 +243,7 @@ class CrudSqlController {
       });
   }
 
-  post(req: Request, resp: Response) {
+  post(req, resp) {
     const data = Utils.injectUserId(req.body, req.token);
 
     const repository = Utils.getEntityManager(req, resp);
@@ -299,7 +299,7 @@ class CrudSqlController {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  put(req: Request, resp: Response) {
+  put(req, resp) {
     const id = req.param('id');
     let data = req.body;
 
@@ -393,7 +393,7 @@ class CrudSqlController {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  delete(req: Request, resp: Response) {
+  delete(req, resp) {
     const id = req.param('id');
 
     const repository = Utils.getEntityManager(req, resp);
@@ -431,7 +431,7 @@ class CrudSqlController {
       });
   }
 
-  export(req: Request, resp: Response) {
+  export(req, resp) {
     const endpoint = req.param('endpoint');
     let repository = Utils.getEntityManager(req, resp);
     if (!repository) {
@@ -487,7 +487,7 @@ class CrudSqlController {
       });
   }
 
-  importTemplate(req: Request, resp: Response) {
+  importTemplate(req, resp) {
     const endpoint = req.param('endpoint');
 
     const repository = Utils.getEntityManager(req, resp);
@@ -540,7 +540,7 @@ class CrudSqlController {
       });
   }
 
-  import(req: Request, resp: Response) {
+  import(req, resp) {
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
       resp.status(400).json({ message: 'error_model_not_found_for_this_url' });

@@ -150,7 +150,9 @@ export function generateSchemaFromModel(
     try {
       fs.writeFileSync(
         target,
-        `module.exports = ${JSON.stringify(destination, null, 2)}`,
+        `
+
+        module.exports = ${JSON.stringify(destination, null, 2)}`,
         {flag: options.force ? 'w' : 'wx'}
       )
     } catch (error) {
@@ -164,8 +166,8 @@ export const migrateSequelizeModels = async (
   options: any = {}
 ) => {
   await replace({
-    regex: /import.+from '.\/db';\n/,
-    replacement: '',
+    regex: /.*jshint indent: 1.*/,
+    replacement: 'const {DataTypes} = require(\'sequelize\');',
     paths: [file],
     recursive: true,
     silent: true,
@@ -226,7 +228,7 @@ module.exports = {\n\tidentity:`,
     regex: /}, {/,
     replacement: `
       },
-      associations: (models: {[key: string]: any}) => {
+      associations: (models) => {
         // models.address.belongsTo(models.user, {
         //     foreignKey: 'userId',
         //     targetKey: 'id',

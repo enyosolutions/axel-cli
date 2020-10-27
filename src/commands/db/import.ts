@@ -61,7 +61,7 @@ export default class Import extends Command {
           dialect: config[env].dialect,
           directory: modelsLocation, // prevents the program from writing to disk
           port: config[env].port,
-          typescript: true,
+          typescript: false,
           additional: {
             timestamps: true,
             freezeTableName: true,

@@ -5,14 +5,14 @@
  */
 
 /**
- * UserSqlController
+ * BareController
  *
  * @description :: Server-side logic for managing users
  * @help        :: See http://links.axel.s.org/docs/controllers
  */
 
 /**
- * Api/CrudSqlController
+ * Api/BareController
  *
  * @description :: Server-side logic for managing all entitys
  * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
@@ -34,28 +34,28 @@ const primaryKey = axel.config.framework.primaryKey;
 const entity = '<%= entity %>';
 
 class <%= entityClass %>Controller {
-  stats(request: Request, response: Response, next: NextFunction) {
+  stats(request, response, next) {
       // your route related code goes here.
 
       // This sends the request to the default crud controller, delete if you implement your own action code.
       next();
   }
 
-  list(request: Request, response: Response, next: NextFunction) {
+  list(request, response, next) {
        // your route related code goes here.
 
       // This sends the request to the default crud controller, delete if you implement your own action code.
       next();
   }
 
-  get(request: Request, response: Response, next: NextFunction) {
+  get(request, response, next) {
        // your route related code goes here.
 
       // This sends the request to the default crud controller, delete if you implement your own action code.
       next();
   }
 
-  post(request: Request, response: Response, next: NextFunction) {
+  post(request, response, next) {
         // your route related code goes here.
 
       // This sends the request to the default crud controller, delete if you implement your own action code.
@@ -70,7 +70,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} response [description]
    * @return {[type]}      [description]
    */
-  put(request: Request, response: Response, next: NextFunction) {
+  put(request, response, next) {
        // your route related code goes here.
 
       // This sends the request to the default crud controller, delete if you implement your own action code.
@@ -85,14 +85,14 @@ class <%= entityClass %>Controller {
    * @param  {[type]} response [description]
    * @return {[type]}      [description]
    */
-  delete(request: Request, response: Response, next: NextFunction) {
+  delete(request, response, next) {
  // your route related code goes here.
 
       // This sends the request to the default crud controller, delete if you implement your own action code.
       next();
   }
 
-  export(request: Request, response: Response, next: NextFunction) {
+  export(request, response, next) {
 
       // your route related code goes here.
 
@@ -100,14 +100,14 @@ class <%= entityClass %>Controller {
       next();
   }
 
-  importTemplate(request: Request, response: Response, next: NextFunction) {
+  importTemplate(request, response, next) {
        // your route related code goes here.
 
       // This sends the request to the default crud controller, delete if you implement your own action code.
       next();
   }
 
-  import(request: Request, response: Response, next: NextFunction) {
+  import(request, response, next) {
       // your route related code goes here.
 
       // This sends the request to the default crud controller, delete if you implement your own action code.

@@ -33,7 +33,7 @@ export const generateRoute = (routeName: string) => {
 
 
         `,
-    paths: ['./src/config/routes.js', './src/config/routes.ts'],
+    paths: ['./src/config/routes.js'],
     recursive: false,
     silent: true,
   })
