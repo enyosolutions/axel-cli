@@ -12,7 +12,6 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@types/lodash": "^4.14.150",
-    "chalk": "^4.1.0",
     "cli-ux": "^5.4.5",
     "cosmiconfig": "^6.0.0",
     "fs-extra": "^9.0.1",
