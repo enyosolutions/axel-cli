@@ -49,7 +49,7 @@ export const generateModel = ({
   for (const type of types) {
     const filePath = `./src/api/models/${
       type === 'sql' ? 'sequelize' : type
-    }/${entityClass}.mjs`
+    }/${entityClass}.js`
 
     if (fs.existsSync(filePath) && !force) {
       console.warn(
@@ -59,8 +59,8 @@ export const generateModel = ({
     }
     if (type === 'schema' && fromSequelize) {
       generateSchemaFromModel(
-        modelsLocation + '/' + filename + '.mjs',
-        schemasLocation + '/' + filename + '.mjs',
+        modelsLocation + '/' + filename + '.js',
+        schemasLocation + '/' + filename + '.js',
         {force}
       )
 

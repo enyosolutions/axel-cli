@@ -29,7 +29,7 @@ export default class Sync extends Command {
   async run() {
     const {flags} = this.parse(Sync)
 
-    const resource = path.resolve(process.cwd(), 'src/resources/sequelize/models/index.mjs')
+    const resource = path.resolve(process.cwd(), 'src/resources/sequelize/models/index.js')
     this.log('Running db:sync based on models in ', resource)
     if (!fs.existsSync(resource)) {
       this.error('models resources not found ! . Please make sure you compile your code before running axel')
@@ -51,7 +51,7 @@ export default class Sync extends Command {
     }
     import(resource)
     .then(db => {
-      return db.default.sequelize.sync({alter, force})
+      return (db.default || db).sequelize.sync({alter, force})
     })
     .catch((error: Error) => {
       this.error(error)

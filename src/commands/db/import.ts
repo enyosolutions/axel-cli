@@ -105,8 +105,8 @@ export default class Import extends Command {
           this.log(filename, table)
           if (table !== filename) {
             fs.renameSync(
-              path.resolve(modelsLocation, table + '.mjs'),
-              path.resolve(modelsLocation, filename + '.mjs'),
+              path.resolve(modelsLocation, table + '.js'),
+              path.resolve(modelsLocation, filename + '.js'),
             )
           }
 
@@ -114,7 +114,7 @@ export default class Import extends Command {
             path.resolve(
               process.cwd(),
               'src/api/models/sequelize',
-              filename + '.mjs'
+              filename + '.js'
             ),
             {
               force,

@@ -24,7 +24,7 @@ export const generateController = (options: OptionsType) => {
   const filename = entity
   const controllerPath = `./src/api/controllers/${
     folder ? folder + '/' : ''
-  }${entityClass}Controller.mjs`
+  }${entityClass}Controller.js`
 
   if (fs.existsSync(controllerPath) && !force) {
     console.warn(
@@ -51,7 +51,7 @@ export const generateController = (options: OptionsType) => {
 
   const testPath = `./test/controllers/${
     folder ? folder + '/' : ''
-  }${filename}.test.mjs`
+  }${filename}.test.js`
   if (fs.existsSync(testPath) && !force) {
     console.warn(`File ${testPath} already exists. Use --force to overwrite.`)
   } else {

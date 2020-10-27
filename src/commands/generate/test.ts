@@ -42,7 +42,7 @@ export default class Test extends Command {
 
     const testPath = `./test/controllers/${
       folder ? folder + '/' : ''
-    }${filename}.test.mjs`
+    }${filename}.test.js`
     if (fs.existsSync(testPath) && !flags.force) {
       this.warn(`File ${testPath} already exists. Use --force to overwrite.`)
     } else {
