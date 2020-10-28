@@ -6,7 +6,8 @@
  *                 how this model works and what it represents here.
  */
 
-import { DataTypes } from 'sequelize';
+const sequelize = require('sequelize');
+const { DataTypes } = sequelize;
 
 /*
   // event hooks => http://docs.sequelizejs.com/manual/tutorial/hooks.html

@@ -167,7 +167,11 @@ export const migrateSequelizeModels = async (
 ) => {
   await replace({
     regex: /.*jshint indent: 1.*/,
-    replacement: 'const {DataTypes} = require(\'sequelize\');',
+    replacement: `
+    const sequelize = require('sequelize');
+    const { DataTypes } = sequelize;
+
+    `,
     paths: [file],
     recursive: true,
     silent: true,
@@ -192,7 +196,7 @@ module.exports = {\n\tidentity:`,
 
   await replace({
     regex: `identity: '${options.tableName}'`,
-    replacement: `identity: '${options.identity}'`,
+    replacement: `identity: '${options.identity || _.lowerFirst(_.camelCase(options.tableName))}'`,
     paths: [file],
     recursive: true,
     silent: true,

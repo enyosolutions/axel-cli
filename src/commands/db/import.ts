@@ -89,6 +89,7 @@ export default class Import extends Command {
           )
           return
         }
+        this.log("format:", format);
         // console.log('auto', auto.foreignKeys)
         // fs.moveSync(
         //   path.resolve(modelsLocation, 'db.d.js'),
