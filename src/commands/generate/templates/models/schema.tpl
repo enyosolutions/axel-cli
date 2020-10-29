@@ -1,8 +1,9 @@
 module.exports = {
   identity: '<%= identity %>',
   collectionName: '<%= identity %>',
-  url: '/<%= entity %>', // url for front api
+  apiUrl: '/<%= entity %>', // url for front api
   additionalProperties: false,
+  displayField: 'subject',
   autoValidate: true,
   schema: {
     $id: 'http://acme.com/schemas/<%= entity %>.json',
@@ -52,5 +53,17 @@ module.exports = {
       }
     },
     required: []
+  },
+  admin: {
+      name: null,
+      namePlural: null,
+      pageTitle: null,
+      routerPath: null,
+      options:  null,
+      actions: null,
+      formOptions:  null,
+      listOptions:  null,
+      kanbanOptions:  null,
+      tableOptions:  null,
   }
 };
