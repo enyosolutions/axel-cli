@@ -33,7 +33,7 @@ export function generateSchemaFromModel(
   file: string,
   target: string,
   options: any = {}
-  ) {
+) {
   if (file.endsWith('.js') || file.endsWith('.js')) {
     const model = require(file)
 
@@ -50,6 +50,9 @@ export function generateSchemaFromModel(
       apiUrl: '/' + tableName,
       additionalProperties: false,
       autoValidate: true,
+      automaticApi: true,
+      primaryKeyField: null,
+      displayField: null,
       schema: {
         $id: `http://acme.com/schemas/${tableName}.json`,
         type: 'object',
@@ -87,21 +90,21 @@ export function generateSchemaFromModel(
       }
 
       switch (type) {
-        case 'VARCHAR':
+      case 'VARCHAR':
         schema.enum = field.type.values
         break
-        case 'ENUM':
+      case 'ENUM':
         schema.enum = field.type.values
         break
-        case 'TEXT':
+      case 'TEXT':
         schema.field.type = 'textArea'
         break
-        case 'DATE':
+      case 'DATE':
         schema.field.format = 'date-time'
         schema.column.type = 'date'
         schema.field.type = 'dateTime'
         break
-        case 'DATEONLY':
+      case 'DATEONLY':
         schema.field.format = 'date-time'
         schema.column.type = 'datetime'
         schema.field.type = 'dateTime'
@@ -109,14 +112,14 @@ export function generateSchemaFromModel(
           type: 'date',
         }
         break
-        case 'TIME':
+      case 'TIME':
         schema.field.format = 'date-time'
         schema.field.type = 'dateTime'
         schema.field.fieldOptions = {
           type: 'time',
         }
         break
-        case 'INTEGER':
+      case 'INTEGER':
         if (field.type.options) {
           schema.maxLength = field.type.options.length
         }
@@ -129,18 +132,18 @@ export function generateSchemaFromModel(
       namePlural: null,
       pageTitle: null,
       routerPath: null,
-      options:  null,
+      options: null,
       actions: null,
-      formOptions:  null,
-      listOptions:  null,
-      kanbanOptions:  null,
-      tableOptions:  null,
-    };
+      formOptions: null,
+      listOptions: null,
+      kanbanOptions: null,
+      tableOptions: null,
+    }
     if (
       model.entity &&
       model.entity.options &&
       model.entity.options.timestamps
-      ) {
+    ) {
       ['createdOn', 'lastModifiedOn'].forEach((field: string) => {
         if (!destination.schema.properties[field]) {
           destination.schema.properties[field] = {
@@ -157,26 +160,26 @@ export function generateSchemaFromModel(
           }
         }
       })
-  }
+    }
 
-  try {
-    fs.writeFileSync(
-      target,
-      `
+    try {
+      fs.writeFileSync(
+        target,
+        `
 
       module.exports = ${JSON.stringify(destination, null, 2)}`,
-      {flag: options.force ? 'w' : 'wx'}
+        {flag: options.force ? 'w' : 'wx'}
       )
-  } catch (error) {
-    console.warn('[MIGRATON]', `${tableName}.ts`, error.message)
+    } catch (error) {
+      console.warn('[MIGRATON]', `${tableName}.ts`, error.message)
+    }
   }
-}
 }
 
 export const migrateSequelizeModels = async (
   file: string,
   options: any = {}
-  ) => {
+) => {
   await replace({
     regex: /.*jshint indent: 1.*/,
     replacement: `
@@ -193,18 +196,18 @@ export const migrateSequelizeModels = async (
     regex: 'module.exports = function.+\n.+\\(',
     replacement: `
     module.exports = {\n\tidentity:`,
-      paths: [file],
-      recursive: true,
-      silent: true,
-    })
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
 
   await replace({
     regex: /identity:(.+), {/,
-      replacement: '\n\tidentity: $1,\n\tentity: {\n\t\tattributes:{\n\t\t',
-      paths: [file],
-      recursive: true,
-      silent: true,
-    })
+    replacement: '\n\tidentity: $1,\n\tentity: {\n\t\tattributes:{\n\t\t',
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
 
   await replace({
     regex: `identity: '${options.tableName}'`,
@@ -219,10 +222,10 @@ export const migrateSequelizeModels = async (
     replacement: `}
   }
   `,
-  paths: [file],
-  recursive: true,
-  silent: true,
-})
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
 
   await replace({
     regex: /DataTypes.INTEGER\(1\)/g,
@@ -242,7 +245,7 @@ export const migrateSequelizeModels = async (
 
   await replace({
     regex: /}, {/,
-      replacement: `
+    replacement: `
     },
     associations: (models) => {
       // models.address.belongsTo(models.user, {
@@ -252,31 +255,31 @@ export const migrateSequelizeModels = async (
       },
       options: {
         `,
-        paths: [file],
-        recursive: true,
-        silent: true,
-      })
+    paths: [file],
+    recursive: true,
+    silent: true,
+  })
   if (options.schemas) {
     generateSchemaFromModel(file, file.replace('sequelize', 'schema'), options)
   }
   //   replace({
-    //     regex: 'tableName',
-    //     replacement: `
-    //       freezeTableName: true,
-    //       timestamps: true,
-    //       createdAt: 'createdOn',
-    //       updatedAt: 'lastModifiedOn',
-    //       tableName`,
-    //     paths: [file],
-    //     recursive: true,
-    //     silent: options.silent,
-    //   });
+  //     regex: 'tableName',
+  //     replacement: `
+  //       freezeTableName: true,
+  //       timestamps: true,
+  //       createdAt: 'createdOn',
+  //       updatedAt: 'lastModifiedOn',
+  //       tableName`,
+  //     paths: [file],
+  //     recursive: true,
+  //     silent: options.silent,
+  //   });
 
-    // replace({
-      //   regex: "DataTypes",
-      //   replacement: `Sequelize`,
-      //   paths: [file],
-      //   recursive: true,
-      //   silent: false,
-      // });
-    }
+  // replace({
+  //   regex: "DataTypes",
+  //   replacement: `Sequelize`,
+  //   paths: [file],
+  //   recursive: true,
+  //   silent: false,
+  // });
+}

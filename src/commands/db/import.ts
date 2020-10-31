@@ -70,6 +70,12 @@ export default class Import extends Command {
             // ...
           },
           tables: flags.tables,
+          skipTables: [
+            'axelModelFieldConfig',
+            'axelModelConfig',
+            'axel-model-field-config',
+            'axel-model-config',
+          ],
           // ...
         }
       )
@@ -89,7 +95,7 @@ export default class Import extends Command {
           )
           return
         }
-        this.log("format:", format);
+        this.log('format:', format)
         // console.log('auto', auto.foreignKeys)
         // fs.moveSync(
         //   path.resolve(modelsLocation, 'db.d.js'),
