@@ -147,7 +147,7 @@ class <%= entityClass %>Controller {
         limit,
         offset
       })
-      .then((result: ) => {
+      .then((result) => {
         items = result.rows;
         if (listOfValues) {
           items = items.map((item) => ({

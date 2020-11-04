@@ -50,7 +50,7 @@ export function generateSchemaFromModel(
       apiUrl: '/' + tableName,
       additionalProperties: false,
       autoValidate: true,
-      automaticApi: true,
+      automaticApi: false,
       primaryKeyField: null,
       displayField: null,
       schema: {

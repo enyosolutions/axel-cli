@@ -3,6 +3,7 @@ module.exports = {
   collectionName: '<%= identity %>',
   apiUrl: '/<%= entity %>', // url for front api
   additionalProperties: false,
+  automaticApi: false,
   primaryKeyField: null,
   displayField: null,
   autoValidate: true,
