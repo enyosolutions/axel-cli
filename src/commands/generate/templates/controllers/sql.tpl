@@ -256,7 +256,6 @@ class <%= entityClass %>Controller {
             message: 'data_validation_error',
             errors: result.formatedErrors,
           });
-          debug('formatting error', result);
           return;
         }
       } catch (err) {
@@ -315,7 +314,6 @@ class <%= entityClass %>Controller {
             message: 'data_validation_error',
             errors: result.formatedErrors,
           });
-          debug('formatting error', result);
           return;
         }
       } catch (err) {
