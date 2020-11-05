@@ -18,9 +18,9 @@
  * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
  */
 
-import { Request, Response } from 'express';
-import Utils from '../../common/services/Utils'; // adjust path as needed
-import ExtendedError from '../../axel'; // adjust path as needed
+const { ExtendedError, Utils, SchemaValidator } = require('axel-core');
+
+
 
 /*
 Uncomment if you need the following features:
@@ -33,7 +33,8 @@ Uncomment if you need the following features:
 // import ExcelService from '../../services/ExcelService';
 
 const entity = '<%= entityCamelCased %>';
-const primaryKey = axel.models[entity] && axel.models[entity].primaryKeyField ? axel.models[entity].primaryKeyField : axel.config.framework.primaryKey;
+const primaryKey = axel.models[entity] && axel.models[entity].primaryKeyField
+ ? axel.models[entity].primaryKeyField : axel.config.framework.primaryKey;
 
 
 class <%= entityClass %>Controller {
@@ -160,7 +161,7 @@ class <%= entityClass %>Controller {
           }));
         }
         return result.count || 0;
-      }):
+      })
       .then((totalCount) =>
         resp.status(200).json({
           body: items,
@@ -175,7 +176,7 @@ class <%= entityClass %>Controller {
   }
 
   get(req, resp) {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     if (!id) {
       return false;
     }
@@ -245,6 +246,26 @@ class <%= entityClass %>Controller {
     if (!repository) {
       return;
     }
+
+    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema) {
+      try {
+        const result = SchemaValidator.validate(data, entity);
+        if (!result.isValid) {
+          console.warn('[SCHEMA VALIDATION ERROR]', entity, result, data);
+          resp.status(400).json({
+            message: 'data_validation_error',
+            errors: result.formatedErrors,
+          });
+          debug('formatting error', result);
+          return;
+        }
+      } catch (err) {
+        return resp.status(400).json({
+          message: 'error_wrong_json_format_for_model_definition',
+          errors: [err.message],
+        });
+      }
+    }
     repository
       .create(data)
       .then((result) =>
@@ -277,7 +298,7 @@ class <%= entityClass %>Controller {
    * @return {[type]}      [description]
    */
   put(req, resp) {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     let data = req.body;
 
 
@@ -285,6 +306,26 @@ class <%= entityClass %>Controller {
     if (!repository) {
       return;
     }
+    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema) {
+      try {
+        const result = SchemaValidator.validate(data, entity);
+        if (!result.isValid) {
+          console.warn('[SCHEMA VALIDATION ERROR]', entity, result, data);
+          resp.status(400).json({
+            message: 'data_validation_error',
+            errors: result.formatedErrors,
+          });
+          debug('formatting error', result);
+          return;
+        }
+      } catch (err) {
+        return resp.status(400).json({
+          message: 'error_wrong_json_format_for_model_definition',
+          errors: [err.message],
+        });
+      }
+    }
+
     repository
       .findByPk(id)
       .catch((err) => {
@@ -349,7 +390,7 @@ class <%= entityClass %>Controller {
    * @return {[type]}      [description]
    */
   delete(req, resp) {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
@@ -569,4 +610,4 @@ class <%= entityClass %>Controller {
   */
 }
 
-export default new <%= entityClass %>Controller();
+module.exports = new <%= entityClass %>Controller();

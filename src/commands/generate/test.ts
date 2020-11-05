@@ -40,7 +40,7 @@ export default class Test extends Command {
     const entityKebabCased = _.kebabCase(controller)
     const filename = entity
 
-    const testPath = `./test/controllers/${
+    const testPath = `./test/${
       folder ? folder + '/' : ''
     }${filename}.test.js`
     if (fs.existsSync(testPath) && !flags.force) {

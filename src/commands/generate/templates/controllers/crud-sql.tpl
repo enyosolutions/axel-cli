@@ -21,6 +21,7 @@ import { Request, Response } from 'express';
 import Utils from '../../../common/services/Utils';
 import ExtendedError from '../../../axel'; // adjust path as needed
 import DocumentManager from '../../services/DocumentManager';
+import SchemaValidator from '../../services/SchemaValidator';
 import ExcelService from '../../services/ExcelService';
 
 declare const axel: any;
@@ -264,7 +265,10 @@ class CrudSqlController {
           return;
         }
       } catch (err) {
-        throw new Error('error_wrong_json_format_for_model_definition');
+        return resp.status(400).json({
+          message: 'error_wrong_json_format_for_model_definition',
+          errors: [err.message],
+        });
       }
     }
     repository
@@ -322,7 +326,10 @@ class CrudSqlController {
           return;
         }
       } catch (err) {
-        throw new Error('error_wrong_json_format_for_model_definition');
+        return resp.status(400).json({
+          message: 'error_wrong_json_format_for_model_definition',
+          errors: [err.message],
+        });
       }
     }
     repository
