@@ -163,7 +163,7 @@ class <%= entityClass %>Controller {
         return result.count || 0;
       })
       .then((totalCount) =>
-        resp.status(200).json({
+        return resp.status(200).json({
           body: items,
           page: startPage,
           count: limit,
@@ -177,15 +177,13 @@ class <%= entityClass %>Controller {
 
   get(req, resp) {
     const id = req.params.id;
-    if (!id) {
-      return false;
-    }
     const listOfValues = req.query.listOfValues
       ? req.query.listOfValues
       : false;
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
+      // No need to send response error as it's already thrown in the Entity manager getter
       return;
     }
     repository
@@ -277,12 +275,11 @@ class <%= entityClass %>Controller {
           axel.logger.warn(err);
         }
         if (err && err.name === 'SequelizeValidationError') {
-          resp.status(400).json({
+          return resp.status(400).json({
             //@ts-ignore
             errors: err.errors && err.errors.map((e) => e.message),
             message: 'validation_error'
           });
-          return false;
         }
         Utils.errorCallback(err, resp);
       });
@@ -303,6 +300,7 @@ class <%= entityClass %>Controller {
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
+      // No need to send response error as it's already thrown in the Entity manager getter
       return;
     }
     if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema) {
@@ -310,11 +308,10 @@ class <%= entityClass %>Controller {
         const result = SchemaValidator.validate(data, entity);
         if (!result.isValid) {
           console.warn('[SCHEMA VALIDATION ERROR]', entity, result, data);
-          resp.status(400).json({
+          return resp.status(400).json({
             message: 'data_validation_error',
             errors: result.formatedErrors,
           });
-          return;
         }
       } catch (err) {
         return resp.status(400).json({
@@ -368,12 +365,10 @@ class <%= entityClass %>Controller {
       })
       .catch((err) => {
         if (err && err.name === 'SequelizeValidationError') {
-          resp.status(400).json({
-            //@ts-ignore
+          return resp.status(400).json({
             errors: err.errors && err.errors.map((e) => e.message),
             message: 'validation_error'
           });
-          return false;
         }
         Utils.errorCallback(err, resp);
       });
@@ -414,7 +409,7 @@ class <%= entityClass %>Controller {
         if (!a) {
           return resp.status(404).json();
         }
-        resp.status(200).json({
+        return resp.status(200).json({
           status: 'OK',
         });
       })
@@ -474,7 +469,6 @@ class <%= entityClass %>Controller {
   }
 
   getImportTemplate(req, resp) {
-
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
@@ -595,7 +589,7 @@ class <%= entityClass %>Controller {
         });
       })
       .then(() =>
-        resp.json({
+        return resp.json({
           body: 'ok',
           properData,
           improperData
