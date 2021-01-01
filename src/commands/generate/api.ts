@@ -27,7 +27,6 @@ export const generateApi = async ({
 }: ApiOptionsType) => {
   const modelType: ModelType = type === 'mongo' ? 'schema' : 'sql'
   const types: ModelType[] = withSchema ? ['schema', 'sql'] : [modelType]
-  console.warn('ModelType', modelType, types)
   const modelParams: any = [name, '--types ' +  types.join(',')]
   const controllerParams = [name, '--type', type]
   if (force) {
@@ -35,12 +34,20 @@ export const generateApi = async ({
     controllerParams.push('--force')
   }
   if (fields && fields.length > 0) {
-    modelParams.push('--fields ' + fields.join(','))
+    // @ts-ignore
+    const serializedFields = fields[0].name ?
+      JSON.stringify(fields) :
+      fields.join(',')
+    modelParams.push('--fields ' + serializedFields)
   }
-  console.log('modelParams', modelParams, fields)
-  await generateModel({name, types, fields})
-  await generateController({name, type, force})
-  await generateRoute(name)
+  try {
+    await generateModel({name, types, fields})
+    await generateController({name, type, force})
+    await generateRoute(name)
+  } catch (error) {
+    console.warn(error.message)
+    throw error
+  }
 }
 
 export default class Generate extends Command {
@@ -86,14 +93,29 @@ export default class Generate extends Command {
     const {interactive, force} = flags
     let fields = flags.fields
     const type: ApiType = flags.type as ApiType
+    console.log('"fields', fields)
+
     if (flags.interactive) {
       this.log(
         'Type in the field name that you need in your model, one field at a time.'
       )
       this.log('When you are done just press enter.')
       fields = await promptFields()
+    } else if (
+      fields &&
+      typeof fields === 'string' &&
+      // @ts-ignore
+      fields.indexOf('{') > -1
+    ) {
+      fields = JSON.parse(fields)
     }
-    generateApi({name, type, force, fields, withSchema: flags['with-schema']})
+    generateApi({
+      name,
+      type,
+      force,
+      fields,
+      withSchema: flags['with-schema'],
+    })
     this.log('\n✔️ all done')
   }
 }

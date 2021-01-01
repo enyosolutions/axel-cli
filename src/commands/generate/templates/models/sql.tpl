@@ -30,8 +30,12 @@ const <%= entityClass %> = {
       <% } %>
 
       <% for (var i = 0; i < fields.length; i++) { %>
-      <%=fields[i] %>: {
-        type: DataTypes.STRING,
+      <%= fields[i].name || fields[i] %>: {
+        <% if (fields[i].primaryKey) { %>
+        primaryKey: true,
+        <% } %>
+        allowNull: <%= !fields[i].required %>,
+        type: <%= fields[i].required || 'DataTypes.STRING' %>,
       },<% } %>
 
     },

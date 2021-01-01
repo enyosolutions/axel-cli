@@ -4,19 +4,6 @@
  * @description :: Server-side logic for managing <%= entityClass %> entities
  */
 
-/**
- * UserSqlController
- *
- * @description :: Server-side logic for managing users
- * @help        :: See http://links.axel.s.org/docs/controllers
- */
-
-/**
- * Api/CrudSqlController
- *
- * @description :: Server-side logic for managing all entitys
- * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
- */
 
 const { ExtendedError, Utils, SchemaValidator } = require('axel-core');
 
@@ -389,19 +376,33 @@ class <%= entityClass %>Controller {
     if (!repository) {
       return;
     }
+
     repository
-      .destroy({
-        where: {
-          [primaryKey]: id
+      .findByPk(id)
+      .then(async (result) => {
+        if (!result) {
+          throw new ExtendedError({
+            code: 404,
+            errors: ['not_found'],
+            message: 'not_found'
+          });
         }
-      })
+        return result;
+    })
+    .then(() =>
+      repository
+        .destroy({
+          where: {
+            [primaryKey]: id
+          }
+        }))
       .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
         }
         throw new ExtendedError({
-          code: 400,
-          errors: [err || 'delete_error'],
+          code: err.code || 400,
+          errors: [err.message || err || 'delete_error'],
           message: err.message || 'delete_error'
         });
       })

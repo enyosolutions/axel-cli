@@ -7,7 +7,7 @@ import {
 } from '../../services/utils'
 import * as _ from 'lodash'
 import * as fs from 'fs'
-import {generateSchemaFromModel} from '../../services/models'
+import {generateSchemaFromModel, cliTypesToSqlTypesMap} from '../../services/models'
 
 const modelsLocation = `${process.cwd()}/src/api/models/sequelize`
 const schemasLocation = `${process.cwd()}/src/api/models/schema`
@@ -66,6 +66,19 @@ export const generateModel = ({
 
       return
     }
+
+    const sqlFields = fields      ? // @ts-ignore
+      fields.map((f: any) => {
+        if (f.name && f.type) {
+          return {
+            ...f,
+            // @ts-ignore
+            type: (cliTypesToSqlTypesMap[f.type] as any) || f.type,
+          }
+        }
+        return f
+      }) :
+      []
     renderTemplate(`${__dirname}/templates/models/${type}.tpl`, filePath, {
       ...projectConfig,
       type,
@@ -76,7 +89,7 @@ export const generateModel = ({
       entityKebabCased,
       entityCamelCased,
       filename,
-      fields: fields,
+      fields: type === 'sql' ? sqlFields : fields,
       isSql: types.indexOf('sql') > -1,
     })
   }

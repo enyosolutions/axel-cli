@@ -22,6 +22,7 @@ module.exports = {
       <% for (var i = 0; i < fields.length; i++) { %>
       <%=fields[i] %>: {
         type: 'string',
+        type: <%= fields[i].type || 'string' %>,
       },<% } %>
       createdOn: {
         type: ['string', 'object'],
@@ -54,7 +55,13 @@ module.exports = {
         edit: { readonly: true },
       }
     },
-    required: []
+    required: [
+       <% for (var i = 0; i < fields.length; i++) {
+        if (fields[i].required) { %>
+          fields[i].name
+       <% }
+        } %>
+    ]
   },
   admin: {
       name: null,

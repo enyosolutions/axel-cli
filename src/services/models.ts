@@ -29,6 +29,16 @@ const typeMap = {
   DATEONLY: 'string',
 }
 
+export const cliTypesToSqlTypesMap = {
+  integer: 'INTEGER',
+  number: 'FLOAT',
+  boolean: 'BOOLEAN',
+  datetime: 'DATE',
+  date: 'DATEONLY',
+  string: 'STRING',
+  longtext: 'TEXT',
+}
+
 export function generateSchemaFromModel(
   file: string,
   target: string,
