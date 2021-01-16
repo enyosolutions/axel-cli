@@ -30,13 +30,14 @@ const typeMap = {
 }
 
 export const cliTypesToSqlTypesMap = {
-  integer: 'INTEGER',
-  number: 'FLOAT',
-  boolean: 'BOOLEAN',
-  datetime: 'DATE',
-  date: 'DATEONLY',
-  string: 'STRING',
-  longtext: 'TEXT',
+  integer: 'DataTypes.INTEGER',
+  number: 'DataTypes.FLOAT',
+  boolean: 'DataTypes.BOOLEAN',
+  datetime: 'DataTypes.DATE',
+  date: 'DataTypes.DATEONLY',
+  string: 'DataTypes.STRING',
+  text: 'DataTypes.TEXT',
+  longtext: 'DataTypes.TEXT',
 }
 
 export function generateSchemaFromModel(

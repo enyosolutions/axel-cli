@@ -28,14 +28,16 @@ const <%= entityClass %> = {
         allowNull: false,
       },
       <% } %>
-
       <% for (var i = 0; i < fields.length; i++) { %>
       <%= fields[i].name || fields[i] %>: {
         <% if (fields[i].primaryKey) { %>
         primaryKey: true,
         <% } %>
+        <% if (fields[i].autoIncrement) { %>
+        autoIncrement: true,
+        <% } %>
         allowNull: <%= !fields[i].required %>,
-        type: <%= fields[i].required || 'DataTypes.STRING' %>,
+        type: <%= fields[i].type || 'DataTypes.STRING' %>,
       },<% } %>
 
     },

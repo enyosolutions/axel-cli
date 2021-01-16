@@ -5,7 +5,7 @@ import * as _ from 'lodash'
 import * as fs from 'fs'
 
 export default class Test extends Command {
-  static description = 'Generate a controller for your axel project';
+  static description = 'Generate an api test for your axel project';
 
   static target = 'controller';
 

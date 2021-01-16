@@ -20,45 +20,46 @@ module.exports = {
       },
       <% } %>
       <% for (var i = 0; i < fields.length; i++) { %>
-      <%=fields[i] %>: {
-        type: 'string',
-        type: <%= fields[i].type || 'string' %>,
+      <%= fields[i].name || fields[i] %>: {
+        title: '<%= _.startCase(fields[i].name || fields[i]) %>',
+        description: 'The <%= _.startCase(fields[i].name || fields[i]) %> of the <%= identity %>',
+        type: '<%= fields[i].type || 'string' %>',
       },<% } %>
       createdOn: {
         type: ['string', 'object'],
         format: 'date-time',
-        edit: { readonly: true },
-        display: {
+        field: { readonly: true },
+        column: {
           type: 'datetime'
         }
       },
       lastModifiedOn: {
         type: ['string', 'object'],
         format: 'date-time',
-        edit: { readonly: true },
-        display: {
+        field: { readonly: true },
+        column: {
           type: 'datetime'
         }
       },
       createdBy: {
         type: ['string'],
         relation: '/user',
-        foreignKey: '_id',
-        display: {},
-        edit: { readonly: true },
+        relationKey: '_id',
+        column: {},
+        field: { readonly: true },
       },
       lastModifiedBy: {
         type: ['string'],
         relation: '/user',
-        foreignKey: '_id',
-        display: {},
-        edit: { readonly: true },
+        relationKey: '_id',
+        column: {},
+        field: { readonly: true },
       }
     },
     required: [
        <% for (var i = 0; i < fields.length; i++) {
         if (fields[i].required) { %>
-          fields[i].name
+          '<%= fields[i].name %>',
        <% }
         } %>
     ]

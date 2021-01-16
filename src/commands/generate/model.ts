@@ -79,6 +79,7 @@ export const generateModel = ({
         return f
       }) :
       []
+
     renderTemplate(`${__dirname}/templates/models/${type}.tpl`, filePath, {
       ...projectConfig,
       type,

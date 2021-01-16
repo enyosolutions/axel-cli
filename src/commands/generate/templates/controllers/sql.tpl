@@ -150,7 +150,7 @@ class <%= entityClass %>Controller {
         return result.count || 0;
       })
       .then((totalCount) =>
-        return resp.status(200).json({
+        resp.status(200).json({
           body: items,
           page: startPage,
           count: limit,
@@ -232,7 +232,7 @@ class <%= entityClass %>Controller {
       return;
     }
 
-    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema) {
+    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema && (axel.models[entity] && axel.models[entity].autoValidate)) {
       try {
         const result = SchemaValidator.validate(data, entity);
         if (!result.isValid) {
@@ -290,7 +290,7 @@ class <%= entityClass %>Controller {
       // No need to send response error as it's already thrown in the Entity manager getter
       return;
     }
-    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema) {
+    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema  && (axel.models[entity] && axel.models[entity].autoValidate)) {
       try {
         const result = SchemaValidator.validate(data, entity);
         if (!result.isValid) {
@@ -590,7 +590,7 @@ class <%= entityClass %>Controller {
         });
       })
       .then(() =>
-        return resp.json({
+        resp.json({
           body: 'ok',
           properData,
           improperData
