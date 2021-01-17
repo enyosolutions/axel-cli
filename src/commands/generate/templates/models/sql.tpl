@@ -6,8 +6,8 @@
  *                 how this model works and what it represents here.
  */
 
-const sequelize = require('sequelize');
-const { DataTypes } = sequelize;
+// const sequelize = require('sequelize');
+// const { DataTypes } = sequelize; // Not needed as axel-core automatically resolves the type from te string name
 
 /*
   // event hooks => http://docs.sequelizejs.com/manual/tutorial/hooks.html
@@ -22,7 +22,7 @@ const <%= entityClass %> = {
     attributes: {
       <% if (!fields || fields.length === 0) {%>
       id: {
-        type: DataTypes.INTEGER,
+        type: "INTEGER",
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
@@ -37,7 +37,7 @@ const <%= entityClass %> = {
         autoIncrement: true,
         <% } %>
         allowNull: <%= !fields[i].required %>,
-        type: <%= fields[i].type || 'DataTypes.STRING' %>,
+        type: "<%= fields[i].type.replace('DataTypes.','') || 'STRING' %>",
       },<% } %>
 
     },

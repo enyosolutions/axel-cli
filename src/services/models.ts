@@ -29,7 +29,7 @@ const typeMap = {
   DATEONLY: 'string',
 }
 
-export const cliTypesToSqlTypesMap = {
+export const cliTypesToSqlTypesMap: {[key: string]: any} = {
   integer: 'DataTypes.INTEGER',
   number: 'DataTypes.FLOAT',
   boolean: 'DataTypes.BOOLEAN',
@@ -38,6 +38,77 @@ export const cliTypesToSqlTypesMap = {
   string: 'DataTypes.STRING',
   text: 'DataTypes.TEXT',
   longtext: 'DataTypes.TEXT',
+}
+export function cliFieldToSequelizeField(field: {[key: string]: any}) {
+  field.type = cliTypesToSqlTypesMap[field.type as any] || field.type
+  return field
+}
+export function sequelizeFieldToSchemaField(fieldName: string, field: {[key: string]: any}) {
+  if (!field.type) {
+    console.error('field.type missing for', fieldName)
+    throw new Error('missing_type_for field' + fieldName)
+  }
+  let type = field.type.toString()
+  type = type.replace(/\(\d+\)/, '').replace(/(Sequelize|DataTypes)/i, '').replace('.', '')
+  // @ts-ignore
+  if (!typeMap[type]) {
+    console.error('field.type', field.type, type)
+    throw new Error('unkown_type_' + type)
+  }
+
+  const schema: any = {
+    // @ts-ignore
+    type: typeMap[type],
+    column: {},
+    field: {},
+  }
+
+  if (!field.allowNull && fieldName !== 'id') {
+    if (!field.defaultValue) {
+      schema.field.required = true
+    }
+  }
+  if (field.defaultValue) {
+    schema.default = field.defaultValue
+    schema.field.default = field.defaultValue
+  }
+
+  switch (type) {
+  case 'VARCHAR':
+    schema.enum = field.type.values
+    break
+  case 'ENUM':
+    schema.enum = field.type.values
+    break
+  case 'TEXT':
+    schema.field.type = 'textArea'
+    break
+  case 'DATE':
+    schema.field.format = 'date-time'
+    schema.column.type = 'date'
+    schema.field.type = 'dateTime'
+    break
+  case 'DATEONLY':
+    schema.field.format = 'date-time'
+    schema.column.type = 'datetime'
+    schema.field.type = 'dateTime'
+    schema.field.fieldOptions = {
+      type: 'date',
+    }
+    break
+  case 'TIME':
+    schema.field.format = 'date-time'
+    schema.field.type = 'dateTime'
+    schema.field.fieldOptions = {
+      type: 'time',
+    }
+    break
+  case 'INTEGER':
+    if (field.type.options) {
+      schema.maxLength = field.type.options.length
+    }
+  }
+  return schema
 }
 
 export function generateSchemaFromModel(
@@ -75,20 +146,7 @@ export function generateSchemaFromModel(
     Object.keys(model.entity.attributes).forEach(key => {
       const field = model.entity.attributes[key]
 
-      let type = field.type.toString()
-      type = type.replace(/\(\d+\)/, '')
-      // @ts-ignore
-      if (!typeMap[type]) {
-        console.error('field.type', field.type, type)
-        throw new Error('unkown_type_' + type)
-      }
-
-      const schema: any = {
-        // @ts-ignore
-        type: typeMap[type],
-        column: {},
-        field: {},
-      }
+      const schema: any = sequelizeFieldToSchemaField(key, field)
 
       if (!field.allowNull && key !== 'id') {
         destination.schema.required.push(key)
@@ -96,48 +154,9 @@ export function generateSchemaFromModel(
           schema.field.required = true
         }
       }
-      if (field.defaultValue) {
-        schema.default = field.defaultValue
-      }
-
-      switch (type) {
-      case 'VARCHAR':
-        schema.enum = field.type.values
-        break
-      case 'ENUM':
-        schema.enum = field.type.values
-        break
-      case 'TEXT':
-        schema.field.type = 'textArea'
-        break
-      case 'DATE':
-        schema.field.format = 'date-time'
-        schema.column.type = 'date'
-        schema.field.type = 'dateTime'
-        break
-      case 'DATEONLY':
-        schema.field.format = 'date-time'
-        schema.column.type = 'datetime'
-        schema.field.type = 'dateTime'
-        schema.field.fieldOptions = {
-          type: 'date',
-        }
-        break
-      case 'TIME':
-        schema.field.format = 'date-time'
-        schema.field.type = 'dateTime'
-        schema.field.fieldOptions = {
-          type: 'time',
-        }
-        break
-      case 'INTEGER':
-        if (field.type.options) {
-          schema.maxLength = field.type.options.length
-        }
-      }
-
       destination.schema.properties[key] = schema
     })
+
     destination.admin = {
       name: null,
       namePlural: null,
@@ -149,6 +168,7 @@ export function generateSchemaFromModel(
       listOptions: null,
       kanbanOptions: null,
       tableOptions: null,
+      nestedModels: [],
     }
     if (
       model.entity &&
