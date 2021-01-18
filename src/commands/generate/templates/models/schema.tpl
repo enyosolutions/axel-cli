@@ -46,14 +46,14 @@ module.exports = {
         relation: '/user',
         relationKey: '_id',
         column: {},
-        field: { readonly: true },
+        field: { readonly: true, disabled: true },
       },
       lastModifiedBy: {
         type: ['string'],
         relation: '/user',
         relationKey: '_id',
         column: {},
-        field: { readonly: true },
+        field: { readonly: true, disabled: true },
       }
     },
     required: [
@@ -69,11 +69,11 @@ module.exports = {
       namePlural: null,
       pageTitle: null,
       routerPath: null,
-      options:  null,
-      actions: null,
-      formOptions:  null,
-      listOptions:  null,
-      kanbanOptions:  null,
-      tableOptions:  null,
+      options:  undefined,
+      actions: undefined,
+      formOptions:  undefined,
+      listOptions:  undefined,
+      kanbanOptions:  undefined,
+      tableOptions:  undefined,
   }
 };

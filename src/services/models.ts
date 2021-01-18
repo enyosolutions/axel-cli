@@ -39,6 +39,17 @@ export const cliTypesToSqlTypesMap: {[key: string]: any} = {
   text: 'DataTypes.TEXT',
   longtext: 'DataTypes.TEXT',
 }
+
+export const cliTypesToSchemaTypesMap: {[key: string]: any} = {
+  integer: 'integer',
+  number: 'number',
+  boolean: 'boolean',
+  datetime: 'string',
+  date: 'string',
+  string: 'string',
+  text: 'string',
+  longtext: 'string',
+}
 export function cliFieldToSequelizeField(field: {[key: string]: any}) {
   field.type = cliTypesToSqlTypesMap[field.type as any] || field.type
   return field
@@ -154,6 +165,7 @@ export function generateSchemaFromModel(
           schema.field.required = true
         }
       }
+      console.log('schema', key, schema)
       destination.schema.properties[key] = schema
     })
 
@@ -187,6 +199,7 @@ export function generateSchemaFromModel(
               format: 'date-time',
               type: 'dateTime',
               readonly: true,
+              disabled: true,
             },
           }
         }

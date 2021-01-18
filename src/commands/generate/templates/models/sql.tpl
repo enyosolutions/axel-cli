@@ -37,7 +37,7 @@ const <%= entityClass %> = {
         autoIncrement: true,
         <% } %>
         allowNull: <%= !fields[i].required %>,
-        type: "<%= fields[i].type.replace('DataTypes.','') || 'STRING' %>",
+        type: "<%= fields[i].type || 'DataTypes.STRING' %>",
       },<% } %>
 
     },
