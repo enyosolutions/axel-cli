@@ -123,7 +123,7 @@ class <%= entityClass %>Controller {
     }
     if (req.query.search) {
       query = Utils.injectSqlSearchParams(req, query, {
-        modelName: req.params.entity
+        modelName: entity
       });
     }
     query = Utils.cleanSqlQuery(query);

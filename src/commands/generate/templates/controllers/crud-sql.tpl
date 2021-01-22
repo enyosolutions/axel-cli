@@ -21,16 +21,15 @@ import { Request, Response } from 'express';
 import Utils from '../../../common/services/Utils';
 import ExtendedError from '../../../axel'; // adjust path as needed
 import DocumentManager from '../../services/DocumentManager';
-import SchemaValidator from '../../services/SchemaValidator';
 import ExcelService from '../../services/ExcelService';
 
-declare const axel: any;
+declare const axel;
 
 const primaryKey = axel.config.enyo.primaryKey;
 
 class CrudSqlController {
   stats(req, resp) {
-    const output: { total?: any; month?: any; week?: any; today?: any } = {};
+    const output = {};
     const endpoint = req.param('endpoint');
 
     if (!axel.models[endpoint] || !axel.models[endpoint].repository) {
@@ -42,7 +41,7 @@ class CrudSqlController {
     const { repository, tableName } = axel.models[endpoint];
     repository
       .count({})
-      .then((data: number) => {
+      .then((data) => {
         // TOTAL
         output.total = data;
 
@@ -57,7 +56,7 @@ class CrudSqlController {
           }
         );
       })
-      .then((data: [{ month: number }]) => {
+      .then((data) => {
         if (data && data.length > 0 && data[0].month) {
           output.month = data[0].month;
         } else {
@@ -75,7 +74,7 @@ class CrudSqlController {
           }
         );
       })
-      .then((data: [{ week: number }]) => {
+      .then((data: [{ week }]) => {
         if (data && data.length > 0 && data[0].week) {
           output.week = data[0].week;
         } else {
@@ -93,7 +92,7 @@ class CrudSqlController {
           }
         );
       })
-      .then((data: [{ today: number }]) => {
+      .then((data: [{ today }]) => {
         if (data && data.length > 0 && data[0].today) {
           output.today = data[0].today;
         } else {
@@ -104,7 +103,7 @@ class CrudSqlController {
           body: output
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -143,10 +142,10 @@ class CrudSqlController {
         limit,
         offset
       })
-      .then((result: { rows: [object]; count: number }) => {
+      .then((result: ) => {
         items = result.rows;
         if (listOfValues) {
-          items = items.map((item: any) => ({
+          items = items.map((item) => ({
             [primaryKey]: item[primaryKey],
             label:
               item.title ||
@@ -158,7 +157,7 @@ class CrudSqlController {
         return result.count || 0;
       })
 
-      .then((totalCount?: number) =>
+      .then((totalCount) =>
         resp.status(200).json({
           body: items,
           page: startPage,
@@ -166,7 +165,7 @@ class CrudSqlController {
           totalCount: totalCount
         })
       )
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -193,7 +192,7 @@ class CrudSqlController {
         where: { [primaryKey]: id },
         raw: false
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -208,7 +207,7 @@ class CrudSqlController {
           message: err.message || 'not_found'
         });
       })
-      .then((item: any) => {
+      .then((item) => {
         if (item) {
           item = item.get();
           if (listOfValues) {
@@ -235,7 +234,7 @@ class CrudSqlController {
           message: 'not_found'
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -265,20 +264,17 @@ class CrudSqlController {
           return;
         }
       } catch (err) {
-        return resp.status(400).json({
-          message: 'error_wrong_json_format_for_model_definition',
-          errors: [err.message],
-        });
+        throw new Error('error_wrong_json_format_for_model_definition');
       }
     }
     repository
       .create(data)
-      .then((result: any) =>
+      .then((result) =>
         resp.status(200).json({
           body: result
         })
       )
-      .catch((err: ExtendedError) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -286,7 +282,7 @@ class CrudSqlController {
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
-            errors: err.errors && err.errors.map((e: ExtendedError) => e.message),
+            errors: err.errors && err.errors.map((e) => e.message),
             message: 'validation_error'
           });
           return false;
@@ -326,15 +322,12 @@ class CrudSqlController {
           return;
         }
       } catch (err) {
-        return resp.status(400).json({
-          message: 'error_wrong_json_format_for_model_definition',
-          errors: [err.message],
-        });
+        throw new Error('error_wrong_json_format_for_model_definition');
       }
     }
     repository
       .findByPk(id)
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -349,7 +342,7 @@ class CrudSqlController {
           message: err.message || 'not_found'
         });
       })
-      .then((result: any) => {
+      .then((result) => {
         if (result) {
           return repository.update(data, {
             where: {
@@ -364,7 +357,7 @@ class CrudSqlController {
         });
       })
       .then(() => repository.findByPk(id))
-      .then((result: any) => {
+      .then((result) => {
         if (result) {
           return resp.status(200).json({
             body: result
@@ -375,7 +368,7 @@ class CrudSqlController {
           message: 'not_found'
         });
       })
-      .catch((err: ExtendedError) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -383,7 +376,7 @@ class CrudSqlController {
         if (err && err.name === 'SequelizeValidationError') {
           resp.status(400).json({
             //@ts-ignore
-            errors: err.errors && err.errors.map((e: ExtendedError) => e.message),
+            errors: err.errors && err.errors.map((e) => e.message),
             message: 'validation_error'
           });
           return false;
@@ -414,7 +407,7 @@ class CrudSqlController {
           [primaryKey]: id
         }
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -429,7 +422,7 @@ class CrudSqlController {
           status: 'OK'
         })
       )
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -458,7 +451,7 @@ class CrudSqlController {
       .then(result => {
         data = result;
         if (endpoint === 'user') {
-          data = data.map((item: any) => {
+          data = data.map((item) => {
             delete item.encryptedPassword;
             delete item.resetToken;
             return item;
@@ -485,7 +478,7 @@ class CrudSqlController {
           message: 'not_found'
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -538,7 +531,7 @@ class CrudSqlController {
           message: 'not_found'
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -556,12 +549,12 @@ class CrudSqlController {
     const endpoint = req.param('endpoint');
     const properData: [] = [];
     const improperData: [] = [];
-    let doc: any;
+    let doc;
     DocumentManager.httpUpload(req, {
       path: 'updloads/excel'
     })
       // @ts-ignore
-      .then((document?: any[]) => {
+      .then((document?[]) => {
         if (document && document.length > 0) {
           doc = document[0];
           return ExcelService.parse(doc.fd, {
@@ -592,7 +585,7 @@ class CrudSqlController {
           errors: ['parse_error']
         });
       })
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -607,7 +600,7 @@ class CrudSqlController {
         });
       })
       .then(() => DocumentManager.delete(doc[0].fd))
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
@@ -629,7 +622,7 @@ class CrudSqlController {
           improperData
         })
       )
-      .catch((err: Error) => {
+      .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
         }
