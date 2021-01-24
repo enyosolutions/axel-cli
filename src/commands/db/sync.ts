@@ -2,6 +2,7 @@ import Command from '../../base'
 import {flags} from '@oclif/command'
 import * as path from 'path'
 import * as fs from 'fs'
+import * as _ from 'lodash'
 import cli from 'cli-ux'
 
 export default class Sync extends Command {
@@ -69,7 +70,7 @@ export default class Sync extends Command {
                     ...args[0]
                     .replace(/\(|\)/g, '')
                     .split(',')
-                    .map(s => s.replace(/["']/g, '').trim())
+                    .map((s: string) => s.replace(/["']/g, '').trim())
                   )
                 }
               }
