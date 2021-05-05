@@ -1,20 +1,20 @@
-import {flags} from '@oclif/command'
-import Command, {getConfig} from '../../base'
+import { flags } from '@oclif/command';
+import Command, { getConfig } from '../../base';
 import {
   renderTemplate,
   parseCommaInputs,
   promptFields,
-} from '../../services/utils'
-import * as _ from 'lodash'
-import * as fs from 'fs'
+} from '../../services/utils';
+import * as _ from 'lodash';
+import * as fs from 'fs';
 import {
   generateSchemaFromModel,
   cliTypesToSqlTypesMap,
   cliTypesToSchemaTypesMap,
-} from '../../services/models'
+} from '../../services/models';
 
-const modelsLocation = `${process.cwd()}/src/api/models/sequelize`
-const schemasLocation = `${process.cwd()}/src/api/models/schema`
+const modelsLocation = `${process.cwd()}/src/api/models/sequelize`;
+const schemasLocation = `${process.cwd()}/src/api/models/schema`;
 
 export type ModelType = 'sql' | 'schema' | 'all';
 type OptionsType = {
@@ -34,64 +34,68 @@ export const generateModel = ({
   force,
   projectConfig,
 }: OptionsType) => {
-  const pConfig = projectConfig || getConfig()
+  const pConfig = projectConfig || getConfig();
   const format: 'camelCase' | 'kebabCase' | 'snakeCase' =
-    pConfig && pConfig.modelIdentityFormat
+    pConfig && pConfig.modelIdentityFormat;
 
-  const entityClass = _.trim(_.startCase(name)).replace(/ /g, '')
-  const entity = _.kebabCase(name)
-  const entityKebabCased = _.kebabCase(name)
-  const entityCamelCased = _.camelCase(name)
-  const filename = entityClass
+  const entityClass = _.trim(_.startCase(name)).replace(/ /g, '');
+  const entity = _.kebabCase(name);
+  const entityKebabCased = _.kebabCase(name);
+  const entityCamelCased = _.camelCase(name);
+  const filename = entityClass;
 
   if (!format || !_[format]) {
-    console.error('Unsupported value in project config [modelIdentityFormat]')
-    return
+    console.error('Unsupported value in project config [modelIdentityFormat]');
+    return;
   }
-  const identity: any = _[format](entity)
+  const identity: any = _[format](entity);
 
   for (const type of types) {
     const filePath = `./src/api/models/${
       type === 'sql' ? 'sequelize' : type
-    }/${entityClass}.js`
+    }/${entityClass}.js`;
 
     if (fs.existsSync(filePath) && !force) {
       console.warn(
         `File ${filePath} already exists. Use --force to overwrite.`
-      )
-      return
+      );
+      return;
     }
     if (type === 'schema' && fromSequelize) {
       generateSchemaFromModel(
         modelsLocation + '/' + filename + '.js',
         schemasLocation + '/' + filename + '.js',
-        {force}
-      )
+        { force }
+      );
 
-      return
+      return;
     }
 
-    const sqlFields = fields      ? // @ts-ignore
-      fields.map((f: any) => {
-        if (f.name && f.type) {
-          return {
-            ...f,
-            // @ts-ignore
-            type: (cliTypesToSqlTypesMap[f.type] as any) || f.type,
+    const sqlFields = fields // @ts-ignore
+      ? fields.map((f: any) => {
+          if (f.name && f.type) {
+            return {
+              ...f,
+              // @ts-ignore
+              type: (cliTypesToSqlTypesMap[f.type] as any) || f.type,
+            };
           }
-        }
-        return f
-      }) :
-      []
-    const schemaFields = fields      ? // @ts-ignore
-      fields.map((f: any) => {
-        return {
-          ...f,
-          // @ts-ignore
-          type: (cliTypesToSchemaTypesMap[f.type] as any) || f.type || 'string',
-        }
-      }) :
-      []
+          return f;
+        })
+      : [];
+    const schemaFields = fields // @ts-ignore
+      ? fields.map((f: any) => {
+          if (f.name && f.type) {
+            return {
+              ...f,
+              // @ts-ignore
+              type:
+                (cliTypesToSchemaTypesMap[f.type] as any) || f.type || 'string',
+            };
+          }
+          return f;
+        })
+      : [];
 
     renderTemplate(`${__dirname}/templates/models/${type}.tpl`, filePath, {
       ...projectConfig,
@@ -105,21 +109,21 @@ export const generateModel = ({
       filename,
       fields: type === 'sql' ? sqlFields : schemaFields,
       isSql: types.indexOf('sql') > -1,
-    })
+    });
   }
-}
+};
 
 export default class Generate extends Command {
   static description = 'Generate a model for your axel project';
 
   static target = 'model';
 
-  static args = [{name: 'name', required: true}];
+  static args = [{ name: 'name', required: true }];
 
   static flags = {
     ...Command.flags,
-    help: flags.help({char: 'h'}),
-    interactive: flags.boolean({char: 'i', required: false}),
+    help: flags.help({ char: 'h' }),
+    interactive: flags.boolean({ char: 'i', required: false }),
     // flag with a value (-n, --name=VALUE)
     types: flags.string({
       char: 't',
@@ -138,41 +142,40 @@ export default class Generate extends Command {
       required: false,
     }),
     // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    force: flags.boolean({ char: 'f' }),
   };
 
   async run() {
-    const {args, flags} = this.parse(Generate)
+    const { args, flags } = this.parse(Generate);
 
-    const {force} = flags
+    const { force } = flags;
 
-    let types: ModelType[] = []
+    let types: ModelType[] = [];
     if (flags.types) {
-      types = parseCommaInputs(flags.types) as ModelType[]
+      types = parseCommaInputs(flags.types) as ModelType[];
     }
     if (types.indexOf('all') > -1) {
-      types = ['sql', 'schema']
+      types = ['sql', 'schema'];
     }
-    let fields = parseCommaInputs(flags.fields || [])
+    let fields = parseCommaInputs(flags.fields || []);
 
     if (flags.interactive) {
       this.log(
         'Type in the field name that you need in your model, one field at a time.'
-      )
-      this.log('When you are done just press enter.')
-      fields = await promptFields()
+      );
+      this.log('When you are done just press enter.');
+      fields = await promptFields();
     }
 
-    const name = args.name.trim()
-
+    const name = args.name.trim();
     generateModel({
       name,
       types,
       fields,
       force,
       projectConfig: this.projectConfig,
-    })
-    const message = `✔️ Generated model ${args.name}\n`
-    this.log(message)
+    });
+    const message = `✔️ Generated model ${args.name}\n`;
+    this.log(message);
   }
 }

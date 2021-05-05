@@ -40,7 +40,7 @@
         "code": 150,
         "ignoreUrls": true
       }
-    ]
+    ],
+    "semi": [2, "always"]
   }
 }
-

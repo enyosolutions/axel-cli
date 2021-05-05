@@ -21,13 +21,12 @@ Uncomment if you need the following features:
 
 const entity = '<%= entityCamelCased %>';
 const primaryKey = axel.models[entity] && axel.models[entity].primaryKeyField
- ? axel.models[entity].primaryKeyField : axel.config.framework.primaryKey;
+  ? axel.models[entity].primaryKeyField : axel.config.framework.primaryKey;
 
 
-class <%= entityClass %>Controller {
+class <%= entityClass %> Controller {
   stats(req, resp) {
     const output = {};
-
 
     if (!axel.models[entity] || !axel.models[entity].repository) {
       return resp.status(404).json({
@@ -225,7 +224,7 @@ class <%= entityClass %>Controller {
   }
 
   post(req, resp) {
-    const data = Utils.injectUserId(req.body, req.token);
+    const data = Utils.injectUserId(req.body, req.user, ['createdBy']); // replace field by userId or any other relevant field
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
@@ -290,7 +289,7 @@ class <%= entityClass %>Controller {
       // No need to send response error as it's already thrown in the Entity manager getter
       return;
     }
-    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema  && (axel.models[entity] && axel.models[entity].autoValidate)) {
+    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema && (axel.models[entity] && axel.models[entity].autoValidate)) {
       try {
         const result = SchemaValidator.validate(data, entity);
         if (!result.isValid) {
@@ -369,7 +368,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  delete(req, resp) {
+  delete (req, resp) {
     const id = req.params.id;
 
     const repository = Utils.getEntityManager(entity, resp);
@@ -388,14 +387,14 @@ class <%= entityClass %>Controller {
           });
         }
         return result;
-    })
-    .then(() =>
-      repository
-        .destroy({
-          where: {
-            [primaryKey]: id
-          }
-        }))
+      })
+      .then(() =>
+        repository
+          .destroy({
+            where: {
+              [primaryKey]: id
+            }
+          }))
       .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err);
@@ -603,4 +602,4 @@ class <%= entityClass %>Controller {
   */
 }
 
-module.exports = new <%= entityClass %>Controller();
+module.exports = new <%= entityClass %> Controller();
