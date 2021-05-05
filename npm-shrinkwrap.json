@@ -478,6 +478,14 @@
         "ansi-styles": "^3.2.1",
         "supports-color": "^5.4.0",
         "tslib": "^1"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.1",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==",
+          "dev": true
+        }
       }
     },
     "@oclif/command": {
@@ -502,6 +510,13 @@
         "@oclif/parser": "^3.8.0",
         "debug": "^4.1.1",
         "tslib": "^1.9.3"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.1",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg=="
+        }
       }
     },
     "@oclif/dev-cli": {
@@ -534,6 +549,12 @@
             "jsonfile": "^4.0.0",
             "universalify": "^0.1.0"
           }
+        },
+        "tslib": {
+          "version": "1.14.1",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==",
+          "dev": true
         }
       }
     },
@@ -615,6 +636,13 @@
       "requires": {
         "@oclif/linewrap": "^1.0.0",
         "tslib": "^1.9.3"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.1",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg=="
+        }
       }
     },
     "@oclif/plugin-help": {
@@ -738,6 +766,12 @@
                 "jsonfile": "^4.0.0",
                 "universalify": "^0.1.0"
               }
+            },
+            "tslib": {
+              "version": "1.14.1",
+              "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+              "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==",
+              "dev": true
             }
           }
         }
@@ -1742,6 +1776,11 @@
             "is-fullwidth-code-point": "^2.0.0",
             "strip-ansi": "^5.1.0"
           }
+        },
+        "tslib": {
+          "version": "1.14.1",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg=="
         }
       }
     },
@@ -5410,6 +5449,14 @@
         "yeoman-environment": "^2.3.4",
         "yeoman-generator": "^3.2.0",
         "yosay": "^2.0.2"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.1",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==",
+          "dev": true
+        }
       }
     },
     "once": {
@@ -6299,6 +6346,13 @@
       "integrity": "sha512-WfQI+1gohdf0Dai/Bbmk5L5ItH5tYqm3ki2c5GdWhKjalzjg93N3avFjVStyZZz+A2Em+ZxKH5bNghw9UeylGQ==",
       "requires": {
         "tslib": "^1.9.0"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.1",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg=="
+        }
       }
     },
     "safe-buffer": {
@@ -7671,9 +7725,9 @@
       }
     },
     "tslib": {
-      "version": "1.11.1",
-      "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.11.1.tgz",
-      "integrity": "sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA=="
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.2.0.tgz",
+      "integrity": "sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w=="
     },
     "tsutils": {
       "version": "3.17.1",
@@ -7682,6 +7736,14 @@
       "dev": true,
       "requires": {
         "tslib": "^1.8.1"
+      },
+      "dependencies": {
+        "tslib": {
+          "version": "1.14.1",
+          "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "integrity": "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==",
+          "dev": true
+        }
       }
     },
     "tunnel-agent": {
