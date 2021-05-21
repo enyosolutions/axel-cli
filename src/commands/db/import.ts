@@ -1,13 +1,13 @@
-import Command from '../../base'
-import {flags} from '@oclif/command'
-import * as _ from 'lodash'
-import * as path from 'path'
-import * as fs from 'fs-extra'
+import Command from '../../base';
+import { flags } from '@oclif/command';
+import * as _ from 'lodash';
+import * as path from 'path';
+import * as fs from 'fs-extra';
 // import * as SequelizeAuto from 'sequelize-auto'
-const SequelizeAuto = require('sequelize-auto')
-import {migrateSequelizeModels} from '../../services/models'
+const SequelizeAuto = require('sequelize-auto');
+import { migrateSequelizeModels } from '../../services/models';
 
-const modelsLocation = `${process.cwd()}/src/api/models/sequelize`
+const modelsLocation = `${process.cwd()}/src/api/models/sequelize`;
 
 export default class Import extends Command {
   static description =
@@ -15,7 +15,7 @@ export default class Import extends Command {
 
   static flags = {
     ...Command.flags,
-    help: flags.help({char: 'h'}),
+    help: flags.help({ char: 'h' }),
     force: flags.boolean({
       char: 'f',
       description:
@@ -35,10 +35,10 @@ export default class Import extends Command {
   };
 
   async run() {
-    const {flags} = this.parse(Import)
-    const force = flags.force
-    const schemas = flags.schemas
-    const tables = flags.tables
+    const { flags } = this.parse(Import);
+    const force = flags.force;
+    const schemas = flags.schemas;
+    const tables = flags.tables;
     // if (force && !silent) {
     //   const confirm = await cli.confirm(
     //     'Are you sure you want to overwrite tables ? (this operation is irreversible...)'
@@ -48,10 +48,22 @@ export default class Import extends Command {
     //     return;
     //   }
     // }
-    import(
-      path.resolve(process.cwd(), 'src/resources/sequelize/config/config')
-    ).then(config => {
-      const env = process.env.NODE_ENV || 'development'
+    let folder;
+    const oldFolderExists = fs.existsSync(
+      path.resolve(process.cwd(), 'resources/sequelize/config/config')
+    );
+    console.log('oldFolderExists', oldFolderExists);
+
+    if (oldFolderExists) {
+      folder = path.resolve(process.cwd(), 'resources/sequelize/config/config');
+    } else {
+      folder = path.resolve(
+        process.cwd(),
+        'src/resources/sequelize/config/config'
+      );
+    }
+    import(path.resolve(process.cwd(), folder)).then((config) => {
+      const env = process.env.NODE_ENV || 'development';
       const auto = new SequelizeAuto(
         config[env].database,
         config[env].username,
@@ -78,24 +90,24 @@ export default class Import extends Command {
           ],
           // ...
         }
-      )
+      );
 
       auto.run((err: Error) => {
         if (err) {
-          this.error(err.message)
-          return
+          this.error(err.message);
+          return;
         }
 
         const format: 'camelCase' | 'kebabCase' | 'snakeCase' =
-          this.projectConfig && this.projectConfig.modelIdentityFormat
+          this.projectConfig && this.projectConfig.modelIdentityFormat;
         if (!format || !_[format]) {
-          this.log(format)
+          this.log(format);
           this.error(
             'Unsupported value in project config [modelIdentityFormat]'
-          )
-          return
+          );
+          return;
         }
-        this.log('format:', format)
+        this.log('format:', format);
         // console.log('auto', auto.foreignKeys)
         // fs.moveSync(
         //   path.resolve(modelsLocation, 'db.d.js'),
@@ -107,14 +119,14 @@ export default class Import extends Command {
         //   path.resolve(process.cwd(), 'src/types/ModelsList.d.js'),
         //   {overwrite: true}
         // )
-        Object.keys(auto.tables).forEach(table => {
-          const filename = _.upperFirst(_.camelCase(table))
-          this.log(filename, table)
+        Object.keys(auto.tables).forEach((table) => {
+          const filename = _.upperFirst(_.camelCase(table));
+          this.log(filename, table);
           if (table !== filename) {
             fs.renameSync(
               path.resolve(modelsLocation, table + '.js'),
-              path.resolve(modelsLocation, filename + '.js'),
-            )
+              path.resolve(modelsLocation, filename + '.js')
+            );
           }
 
           migrateSequelizeModels(
@@ -133,12 +145,12 @@ export default class Import extends Command {
               entityClass: filename,
               identity: _[format](table),
             }
-          )
-        })
+          );
+        });
 
         // for each table run the migrator.
         // if schema is true
-      })
-    })
+      });
+    });
   }
 }
