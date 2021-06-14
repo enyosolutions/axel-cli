@@ -17,9 +17,8 @@
  * @description :: Server-side logic for managing all entitys
  * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
  */
-import { Request, Response, NextFunction } from 'express';
-import Utils from '../../common/services/Utils'; // adjust path as needed
-import ExtendedError from 'axel-core'; // adjust path as needed
+const { ExtendedError, Utils } = require('axel-core'); // adjust path as needed
+
 /*
 Uncomment if you need the following features:
 - Create import template for users
@@ -27,8 +26,7 @@ Uncomment if you need the following features:
 - Export to excel
 
 */
-// import DocumentManager from '../../services/DocumentManager';
-// import ExcelService from '../../services/ExcelService';
+// const { ExcelService, DocumentManager } = require('axel-core');
 
 const primaryKey = axel.config.framework.primaryKey;
 const entity = '<%= entity %>';
@@ -115,4 +113,4 @@ class <%= entityClass %>Controller {
   }
 }
 
-export default new <%= entityClass %>Controller();
+module.exports = new <%= entityClass %>Controller();

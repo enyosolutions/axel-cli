@@ -24,7 +24,7 @@ const primaryKey = axel.models[entity] && axel.models[entity].primaryKeyField
   ? axel.models[entity].primaryKeyField : axel.config.framework.primaryKey;
 
 
-class <%= entityClass %> Controller {
+class <%= entityClass %>Controller {
   stats(req, resp) {
     const output = {};
 
@@ -602,4 +602,4 @@ class <%= entityClass %> Controller {
   */
 }
 
-module.exports = new <%= entityClass %> Controller();
+module.exports = new <%= entityClass %>Controller();
