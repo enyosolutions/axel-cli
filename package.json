@@ -7,7 +7,6 @@
   },
   "bugs": "https://github.com/enyosolutions-team/axel-cli/issues",
   "dependencies": {
-    "@commitlint/cli": "^8.3.5",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
@@ -25,6 +24,7 @@
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
     "@oclif/dev-cli": "^1",
     "@types/chalk": "^2.2.0",
     "@types/fs-extra": "^8.1.0",

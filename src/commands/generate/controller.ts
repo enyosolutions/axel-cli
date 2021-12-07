@@ -17,7 +17,7 @@ export const generateController = (options: OptionsType) => {
   const controller: any = _.trim(folderArray.pop());
   const folder = folderArray.join('/').toLowerCase();
 
-  const entityClass = _.startCase(controller).replace(/ /g, '');
+  const entityClass = _.startCase(controller).replace(/ /g, '').trim();
   const entityIdentity = _.camelCase(controller).replace(/ /g, '');
   const entity = _.snakeCase(controller);
   const entityKebabCased = _.kebabCase(controller);

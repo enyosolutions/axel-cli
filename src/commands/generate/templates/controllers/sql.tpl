@@ -25,91 +25,10 @@ const primaryKey = axel.models[entity] && axel.models[entity].primaryKeyField
 
 
 class <%= entityClass %>Controller {
-  stats(req, resp) {
-    const output = {};
-
-    if (!axel.models[entity] || !axel.models[entity].repository) {
-      return resp.status(404).json({
-        errors: ['not_found'],
-        message: 'not_found'
-      });
-    }
-    const { repository, tableName } = axel.models[entity];
-    repository
-      .count({})
-      .then((data) => {
-        // TOTAL
-        output.total = data;
-
-        // THIS MONTH
-        return axel.sqldb.query(
-          `SELECT COUNT(*)  as month
-        FROM
-        FROM ${tableName}
-        WHERE
-        createdOn >= SUBDATE(CURDATE(), DAYOFMONTH(CURDATE())-1)`,
-          {
-            type: axel.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data) => {
-        if (data && data.length > 0 && data[0].month) {
-          output.month = data[0].month;
-        } else {
-          output.month = 0;
-        }
-
-        // THIS WEEK
-        return axel.sqldb.query(
-          `SELECT COUNT(*) as week
-          FROM ${tableName}
-        WHERE
-        YEARWEEK(createdOn) = YEARWEEK(CURRENT_TIMESTAMP)`,
-          {
-            type: axel.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data) => {
-        if (data && data.length > 0 && data[0].week) {
-          output.week = data[0].week;
-        } else {
-          output.week = 0;
-        }
-
-        // TODAY
-        return axel.sqldb.query(
-          `SELECT COUNT(*) as today
-          FROM ${tableName}
-        WHERE
-        DATE(createdOn) = DATE(NOW())`,
-          {
-            type: axel.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data) => {
-        if (data && data.length > 0 && data[0].today) {
-          output.today = data[0].today;
-        } else {
-          output.today = 0;
-        }
-
-        return resp.status(200).json({
-          body: output
-        });
-      })
-      .catch((err) => {
-        Utils.errorCallback(err, resp);
-      });
-  }
-
   list(req, resp) {
     let items = [];
 
     const {
-      listOfValues,
       startPage,
       limit,
       offset,
@@ -128,7 +47,6 @@ class <%= entityClass %>Controller {
     query = Utils.cleanSqlQuery(query);
     repository
       .findAndCountAll({
-        // where: req.query.filters,
         where: query,
         order,
         limit,
@@ -136,16 +54,7 @@ class <%= entityClass %>Controller {
       })
       .then((result) => {
         items = result.rows;
-        if (listOfValues) {
-          items = items.map((item) => ({
-            [primaryKey]: item[primaryKey],
-            label:
-              item.title ||
-              item.name ||
-              item.label ||
-              `${item.firstname} ${item.lastname}`
-          }));
-        }
+
         return result.count || 0;
       })
       .then((totalCount) =>
@@ -163,9 +72,6 @@ class <%= entityClass %>Controller {
 
   get(req, resp) {
     const id = req.params.id;
-    const listOfValues = req.query.listOfValues
-      ? req.query.listOfValues
-      : false;
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
@@ -194,16 +100,6 @@ class <%= entityClass %>Controller {
       .then((item) => {
         if (item) {
           item = item.get();
-          if (listOfValues) {
-            item = {
-              [primaryKey]: item[primaryKey],
-              label:
-                item.title ||
-                item.name ||
-                item.label ||
-                `${item.firstname} ${item.lastname}`
-            };
-          }
           return resp.status(200).json({
             body: item
           });
@@ -282,7 +178,7 @@ class <%= entityClass %>Controller {
   put(req, resp) {
     const id = req.params.id;
     let data = req.body;
-
+     const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {

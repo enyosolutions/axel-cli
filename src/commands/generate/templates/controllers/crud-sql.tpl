@@ -28,95 +28,10 @@ declare const axel;
 const primaryKey = axel.config.enyo.primaryKey;
 
 class CrudSqlController {
-  stats(req, resp) {
-    const output = {};
-    const endpoint = req.param('endpoint');
-
-    if (!axel.models[endpoint] || !axel.models[endpoint].repository) {
-      return resp.status(404).json({
-        errors: ['not_found'],
-        message: 'not_found'
-      });
-    }
-    const { repository, tableName } = axel.models[endpoint];
-    repository
-      .count({})
-      .then((data) => {
-        // TOTAL
-        output.total = data;
-
-        // THIS MONTH
-        return axel.sqldb.query(
-          `SELECT COUNT(*)  as month
-        FROM ${tableName}
-        WHERE
-        createdOn >= SUBDATE(CURDATE(), DAYOFMONTH(CURDATE())-1)`,
-          {
-            type: axel.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data) => {
-        if (data && data.length > 0 && data[0].month) {
-          output.month = data[0].month;
-        } else {
-          output.month = 0;
-        }
-
-        // THIS WEEK
-        return axel.sqldb.query(
-          `SELECT COUNT(*) as week
-        FROM ${tableName}
-        WHERE
-        YEARWEEK(createdOn) = YEARWEEK(CURRENT_TIMESTAMP)`,
-          {
-            type: axel.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data: [{ week }]) => {
-        if (data && data.length > 0 && data[0].week) {
-          output.week = data[0].week;
-        } else {
-          output.week = 0;
-        }
-
-        // TODAY
-        return axel.sqldb.query(
-          `SELECT COUNT(*) as today
-        FROM ${tableName}
-        WHERE
-        DATE(createdOn) = DATE(NOW())`,
-          {
-            type: axel.sqldb.QueryTypes.SELECT
-          }
-        );
-      })
-      .then((data: [{ today }]) => {
-        if (data && data.length > 0 && data[0].today) {
-          output.today = data[0].today;
-        } else {
-          output.today = 0;
-        }
-
-        return resp.status(200).json({
-          body: output
-        });
-      })
-      .catch((err) => {
-        if (process.env.NODE_ENV === 'development') {
-          axel.logger.warn(err && err.message ? err.message : err);
-        }
-
-        Utils.errorCallback(err, resp);
-      });
-  }
-
   list(req, resp) {
     let items: Array<object> = [];
 
     const {
-      listOfValues,
       startPage,
       limit,
       offset,
@@ -142,18 +57,8 @@ class CrudSqlController {
         limit,
         offset
       })
-      .then((result: ) => {
+      .then((result) => {
         items = result.rows;
-        if (listOfValues) {
-          items = items.map((item) => ({
-            [primaryKey]: item[primaryKey],
-            label:
-              item.title ||
-              item.name ||
-              item.label ||
-              `${item.firstname} ${item.lastname}`
-          }));
-        }
         return result.count || 0;
       })
 
@@ -178,9 +83,6 @@ class CrudSqlController {
     if (!id) {
       return false;
     }
-    const listOfValues = req.query.listOfValues
-      ? req.query.listOfValues
-      : false;
 
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
@@ -210,16 +112,6 @@ class CrudSqlController {
       .then((item) => {
         if (item) {
           item = item.get();
-          if (listOfValues) {
-            item = {
-              [primaryKey]: item[primaryKey],
-              label:
-                item.title ||
-                item.name ||
-                item.label ||
-                `${item.firstname} ${item.lastname}`
-            };
-          }
           return resp.status(200).json({
             body: item
           });
@@ -244,7 +136,7 @@ class CrudSqlController {
   }
 
   post(req, resp) {
-    const data = Utils.injectUserId(req.body, req.token);
+    const data = Utils.injectUserId(req.body, req.user);
 
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {

@@ -46,8 +46,7 @@ export default class Sync extends Command {
         process.cwd(),
         'src/resources/sequelize/models/index.js'
       );
-    }
-    this.log('Running db:sync based on models in ', resource);
+    }    this.log('Running db:sync based on models in ', resource);
     if (!fs.existsSync(resource)) {
       this.error(
         'models resources not found ! . Please make sure you compile your code before running axel'
