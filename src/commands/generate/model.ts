@@ -109,6 +109,8 @@ export const generateModel = ({
       filename,
       fields: type === 'sql' ? sqlFields : schemaFields,
       isSql: types.indexOf('sql') > -1,
+      automaticApi: Boolean(pConfig.automaticApi),
+      jsonSchemaValidation: Boolean(pConfig.jsonSchemaValidation),
     });
   }
 };

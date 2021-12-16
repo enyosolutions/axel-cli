@@ -3,10 +3,10 @@ module.exports = {
   collectionName: '<%= identity %>',
   apiUrl: '/<%= entity %>', // url for front api
   additionalProperties: false,
-  automaticApi: false,
+  automaticApi: <%= automaticApi %>,
   primaryKeyField: null,
   displayField: null,
-  autoValidate: true,
+  autoValidate: <%= jsonSchemaValidation %>,
   schema: {
     $id: 'http://acme.com/schemas/<%= entity %>.json',
     type: 'object',

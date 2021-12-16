@@ -144,6 +144,10 @@ export default class Import extends Command {
               tableName: table,
               entityClass: filename,
               identity: _[format](table),
+              automaticApi:
+                this.projectConfig && this.projectConfig.automaticApi,
+              jsonSchemaValidation:
+                this.projectConfig && this.projectConfig.jsonSchemaValidation,
             }
           );
         });

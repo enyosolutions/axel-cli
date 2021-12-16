@@ -1,7 +1,7 @@
-import * as fs from 'fs-extra'
+import * as fs from 'fs-extra';
 // import * as path from 'path'
-import * as _ from 'lodash'
-import * as replace from 'replace'
+import * as _ from 'lodash';
+import * as replace from 'replace';
 
 const typeMap = {
   INTEGER: 'integer',
@@ -27,9 +27,9 @@ const typeMap = {
   DATE: 'string',
   DATETIME: 'string',
   DATEONLY: 'string',
-}
+};
 
-export const cliTypesToSqlTypesMap: {[key: string]: any} = {
+export const cliTypesToSqlTypesMap: { [key: string]: any } = {
   integer: 'DataTypes.INTEGER',
   number: 'DataTypes.FLOAT',
   boolean: 'DataTypes.BOOLEAN',
@@ -38,9 +38,9 @@ export const cliTypesToSqlTypesMap: {[key: string]: any} = {
   string: 'DataTypes.STRING',
   text: 'DataTypes.TEXT',
   longtext: 'DataTypes.TEXT',
-}
+};
 
-export const cliTypesToSchemaTypesMap: {[key: string]: any} = {
+export const cliTypesToSchemaTypesMap: { [key: string]: any } = {
   integer: 'integer',
   number: 'number',
   boolean: 'boolean',
@@ -49,22 +49,28 @@ export const cliTypesToSchemaTypesMap: {[key: string]: any} = {
   string: 'string',
   text: 'string',
   longtext: 'string',
+};
+export function cliFieldToSequelizeField(field: { [key: string]: any }) {
+  field.type = cliTypesToSqlTypesMap[field.type as any] || field.type;
+  return field;
 }
-export function cliFieldToSequelizeField(field: {[key: string]: any}) {
-  field.type = cliTypesToSqlTypesMap[field.type as any] || field.type
-  return field
-}
-export function sequelizeFieldToSchemaField(fieldName: string, field: {[key: string]: any}) {
+export function sequelizeFieldToSchemaField(
+  fieldName: string,
+  field: { [key: string]: any }
+) {
   if (!field.type) {
-    console.error('field.type missing for', fieldName)
-    throw new Error('missing_type_for field' + fieldName)
+    console.error('field.type missing for', fieldName);
+    throw new Error('missing_type_for field' + fieldName);
   }
-  let type = field.type.toString()
-  type = type.replace(/\(\d+\)/, '').replace(/(Sequelize|DataTypes)/i, '').replace('.', '')
+  let type = field.type.toString();
+  type = type
+    .replace(/\(\d+\)/, '')
+    .replace(/(Sequelize|DataTypes)/i, '')
+    .replace('.', '');
   // @ts-ignore
   if (!typeMap[type]) {
-    console.error('field.type', field.type, type)
-    throw new Error('unkown_type_' + type)
+    console.error('field.type', field.type, type);
+    throw new Error('unkown_type_' + type);
   }
 
   const schema: any = {
@@ -72,54 +78,54 @@ export function sequelizeFieldToSchemaField(fieldName: string, field: {[key: str
     type: typeMap[type],
     column: {},
     field: {},
-  }
+  };
 
   if (!field.allowNull && fieldName !== 'id') {
     if (!field.defaultValue) {
-      schema.field.required = true
+      schema.field.required = true;
     }
   }
   if (field.defaultValue) {
-    schema.default = field.defaultValue
-    schema.field.default = field.defaultValue
+    schema.default = field.defaultValue;
+    schema.field.default = field.defaultValue;
   }
 
   switch (type) {
-  case 'VARCHAR':
-    schema.enum = field.type.values
-    break
-  case 'ENUM':
-    schema.enum = field.type.values
-    break
-  case 'TEXT':
-    schema.field.type = 'textArea'
-    break
-  case 'DATE':
-    schema.field.format = 'date-time'
-    schema.column.type = 'date'
-    schema.field.type = 'dateTime'
-    break
-  case 'DATEONLY':
-    schema.field.format = 'date-time'
-    schema.column.type = 'datetime'
-    schema.field.type = 'dateTime'
-    schema.field.fieldOptions = {
-      type: 'date',
-    }
-    break
-  case 'TIME':
-    schema.field.format = 'date-time'
-    schema.field.type = 'dateTime'
-    schema.field.fieldOptions = {
-      type: 'time',
-    }
-    break
-  case 'INTEGER':
-    if (field.type.options) {
-      schema.maxLength = field.type.options.length
-    }
+    case 'VARCHAR':
+      schema.enum = field.type.values;
+      break;
+    case 'ENUM':
+      schema.enum = field.type.values;
+      break;
+    case 'TEXT':
+      schema.field.type = 'textArea';
+      break;
+    case 'DATE':
+      schema.field.format = 'date-time';
+      schema.column.type = 'date';
+      schema.field.type = 'dateTime';
+      break;
+    case 'DATEONLY':
+      schema.field.format = 'date-time';
+      schema.column.type = 'datetime';
+      schema.field.type = 'dateTime';
+      schema.field.fieldOptions = {
+        type: 'date',
+      };
+      break;
+    case 'TIME':
+      schema.field.format = 'date-time';
+      schema.field.type = 'dateTime';
+      schema.field.fieldOptions = {
+        type: 'time',
+      };
+      break;
+    case 'INTEGER':
+      if (field.type.options) {
+        schema.maxLength = field.type.options.length;
+      }
   }
-  return schema
+  return schema;
 }
 
 export function generateSchemaFromModel(
@@ -128,22 +134,22 @@ export function generateSchemaFromModel(
   options: any = {}
 ) {
   if (file.endsWith('.js') || file.endsWith('.js')) {
-    const model = require(file)
+    const model = require(file);
 
     if (!model.entity) {
-      console.error(file, model)
-      throw new Error('missing_tablename_' + file)
+      console.error(file, model);
+      throw new Error('missing_tablename_' + file);
     }
-    const tableName = model.entity.options.tableName
+    const tableName = model.entity.options.tableName;
     if (!tableName) {
-      throw new Error('missing_tablename_' + tableName)
+      throw new Error('missing_tablename_' + tableName);
     }
     const destination: { [key: string]: any } = {
       identity: tableName,
       apiUrl: '/' + tableName,
       additionalProperties: false,
-      autoValidate: true,
-      automaticApi: false,
+      autoValidate: Boolean(options.jsonSchemaValidation),
+      automaticApi: Boolean(options.automaticApi),
       primaryKeyField: null,
       displayField: null,
       schema: {
@@ -152,22 +158,22 @@ export function generateSchemaFromModel(
         properties: {},
         required: [],
       },
-    }
+    };
 
-    Object.keys(model.entity.attributes).forEach(key => {
-      const field = model.entity.attributes[key]
+    Object.keys(model.entity.attributes).forEach((key) => {
+      const field = model.entity.attributes[key];
 
-      const schema: any = sequelizeFieldToSchemaField(key, field)
+      const schema: any = sequelizeFieldToSchemaField(key, field);
 
       if (!field.allowNull && key !== 'id') {
-        destination.schema.required.push(key)
+        destination.schema.required.push(key);
         if (!field.defaultValue) {
-          schema.field.required = true
+          schema.field.required = true;
         }
       }
-      console.log('schema', key, schema)
-      destination.schema.properties[key] = schema
-    })
+      console.log('schema', key, schema);
+      destination.schema.properties[key] = schema;
+    });
 
     destination.admin = {
       name: null,
@@ -181,7 +187,7 @@ export function generateSchemaFromModel(
       kanbanOptions: null,
       tableOptions: null,
       nestedModels: [],
-    }
+    };
     if (
       model.entity &&
       model.entity.options &&
@@ -201,9 +207,9 @@ export function generateSchemaFromModel(
               readonly: true,
               disabled: true,
             },
-          }
+          };
         }
-      })
+      });
     }
 
     try {
@@ -212,10 +218,10 @@ export function generateSchemaFromModel(
         `
 
       module.exports = ${JSON.stringify(destination, null, 2)}`,
-        {flag: options.force ? 'w' : 'wx'}
-      )
+        { flag: options.force ? 'w' : 'wx' }
+      );
     } catch (error) {
-      console.warn('[MIGRATON]', `${tableName}.ts`, error.message)
+      console.warn('[MIGRATON]', `${tableName}.ts`, error.message);
     }
   }
 }
@@ -234,7 +240,7 @@ export const migrateSequelizeModels = async (
     paths: [file],
     recursive: true,
     silent: true,
-  })
+  });
 
   await replace({
     regex: 'module.exports = function.+\n.+\\(',
@@ -243,7 +249,7 @@ export const migrateSequelizeModels = async (
     paths: [file],
     recursive: true,
     silent: true,
-  })
+  });
 
   await replace({
     regex: /identity:(.+), {/,
@@ -251,15 +257,17 @@ export const migrateSequelizeModels = async (
     paths: [file],
     recursive: true,
     silent: true,
-  })
+  });
 
   await replace({
     regex: `identity: '${options.tableName}'`,
-    replacement: `identity: '${options.identity || _.lowerFirst(_.camelCase(options.tableName))}'`,
+    replacement: `identity: '${
+      options.identity || _.lowerFirst(_.camelCase(options.tableName))
+    }'`,
     paths: [file],
     recursive: true,
     silent: true,
-  })
+  });
 
   await replace({
     regex: /}\);/,
@@ -269,7 +277,7 @@ export const migrateSequelizeModels = async (
     paths: [file],
     recursive: true,
     silent: true,
-  })
+  });
 
   await replace({
     regex: /DataTypes.INTEGER\(1\)/g,
@@ -277,7 +285,7 @@ export const migrateSequelizeModels = async (
     paths: [file],
     recursive: true,
     silent: true,
-  })
+  });
 
   await replace({
     regex: /DataTypes.INTEGER\(.+\)/g,
@@ -285,7 +293,7 @@ export const migrateSequelizeModels = async (
     paths: [file],
     recursive: true,
     silent: true,
-  })
+  });
 
   await replace({
     regex: /}, {/,
@@ -302,9 +310,9 @@ export const migrateSequelizeModels = async (
     paths: [file],
     recursive: true,
     silent: true,
-  })
+  });
   if (options.schemas) {
-    generateSchemaFromModel(file, file.replace('sequelize', 'schema'), options)
+    generateSchemaFromModel(file, file.replace('sequelize', 'schema'), options);
   }
   //   replace({
   //     regex: 'tableName',
@@ -326,4 +334,4 @@ export const migrateSequelizeModels = async (
   //   recursive: true,
   //   silent: false,
   // });
-}
+};

@@ -1,30 +1,30 @@
-import {Command, flags} from '@oclif/command'
-const {cosmiconfigSync} = require('cosmiconfig')
-import * as fs from 'fs'
-import {promptInit} from '../services/utils'
+import { Command, flags } from '@oclif/command';
+const { cosmiconfigSync } = require('cosmiconfig');
+import * as fs from 'fs';
+import { promptInit } from '../services/utils';
 
 export default class Init extends Command {
   static description = 'describe the command here';
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({ char: 'h' }),
     // flag with no value (-f, --force)
   };
 
-  static args = [{name: 'name'}];
+  static args = [{ name: 'name' }];
 
   async run() {
-    const {args} = this.parse(Init)
-    const moduleName = 'axel'
+    const { args } = this.parse(Init);
+    const moduleName = 'axel';
 
-    const explorer = cosmiconfigSync(moduleName, {})
-    explorer.clearCaches()
-    const searchedFor = explorer.search()
-    this.log(searchedFor)
+    const explorer = cosmiconfigSync(moduleName, {});
+    explorer.clearCaches();
+    const searchedFor = explorer.search();
+    this.log(searchedFor);
     if (searchedFor && !searchedFor.isEmpty) {
-      this.error('Config file already initialized', searchedFor)
+      this.error('Config file already initialized', searchedFor);
 
-      return new Error('config_already_exists')
+      return new Error('config_already_exists');
     }
     const config = await promptInit([
       {
@@ -38,9 +38,9 @@ export default class Init extends Command {
         type: 'list',
         default: 'camelCase',
         choices: [
-          {name: 'camelCase'},
-          {name: 'snakeCase'},
-          {name: 'kebabCase'},
+          { name: 'camelCase' },
+          { name: 'snakeCase' },
+          { name: 'kebabCase' },
         ],
       },
       {
@@ -49,7 +49,7 @@ export default class Init extends Command {
         type: 'list',
         choices: [
           'sequelize',
-          {value: 'mongodb', name: 'mongodb (incomplete support)'},
+          { value: 'mongodb', name: 'mongodb (incomplete support)' },
         ],
       },
       {
@@ -67,7 +67,13 @@ export default class Init extends Command {
         message: 'Validate data using json schema',
         default: false,
       },
-    ])
+      {
+        name: 'automaticApi',
+        message:
+          'Automatically create endpoint for items that are in the database',
+        default: false,
+      },
+    ]);
 
     fs.writeFileSync(
       'axel.config.js',
@@ -75,7 +81,7 @@ export default class Init extends Command {
       {
         encoding: 'utf8',
       }
-    )
-    this.log('Config done.')
+    );
+    this.log('Config done.');
   }
 }
