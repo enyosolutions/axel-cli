@@ -6,6 +6,7 @@
 
 
 const { ExtendedError, Utils, SchemaValidator } = require('axel-core');
+const { get } = require('lodash');
 
 
 
@@ -127,7 +128,7 @@ class <%= entityClass %>Controller {
       return;
     }
 
-    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema && (axel.models[entity] && axel.models[entity].autoValidate)) {
+    if (get(axel, 'config.framework.validateDataWithJsonSchema') && (axel.models[entity] && axel.models[entity].autoValidate)) {
       try {
         const result = SchemaValidator.validate(data, entity);
         if (!result.isValid) {
@@ -177,15 +178,14 @@ class <%= entityClass %>Controller {
    */
   put(req, resp) {
     const id = req.params.id;
-    let data = req.body;
-     const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
+    const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
 
     const repository = Utils.getEntityManager(entity, resp);
     if (!repository) {
       // No need to send response error as it's already thrown in the Entity manager getter
       return;
     }
-    if (axel.config.framework && axel.config.framework.validateDataWithJsonSchema && (axel.models[entity] && axel.models[entity].autoValidate)) {
+    if (get(axel, 'config.framework.validateDataWithJsonSchema') && (axel.models[entity] && axel.models[entity].autoValidate)) {
       try {
         const result = SchemaValidator.validate(data, entity);
         if (!result.isValid) {
