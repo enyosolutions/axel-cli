@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 import Command from '../../base';
 import { flags } from '@oclif/command';
 import * as _ from 'lodash';
@@ -6,6 +7,7 @@ import * as fs from 'fs-extra';
 // import * as SequelizeAuto from 'sequelize-auto'
 const SequelizeAuto = require('sequelize-auto');
 import { migrateSequelizeModels } from '../../services/models';
+import { renderTemplate } from '../../services/utils';
 
 const modelsLocation = `${process.cwd()}/src/api/models/sequelize`;
 
@@ -52,7 +54,6 @@ export default class Import extends Command {
     const oldFolderExists = fs.existsSync(
       path.resolve(process.cwd(), 'resources/sequelize/config/config')
     );
-    console.log('oldFolderExists', oldFolderExists);
 
     if (oldFolderExists) {
       folder = path.resolve(process.cwd(), 'resources/sequelize/config/config');
@@ -108,6 +109,7 @@ export default class Import extends Command {
           return;
         }
         this.log('format:', format);
+        // auto foreign keys
         // console.log('auto', auto.foreignKeys)
         // fs.moveSync(
         //   path.resolve(modelsLocation, 'db.d.js'),
@@ -128,6 +130,12 @@ export default class Import extends Command {
               path.resolve(modelsLocation, filename + '.js')
             );
           }
+
+          renderTemplate(
+            `${__dirname}/templates/models/sql-hooks.tpl`,
+            modelsLocation.replace('/sequelize/', '/hooks/'),
+            { identity: _[format](table) }
+          );
 
           migrateSequelizeModels(
             path.resolve(

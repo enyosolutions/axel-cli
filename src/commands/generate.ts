@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command'
+import {Command, flags} from '@oclif/command';
 
 export default class Generate extends Command {
   static description = 'Generate various documents for your axel project';
@@ -25,11 +25,11 @@ export default class Generate extends Command {
   };
 
   async run() {
-    const {args, flags} = this.parse(Generate)
+    const {args, flags} = this.parse(Generate);
 
-    const type = flags.type
+    const type = flags.type;
     this.log(
       `hello ${args.target} ${type} from /Users/faou/Projects/axel-cli/src/commands/generate.ts`
-    )
+    );
   }
 }

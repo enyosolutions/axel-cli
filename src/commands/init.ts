@@ -1,20 +1,20 @@
-import { Command, flags } from '@oclif/command';
-const { cosmiconfigSync } = require('cosmiconfig');
+import {Command, flags} from '@oclif/command';
+const {cosmiconfigSync} = require('cosmiconfig');
 import * as fs from 'fs';
-import { promptInit } from '../services/utils';
+import {promptInit} from '../services/utils';
 
 export default class Init extends Command {
   static description = 'describe the command here';
 
   static flags = {
-    help: flags.help({ char: 'h' }),
+    help: flags.help({char: 'h'}),
     // flag with no value (-f, --force)
   };
 
-  static args = [{ name: 'name' }];
+  static args = [{name: 'name'}];
 
   async run() {
-    const { args } = this.parse(Init);
+    const {args} = this.parse(Init);
     const moduleName = 'axel';
 
     const explorer = cosmiconfigSync(moduleName, {});
@@ -38,9 +38,9 @@ export default class Init extends Command {
         type: 'list',
         default: 'camelCase',
         choices: [
-          { name: 'camelCase' },
-          { name: 'snakeCase' },
-          { name: 'kebabCase' },
+          {name: 'camelCase'},
+          {name: 'snakeCase'},
+          {name: 'kebabCase'},
         ],
       },
       {
@@ -49,7 +49,7 @@ export default class Init extends Command {
         type: 'list',
         choices: [
           'sequelize',
-          { value: 'mongodb', name: 'mongodb (incomplete support)' },
+          {value: 'mongodb', name: 'mongodb (incomplete support)'},
         ],
       },
       {

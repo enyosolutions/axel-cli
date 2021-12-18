@@ -15,6 +15,7 @@ import {
 
 const modelsLocation = `${process.cwd()}/src/api/models/sequelize`;
 const schemasLocation = `${process.cwd()}/src/api/models/schema`;
+const hooksLocation = `${process.cwd()}/src/api/models/hooks`;
 
 export type ModelType = 'sql' | 'schema' | 'all';
 type OptionsType = {
@@ -96,8 +97,7 @@ export const generateModel = ({
           return f;
         })
       : [];
-
-    renderTemplate(`${__dirname}/templates/models/${type}.tpl`, filePath, {
+    const config = {
       ...projectConfig,
       type,
       identity,
@@ -111,7 +111,22 @@ export const generateModel = ({
       isSql: types.indexOf('sql') > -1,
       automaticApi: Boolean(pConfig.automaticApi),
       jsonSchemaValidation: Boolean(pConfig.jsonSchemaValidation),
-    });
+    };
+
+    renderTemplate(
+      `${__dirname}/templates/models/${type}.tpl`,
+      filePath,
+      config
+    );
+    console.log('type', type);
+    // if type is sql render the hooks also
+    if (type === 'sql') {
+      renderTemplate(
+        `${__dirname}/templates/models/sql-hooks.tpl`,
+        filePath.replace('/sequelize/', '/hooks/'),
+        config
+      );
+    }
   }
 };
 
