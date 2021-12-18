@@ -2,6 +2,7 @@
 /**
 *'<%= identity %>'  hooks. See https://sequelize.org/master/manual/hooks.html
 * for more infos.
+* LIst of hooks can be found here https://github.com/sequelize/sequelize/blob/v6/lib/hooks.js#L7
 * Be sure sure to set the hooks for both individual and bulkUpdates
 */
 // before
@@ -15,6 +16,7 @@ module.exports.beforeBulkCreate = (<%= identity %>s, options) => {}
 module.exports.beforeBulkDestroy = (options) => {}
 module.exports.beforeBulkUpdate = (options) => {}
 
+module.exports.beforeFind = (<%= identity %>s, options) => {}
 
 // After
 module.exports.afterCreate = (<%= identity %>, options) => {}
@@ -26,3 +28,5 @@ module.exports.afterUpsert = (created, options) => {}
 module.exports.afterBulkCreate = (<%= identity %>s, options) => {}
 module.exports.afterBulkDestroy = (options) => {}
 module.exports.afterBulkUpdate = (options) => {}
+
+module.exports.afterFind = (<%= identity %>s, options) => {}
