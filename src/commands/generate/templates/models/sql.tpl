@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: ["error", { "args": "none" }] */
 /**
  * <%= filename %>
  *
@@ -39,7 +40,6 @@ const <%= entityClass %> = {
         allowNull: <%= !fields[i].required %>,
         type: "<%= fields[i].type || 'DataTypes.STRING' %>",
       },<% } %>
-
     },
     options: {
       // disable the modification of tablenames; By default, sequelize will automatically
