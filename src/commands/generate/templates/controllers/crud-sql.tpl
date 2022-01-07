@@ -439,14 +439,14 @@ class CrudSqlController {
       return;
     }
     const endpoint = req.param('endpoint');
-    const properData: [] = [];
-    const improperData: [] = [];
+    const properData = [];
+    const improperData = [];
     let doc;
     DocumentManager.httpUpload(req, {
       path: 'updloads/excel'
     })
       // @ts-ignore
-      .then((document?[]) => {
+      .then((document) => {
         if (document && document.length > 0) {
           doc = document[0];
           return ExcelService.parse(doc.fd, {
@@ -460,7 +460,7 @@ class CrudSqlController {
           errors: ['no_file_uploaded']
         });
       })
-      .then((result?: []) => {
+      .then((result) => {
         if (result) {
           result.forEach(item => {
             // check if data is proper before pushing it

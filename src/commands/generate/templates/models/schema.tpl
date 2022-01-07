@@ -43,15 +43,15 @@ module.exports = {
       },
       createdBy: {
         type: ['string'],
-        relation: '/user',
-        relationKey: '_id',
+        relation: 'user',
+        relationKey: 'id',
         column: {},
         field: { readonly: true, disabled: true },
       },
       lastModifiedBy: {
         type: ['string'],
-        relation: '/user',
-        relationKey: '_id',
+        relation: 'user',
+        relationKey: 'id',
         column: {},
         field: { readonly: true, disabled: true },
       }

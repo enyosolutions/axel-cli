@@ -30,3 +30,20 @@ module.exports.afterBulkDestroy = (options) => {}
 module.exports.afterBulkUpdate = (options) => {}
 
 module.exports.afterFind = (<%= identity %>s, options) => {}
+
+
+// API middlewares
+// ctx is an alias for context
+// const {request : ExpressRequest, sequelizeQuery: SequelizeRequest } = ctx;
+// api middlewares must return a promise or throw an error.
+module.exports.beforeApiFind = async (ctx) => {}
+module.exports.beforeApiFindOne = async (ctx) => {}
+module.exports.beforeApiCreate = async (ctx) => {}
+module.exports.beforeApiUpdate = async (ctx) => {}
+module.exports.beforeApiDelete = async (ctx) => {}
+
+module.exports.afterApiFind = async (result, ctx) => {}
+module.exports.afterApiFindOne = async (result, ctx) => {}
+module.exports.afterApiCreate = async (result, ctx) => {}
+module.exports.afterApiUpdate = async (result, ctx) => {}
+module.exports.afterApiDelete = async (result, ctx) => {}

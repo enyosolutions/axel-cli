@@ -5,9 +5,10 @@
  */
 
 
-const { ExtendedError, Utils, SchemaValidator } = require('axel-core');
+const { ExtendedError, Utils, SchemaValidator, ControllerUtils } = require('axel-core');
+const { execHook, getPrimaryKey } = ControllerUtils;
 const { get } = require('lodash');
-
+const path = require('path');
 
 
 /*
@@ -17,155 +18,121 @@ Uncomment if you need the following features:
 - Export to excel
 */
 
-// import DocumentManager from '../../services/DocumentManager';
-// import ExcelService from '../../services/ExcelService';
+// const { DocumentManager } = require('axel-core');
+// const ExcelService = require('axel-core/src/services/ExcelService');
 
-const entity = '<%= entityCamelCased %>';
-const primaryKey = axel.models[entity] && axel.models[entity].primaryKeyField
-  ? axel.models[entity].primaryKeyField : axel.config.framework.primaryKey;
+const path = require('path');
+const modelName = '<%= entityCamelCased %>';
+const primaryKey = getPrimaryKey(modelName);
 
 
 class <%= entityClass %>Controller {
   list(req, resp) {
-    let items = [];
+    try {
+      let items = [];
+      const {
+        startPage, limit, offset, order
+      } = req.pagination;
+      let query = req.parsedQuery;
 
-    const {
-      startPage,
-      limit,
-      offset,
-      order
-    } = Utils.injectPaginationQuery(req);
-    let query = Utils.injectQueryParams(req);
-    const repository = Utils.getEntityManager(entity, resp);
-    if (!repository) {
-      return;
-    }
-    if (req.query.search) {
-      query = Utils.injectSqlSearchParams(req, query, {
-        modelName: entity
-      });
-    }
-    query = Utils.cleanSqlQuery(query);
-    repository
-      .findAndCountAll({
+      const repository = Utils.getEntityManager(modelName, resp);
+      if (!repository) {
+        throw ExtendedError({
+          code: 400,
+          message: 'error_model_not_found_for_this_url'
+        });
+      }
+      if (req.query.search) {
+        query = Utils.injectSqlSearchParams(req, query, {
+          modelName: modelName
+        });
+      }
+
+      query = Utils.cleanSqlQuery(query);
+      const sequelizeQuery = {
         where: query,
         order,
         limit,
-        offset
-      })
-      .then((result) => {
-        items = result.rows;
+        offset,
+        raw: false,
+        nested: true
+      };
+      await execHook(modelName, 'beforeApiFind', { request: req, sequelizeQuery });
+      const { rows, count } = await repository
+        .findAndCountAll(sequelizeQuery);
 
-        return result.count || 0;
-      })
-      .then((totalCount) =>
-        resp.status(200).json({
-          body: items,
-          page: startPage,
-          count: limit,
-          totalCount: totalCount
-        })
-      )
-      .catch((err) => {
-        Utils.errorCallback(err, resp);
-      });
+
+      items = rows.map(item => item.get());
+      const result = {
+        body: items,
+        page: startPage,
+        perPage: limit,
+        count: limit,
+        totalCount: count
+      };
+      await execHook(modelName, 'afterApiFind', result, { request: req });
+
+      resp.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
   }
 
   get(req, resp) {
     const id = req.params.id;
-
-    const repository = Utils.getEntityManager(entity, resp);
-    if (!repository) {
-      // No need to send response error as it's already thrown in the Entity manager getter
-      return;
-    }
-    repository
-      .findOne({
+    try {
+      const primaryKey = getPrimaryKey(modelName);
+      const repository = Utils.getEntityManager(req, resp);
+      if (!repository) {
+        throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
+      }
+      const sequelizeQuery = {
         where: { [primaryKey]: id },
         raw: false
-      })
-      .catch((err) => {
-        if (process.env.NODE_ENV === 'development') {
-          axel.logger.warn(err);
-        }
+      };
+      await execHook(modelName, 'beforeApiFindOne', { ...req, sequelizeQuery });
+      const item = await repository
+        .findOne(sequelizeQuery);
+
+      if (!item) {
         throw new ExtendedError({
           code: 404,
           errors: [
-            {
-              message: err.message || 'not_found'
-            }
+            `${modelName}_not_found_${id}`
           ],
-          message: err.message || 'not_found'
+          message: 'item_not_found'
         });
-      })
-      .then((item) => {
-        if (item) {
-          item = item.get();
-          return resp.status(200).json({
-            body: item
-          });
-        }
-        throw new ExtendedError({
-          code: 404,
-          errors: [
-            {
-              message: 'not_found'
-            }
-          ],
-          message: 'not_found'
-        });
-      })
-      .catch((err) => {
-        Utils.errorCallback(err, resp);
-      });
+      }
+
+      const result = {
+        body: item.get()
+      };
+      execHook(modelName, 'afterApiFindOne', result, req);
+      return resp.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
   }
 
   post(req, resp) {
     const data = Utils.injectUserId(req.body, req.user, ['createdBy']); // replace field by userId or any other relevant field
-
-    const repository = Utils.getEntityManager(entity, resp);
-    if (!repository) {
-      return;
-    }
-
-    if (get(axel, 'config.framework.validateDataWithJsonSchema') && (axel.models[entity] && axel.models[entity].autoValidate)) {
-      try {
-        const result = SchemaValidator.validate(data, entity);
-        if (!result.isValid) {
-          console.warn('[SCHEMA VALIDATION ERROR]', entity, result, data);
-          resp.status(400).json({
-            message: 'data_validation_error',
-            errors: result.formatedErrors,
-          });
-          return;
-        }
-      } catch (err) {
-        return resp.status(400).json({
-          message: 'error_wrong_json_format_for_model_definition',
-          errors: [err.message],
-        });
+    try {
+      await execHook(modelName, 'beforeApiCreate', { request: req, sequelizeQuery: data });
+      const repository = Utils.getEntityManager(entity, resp);
+      if (!repository) {
+        throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
       }
+      await SchemaValidator.validateAsync(data, modelName);
+
+      const result = {};
+      result.body = await repository
+        .create(data);
+      await execHook(modelName, 'afterApiCreate', result, { request: req });
+
+      resp.status(200).json(result);
+    } catch (err) {
+      next(err);
     }
-    repository
-      .create(data)
-      .then((result) =>
-        resp.status(200).json({
-          body: result
-        })
-      )
-      .catch((err) => {
-        if (process.env.NODE_ENV === 'development') {
-          axel.logger.warn(err);
-        }
-        if (err && err.name === 'SequelizeValidationError') {
-          return resp.status(400).json({
-            //@ts-ignore
-            errors: err.errors && err.errors.map((e) => e.message),
-            message: 'validation_error'
-          });
-        }
-        Utils.errorCallback(err, resp);
-      });
   }
 
   /**
@@ -177,83 +144,42 @@ class <%= entityClass %>Controller {
    * @return {[type]}      [description]
    */
   put(req, resp) {
-    const id = req.params.id;
     const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
 
-    const repository = Utils.getEntityManager(entity, resp);
-    if (!repository) {
-      // No need to send response error as it's already thrown in the Entity manager getter
-      return;
-    }
-    if (get(axel, 'config.framework.validateDataWithJsonSchema') && (axel.models[entity] && axel.models[entity].autoValidate)) {
-      try {
-        const result = SchemaValidator.validate(data, entity);
-        if (!result.isValid) {
-          console.warn('[SCHEMA VALIDATION ERROR]', entity, result, data);
-          return resp.status(400).json({
-            message: 'data_validation_error',
-            errors: result.formatedErrors,
-          });
-        }
-      } catch (err) {
-        return resp.status(400).json({
-          message: 'error_wrong_json_format_for_model_definition',
-          errors: [err.message],
+    const id = req.params.id;
+
+    try {
+      const primaryKey = getPrimaryKey(modelName);
+      const repository = Utils.getEntityManager(req, resp);
+      if (!repository) {
+        throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
+      }
+
+      const sequelizeQuery = { where: { [primaryKey]: id } };
+      await execHook(modelName, 'beforeApiUpdate', { request: req, sequelizeQuery });
+      await SchemaValidator.validateAsync(data, modelName);
+
+      const exists = await repository
+        .findOne(sequelizeQuery);
+      if (!exists) {
+        throw new ExtendedError({
+          code: 404,
+          message: 'item_not_found',
+          errors: ['item_not_found']
         });
       }
-    }
+      await repository.update(data, sequelizeQuery);
 
-    repository
-      .findByPk(id)
-      .catch((err) => {
-        if (process.env.NODE_ENV === 'development') {
-          axel.logger.warn(err);
-        }
-        throw new ExtendedError({
-          code: 404,
-          errors: [
-            {
-              message: err.message || 'not_found'
-            }
-          ],
-          message: err.message || 'not_found'
-        });
-      })
-      .then((result) => {
-        if (result) {
-          return repository.update(data, {
-            where: {
-              [primaryKey]: id
-            }
-          });
-        }
-        throw new ExtendedError({
-          code: 404,
-          message: 'not_found',
-          errors: ['not_found']
-        });
-      })
-      .then(() => repository.findByPk(id))
-      .then((result) => {
-        if (result) {
-          return resp.status(200).json({
-            body: result
-          });
-        }
-        return resp.status(404).json({
-          errors: ['not_found'],
-          message: 'not_found'
-        });
-      })
-      .catch((err) => {
-        if (err && err.name === 'SequelizeValidationError') {
-          return resp.status(400).json({
-            errors: err.errors && err.errors.map((e) => e.message),
-            message: 'validation_error'
-          });
-        }
-        Utils.errorCallback(err, resp);
+      const result = {};
+      result.body = await repository.findOne(sequelizeQuery);
+      await execHook(modelName, 'afterApiUpdate', result, { request: req });
+
+      return resp.status(200).json({
+        body: result
       });
+    } catch (err) {
+      next(err);
+    }
   }
 
   /**
@@ -265,69 +191,44 @@ class <%= entityClass %>Controller {
    * @return {[type]}      [description]
    */
   delete (req, resp) {
-    const id = req.params.id;
+    try {
+      const id = req.params.id;
+      const primaryKey = getPrimaryKey(modelName);
+      const repository = Utils.getEntityManager(req, resp);
 
-    const repository = Utils.getEntityManager(entity, resp);
-    if (!repository) {
-      return;
-    }
+      if (!repository) {
+        throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
+      }
+      const sequelizeQuery = { where: { [primaryKey]: id } };
 
-    repository
-      .findByPk(id)
-      .then(async (result) => {
-        if (!result) {
-          throw new ExtendedError({
-            code: 404,
-            errors: ['not_found'],
-            message: 'not_found'
-          });
-        }
-        return result;
-      })
-      .then(() =>
-        repository
-          .destroy({
-            where: {
-              [primaryKey]: id
-            }
-          }))
-      .catch((err) => {
-        if (process.env.NODE_ENV === 'development') {
-          axel.logger.warn(err);
-        }
-        throw new ExtendedError({
-          code: err.code || 400,
-          errors: [err.message || err || 'delete_error'],
-          message: err.message || 'delete_error'
-        });
-      })
-      .then((a) => {
-        if (!a) {
-          return resp.status(404).json();
-        }
-        return resp.status(200).json({
-          status: 'OK',
-        });
-      })
-      .catch((err) => {
-        Utils.errorCallback(err, resp);
+      await execHook(modelName, 'beforeApiDelete', { request: req, sequelizeQuery });
+      const result = {};
+      result.body = await repository
+        .destroy(sequelizeQuery);
+      await execHook(modelName, 'afterApiDelete', result, { request: req });
+
+      return resp.status(200).json({
+        body: result
       });
+    } catch (err) {
+      next(err);
+    }
   }
 
   /*
   export(req, resp) {
 
     let repository;
-    const schema = axel.models[entity] && axel.models[entity].schema;
+    const schema = axel.models[modelName] && axel.models[modelName].schema;
     let data = [];
 
-    const url = `${entity}_export`;
+    const url = `${modelName}_export`;
     const options = {};
     const query = {};
 
     Promise.resolve()
       .then(() => {
-        repository = Utils.getEntityManager(entity, resp);
+        repository = Utils.getEntityManager(modelName, resp);
         if (!repository) {
           throw new Error('table_model_not_found_error_O');
         }
@@ -366,16 +267,15 @@ class <%= entityClass %>Controller {
 
   getImportTemplate(req, resp) {
 
-    const repository = Utils.getEntityManager(entity, resp);
+    const repository = Utils.getEntityManager(modelName, resp);
     if (!repository) {
-      throw new Error('table_model_not_found_error_O');
+      throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
     }
 
     let data = [];
 
-    const url = `${entity}_template`;
-    const options = {};
-    const query = {};
+    const url = `${modelName}_import_template`;
+    const options = { targetFolder: path.resolve(process.cwd(), 'public/data/' + modelName) };
 
     Promise.resolve()
       .then(() =>
@@ -412,33 +312,41 @@ class <%= entityClass %>Controller {
   }
 
   import(req, resp) {
-    const repository = Utils.getEntityManager(entity, resp);
+    const repository = Utils.getEntityManager(modelName, resp);
     if (!repository) {
       return;
     }
 
-    const properData: [] = [];
-    const improperData: [] = [];
+    const properData = [];
+    const improperData = [];
     let doc;
-    DocumentManager.httpUpload(req, {
-      path: 'updloads/excel'
+     DocumentManager.httpUpload(req, resp, {
+      path: 'public/uploads/excel'
     })
       // @ts-ignore
-      .then((document?[]) => {
-        if (document && document.length > 0) {
-          doc = document[0];
-          return ExcelService.parse(doc.fd, {
-            columns: {},
-            eager: false
+      .then((document) => {
+        console.log('doc', document);
+        if (!document && !req.file) {
+          throw new ExtendedError({
+            code: 404,
+            message: 'no_file_uploaded',
+            errors: ['no_file_uploaded']
           });
         }
-        throw new ExtendedError({
-          code: 404,
-          message: 'no_file_uploaded',
-          errors: ['no_file_uploaded']
+        let doc;
+        if (document && document.length > 0 && document[0].fd) {
+          doc = document[0].fd;
+        }
+        else if (req.file) {
+          doc = req.file.path;
+        }
+        return ExcelService.parse(doc, {
+          columns: {},
+          eager: false
         });
+
       })
-      .then((result?: []) => {
+      .then((result) => {
         if (result) {
           result.forEach(item => {
             // check if data is proper before pushing it
@@ -468,7 +376,7 @@ class <%= entityClass %>Controller {
           message: err.message || 'create_error'
         });
       })
-      .then(() => DocumentManager.delete(doc[0].fd))
+      .then(() => DocumentManager.delete(doc))
       .catch((err) => {
         if (process.env.NODE_ENV === 'development') {
           axel.logger.warn(err && err.message ? err.message : err);
