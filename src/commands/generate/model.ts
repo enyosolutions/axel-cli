@@ -1,5 +1,6 @@
 import { flags } from '@oclif/command';
 import Command, { getConfig } from '../../base';
+
 import {
   renderTemplate,
   parseCommaInputs,

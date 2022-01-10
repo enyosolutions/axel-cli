@@ -1,16 +1,18 @@
-import {Command, flags} from '@oclif/command'
-import * as _ from 'lodash'
-const replace = require('replace')
+import { flags } from '@oclif/command';
+import * as _ from 'lodash';
+import Command from '../../base';
+
+const replace = require('replace');
 
 export const generateRoute = (routeName: string) => {
-  let folderPath: any = routeName.split('/')
-  const name = folderPath.pop()
-  folderPath = folderPath.join('/')
+  let folderPath: any = routeName.split('/');
+  const name = folderPath.pop();
+  folderPath = folderPath.join('/');
   if (folderPath) {
-    folderPath += '/'
+    folderPath += '/';
   }
-  const route = _.kebabCase(name)
-  const file = _.startCase(name).replace(/ /g, '')
+  const route = _.kebabCase(name);
+  const file = _.startCase(name).replace(/ /g, '');
   replace({
     regex: 'routes: ?{',
     replacement: `routes: {
@@ -30,30 +32,31 @@ export const generateRoute = (routeName: string) => {
         'POST /api/${route}/import': '${folderPath}${file}Controller.import',
         'GET /api/${route}/import-template': '${folderPath}${file}Controller.getImportTemplate',
         */
-
-
         `,
     paths: ['./src/config/routes.js'],
     recursive: false,
     silent: true,
-  })
-}
+  });
+};
 export default class Generate extends Command {
   static description = 'Generate an api for your axel project';
 
   static target = 'api';
 
-  static args = [{name: 'name', required: true}];
+  static args = [{ name: 'name', required: true }];
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    secure: flags.string({char: 's', description: 'Add secure policies to the app'}),
+    help: flags.help({ char: 'h' }),
+    secure: flags.string({
+      char: 's',
+      description: 'Add secure policies to the app',
+    }),
   };
 
   async run() {
-    const {args} = this.parse(Generate)
-    generateRoute(args.name)
-    const message = '✔️ Generated route ' + args.name
-    this.log(message)
+    const { args } = this.parse(Generate);
+    generateRoute(args.name);
+    const message = '✔️ Generated route ' + args.name;
+    this.log(message);
   }
 }

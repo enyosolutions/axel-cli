@@ -48,7 +48,6 @@ class CrudSqlController {
         modelName: req.params.endpoint
       });
     }
-    console.log(query, limit, offset, order);
     repository
       .findAndCountAll({
         // where: req.query.filters,

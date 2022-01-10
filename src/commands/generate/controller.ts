@@ -92,8 +92,14 @@ export default class Generate extends Command {
   };
 
   async run() {
-    const { args, flags } = this.parse(Generate);
+    if (this.projectConfig && this.projectConfig.database === 'sequelize') {
+      const flag = Generate.flags.type;
+      if (flag) {
+        flag.default = 'sql';
+      }
+    }
 
+    const { args, flags } = this.parse(Generate);
     const { force } = flags;
     const type: any = flags.type;
     const name = args.name.trim();

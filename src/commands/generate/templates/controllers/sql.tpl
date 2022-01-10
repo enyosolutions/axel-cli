@@ -4,30 +4,26 @@
  * @description :: Server-side logic for managing <%= entityClass %> entities
  */
 
-
 const { ExtendedError, Utils, SchemaValidator, ControllerUtils } = require('axel-core');
-const { execHook, getPrimaryKey } = ControllerUtils;
 const { get } = require('lodash');
 const path = require('path');
 
-
-/*
+/**
 Uncomment if you need the following features:
 - Create import template for users
 - Import from excel
 - Export to excel
 */
-
 // const { DocumentManager } = require('axel-core');
 // const ExcelService = require('axel-core/src/services/ExcelService');
 
-const path = require('path');
+const { execHook, getPrimaryKey } = ControllerUtils;
 const modelName = '<%= entityCamelCased %>';
 const primaryKey = getPrimaryKey(modelName);
 
-
 class <%= entityClass %>Controller {
-  list(req, resp) {
+
+  async list(req, resp) {
     try {
       let items = [];
       const {
@@ -37,7 +33,7 @@ class <%= entityClass %>Controller {
 
       const repository = Utils.getEntityManager(modelName, resp);
       if (!repository) {
-        throw ExtendedError({
+        throw new ExtendedError({
           code: 400,
           message: 'error_model_not_found_for_this_url'
         });
@@ -78,7 +74,7 @@ class <%= entityClass %>Controller {
     }
   }
 
-  get(req, resp) {
+  async get(req, resp) {
     const id = req.params.id;
     try {
       const primaryKey = getPrimaryKey(modelName);
@@ -114,7 +110,7 @@ class <%= entityClass %>Controller {
     }
   }
 
-  post(req, resp) {
+  async post(req, resp) {
     const data = Utils.injectUserId(req.body, req.user, ['createdBy']); // replace field by userId or any other relevant field
     try {
       await execHook(modelName, 'beforeApiCreate', { request: req, sequelizeQuery: data });
@@ -143,7 +139,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  put(req, resp) {
+  asnyc put(req, resp) {
     const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
 
     const id = req.params.id;
@@ -190,7 +186,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  delete (req, resp) {
+  async delete (req, resp) {
     try {
       const id = req.params.id;
       const primaryKey = getPrimaryKey(modelName);
@@ -217,7 +213,6 @@ class <%= entityClass %>Controller {
 
   /*
   export(req, resp) {
-
     let repository;
     const schema = axel.models[modelName] && axel.models[modelName].schema;
     let data = [];
