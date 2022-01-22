@@ -20,7 +20,7 @@ $ npm install -g axel-cli
 $ axel COMMAND
 running command...
 $ axel (-v|--version|version)
-axel-cli/0.5.4 darwin-x64 node-v15.11.0
+axel-cli/0.6.0 darwin-x64 node-v15.11.0
 $ axel --help [COMMAND]
 USAGE
   $ axel COMMAND
@@ -61,7 +61,7 @@ OPTIONS
   -t, --tables=tables  list of tables to import
 ```
 
-_See code: [src/commands/db/import.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/db/import.ts)_
+_See code: [src/commands/db/import.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/db/import.ts)_
 
 ## `axel db:sync`
 
@@ -80,7 +80,7 @@ OPTIONS
   -s, --silent  Do not ask for confirmation
 ```
 
-_See code: [src/commands/db/sync.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/db/sync.ts)_
+_See code: [src/commands/db/sync.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/db/sync.ts)_
 
 ## `axel generate TARGET`
 
@@ -98,7 +98,7 @@ OPTIONS
   -t, --type=  [default: sql] type of project
 ```
 
-_See code: [src/commands/generate.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate.ts)_
+_See code: [src/commands/generate.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/generate.ts)_
 
 ## `axel generate:api NAME`
 
@@ -119,7 +119,7 @@ OPTIONS
   --with-schema         Whether to generate schema model also when generating an sql model
 ```
 
-_See code: [src/commands/generate/api.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate/api.ts)_
+_See code: [src/commands/generate/api.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/generate/api.ts)_
 
 ## `axel generate:controller NAME`
 
@@ -137,7 +137,7 @@ OPTIONS
   -t, --type=sql|mongo|bare  (required) type of project
 ```
 
-_See code: [src/commands/generate/controller.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate/controller.ts)_
+_See code: [src/commands/generate/controller.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/generate/controller.ts)_
 
 ## `axel generate:hook NAME`
 
@@ -154,7 +154,7 @@ OPTIONS
   -h, --help   show CLI help
 ```
 
-_See code: [src/commands/generate/hook.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate/hook.ts)_
+_See code: [src/commands/generate/hook.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/generate/hook.ts)_
 
 ## `axel generate:model NAME`
 
@@ -175,7 +175,7 @@ OPTIONS
   --from-sequelize            Generate the schema from the sequelize model
 ```
 
-_See code: [src/commands/generate/model.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate/model.ts)_
+_See code: [src/commands/generate/model.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/generate/model.ts)_
 
 ## `axel generate:route NAME`
 
@@ -192,7 +192,7 @@ OPTIONS
   -s, --secure=secure  Add secure policies to the app
 ```
 
-_See code: [src/commands/generate/route.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate/route.ts)_
+_See code: [src/commands/generate/route.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/generate/route.ts)_
 
 ## `axel generate:test NAME`
 
@@ -210,7 +210,7 @@ OPTIONS
   -t, --type=bare|full  (required) type of test
 ```
 
-_See code: [src/commands/generate/test.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate/test.ts)_
+_See code: [src/commands/generate/test.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/generate/test.ts)_
 
 ## `axel hello [FILE]`
 
@@ -232,7 +232,7 @@ EXAMPLE
   hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/hello.ts)_
+_See code: [src/commands/hello.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/hello.ts)_
 
 ## `axel help [COMMAND]`
 
@@ -267,7 +267,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/init.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/init.ts)_
 
 ## `axel new [NAME]`
 
@@ -296,7 +296,7 @@ DESCRIPTION
      - Place relevant crud controller, auth controller, and Authservices according to the database system.
 ```
 
-_See code: [src/commands/new.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/new.ts)_
+_See code: [src/commands/new.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/new.ts)_
 
 ## `axel run [FILE]`
 
@@ -314,7 +314,7 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/run.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/run.ts)_
+_See code: [src/commands/run.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/run.ts)_
 <!-- commandsstop -->
 
 
