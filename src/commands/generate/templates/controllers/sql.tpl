@@ -86,7 +86,7 @@ class <%= entityClass %>Controller {
         where: { [primaryKey]: id },
         raw: false
       };
-      await execHook(modelName, 'beforeApiFindOne', { ...req, sequelizeQuery });
+      await execHook(modelName, 'beforeApiFindOne', { request: req, sequelizeQuery });
       const item = await repository
         .findOne(sequelizeQuery);
 

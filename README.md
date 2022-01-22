@@ -1,7 +1,4 @@
-@axel/cli
-===========
-
-
+# @axel/cli
 
 ![](https://github.com/enyosolutions-team/axel-cli/workflows/CI/badge.svg)
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
@@ -10,11 +7,15 @@
 [![License](https://img.shields.io/npm/l/@axel/cli.svg)](https://github.com/enyosolutions-team/axel-cli/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g axel-cli
 $ axel COMMAND
@@ -26,23 +27,27 @@ USAGE
   $ axel COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`axel db:import`](#axel-dbimport)
-* [`axel db:sync`](#axel-dbsync)
-* [`axel generate TARGET`](#axel-generate-target)
-* [`axel generate:api NAME`](#axel-generateapi-name)
-* [`axel generate:controller NAME`](#axel-generatecontroller-name)
-* [`axel generate:hook NAME`](#axel-generatehook-name)
-* [`axel generate:model NAME`](#axel-generatemodel-name)
-* [`axel generate:route NAME`](#axel-generateroute-name)
-* [`axel generate:test NAME`](#axel-generatetest-name)
-* [`axel hello [FILE]`](#axel-hello-file)
-* [`axel help [COMMAND]`](#axel-help-command)
-* [`axel init [NAME]`](#axel-init-name)
-* [`axel new [NAME]`](#axel-new-name)
-* [`axel run [FILE]`](#axel-run-file)
+
+- [`axel db:import`](#axel-dbimport)
+- [`axel db:sync`](#axel-dbsync)
+- [`axel generate TARGET`](#axel-generate-target)
+- [`axel generate:api NAME`](#axel-generateapi-name)
+- [`axel generate:controller NAME`](#axel-generatecontroller-name)
+- [`axel generate:hook NAME`](#axel-generatehook-name)
+- [`axel generate:model NAME`](#axel-generatemodel-name)
+- [`axel generate:route NAME`](#axel-generateroute-name)
+- [`axel generate:test NAME`](#axel-generatetest-name)
+- [`axel hello [FILE]`](#axel-hello-file)
+- [`axel help [COMMAND]`](#axel-help-command)
+- [`axel init [NAME]`](#axel-init-name)
+- [`axel new [NAME]`](#axel-new-name)
+- [`axel run [FILE]`](#axel-run-file)
 
 ## `axel db:import`
 
@@ -279,7 +284,7 @@ Create a new axel project.
   - Unzip it,
   - install peer dependencies,
   - Place relevant crud controller, auth controller, and Authservices according to the database system.
-  
+
 
 USAGE
   $ axel new [NAME]
@@ -315,20 +320,20 @@ OPTIONS
 ```
 
 _See code: [src/commands/run.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.6.0/src/commands/run.ts)_
+
 <!-- commandsstop -->
-
-
 
 ## Features / Todo
 
 - [x] Generate models, routes, controllers and api
-- [ ] Init a project
-- [X] Generate models from the sequelize-auto template
+- [x] Init a project
+- [x] Generate models from the sequelize-auto template
 - [ ] Hook into sequelize cli commands
-- [X] use config from rc files to locate folders
+- [x] use config from rc files to locate folders
 - [ ] Generate mongo controllers
-- [X] Generate bare controllers
-- [X] Generate bare controllers
+- [x] Generate bare controllers
+- [x] Generate bare controllers
+- [ ] Custom models folder
 - [ ] Better associations How to define relationships => https://docs.forestadmin.com/documentation/v/v6/reference-guide/relationships#lumber-relationship-generation-rules
 
 - [ ] use primary from config when generating models
