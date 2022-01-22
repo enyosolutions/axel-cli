@@ -42,6 +42,10 @@ module.exports.beforeApiCreate = async (ctx) => {}
 module.exports.beforeApiUpdate = async (ctx) => {}
 module.exports.beforeApiDelete = async (ctx) => {}
 
+/**
+* result the body of the response sent to the client
+* ctx  = {request: Express Request, response: Express Response}
+*/
 module.exports.afterApiFind = async (result, ctx) => {}
 module.exports.afterApiFindOne = async (result, ctx) => {}
 module.exports.afterApiCreate = async (result, ctx) => {}

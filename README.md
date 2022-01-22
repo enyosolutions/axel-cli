@@ -34,6 +34,7 @@ USAGE
 * [`axel generate TARGET`](#axel-generate-target)
 * [`axel generate:api NAME`](#axel-generateapi-name)
 * [`axel generate:controller NAME`](#axel-generatecontroller-name)
+* [`axel generate:hook NAME`](#axel-generatehook-name)
 * [`axel generate:model NAME`](#axel-generatemodel-name)
 * [`axel generate:route NAME`](#axel-generateroute-name)
 * [`axel generate:test NAME`](#axel-generatetest-name)
@@ -137,6 +138,23 @@ OPTIONS
 ```
 
 _See code: [src/commands/generate/controller.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate/controller.ts)_
+
+## `axel generate:hook NAME`
+
+Generate an api hook for your axel project
+
+```
+Generate an api hook for your axel project
+
+USAGE
+  $ axel generate:hook NAME
+
+OPTIONS
+  -f, --force
+  -h, --help   show CLI help
+```
+
+_See code: [src/commands/generate/hook.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.5.4/src/commands/generate/hook.ts)_
 
 ## `axel generate:model NAME`
 

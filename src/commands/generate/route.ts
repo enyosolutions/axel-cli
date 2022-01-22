@@ -41,7 +41,7 @@ export const generateRoute = (routeName: string) => {
 export default class Generate extends Command {
   static description = 'Generate an api for your axel project';
 
-  static target = 'api';
+  static target = 'route';
 
   static args = [{ name: 'name', required: true }];
 

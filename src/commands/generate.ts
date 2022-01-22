@@ -7,7 +7,15 @@ export default class Generate extends Command {
     {
       name: 'target',
       required: true,
-      options: ['api', 'controller', 'route', 'model', 'migration'],
+      options: [
+        'api',
+        'controller',
+        'route',
+        'model',
+        'migration',
+        'hook',
+        'test',
+      ],
     },
   ];
 

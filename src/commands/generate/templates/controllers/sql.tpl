@@ -66,7 +66,7 @@ class <%= entityClass %>Controller {
         count: limit,
         totalCount: count
       };
-      await execHook(modelName, 'afterApiFind', result, { request: req });
+      await execHook(modelName, 'afterApiFind', result, { request: req, response: resp });
 
       resp.status(200).json(result);
     } catch (err) {
@@ -103,7 +103,7 @@ class <%= entityClass %>Controller {
       const result = {
         body: item.get()
       };
-      execHook(modelName, 'afterApiFindOne', result, req);
+      execHook(modelName, 'afterApiFindOne', result, { request: req, response: resp });
       return resp.status(200).json(result);
     } catch (err) {
       next(err);
@@ -123,7 +123,7 @@ class <%= entityClass %>Controller {
       const result = {};
       result.body = await repository
         .create(data);
-      await execHook(modelName, 'afterApiCreate', result, { request: req });
+      await execHook(modelName, 'afterApiCreate', result, { request: req, response: resp });
 
       resp.status(200).json(result);
     } catch (err) {
@@ -168,7 +168,7 @@ class <%= entityClass %>Controller {
 
       const result = {};
       result.body = await repository.findOne(sequelizeQuery);
-      await execHook(modelName, 'afterApiUpdate', result, { request: req });
+      await execHook(modelName, 'afterApiUpdate', result, { request: req, response: resp });
 
       return resp.status(200).json({
         body: result
@@ -201,7 +201,7 @@ class <%= entityClass %>Controller {
       const result = {};
       result.body = await repository
         .destroy(sequelizeQuery);
-      await execHook(modelName, 'afterApiDelete', result, { request: req });
+      await execHook(modelName, 'afterApiDelete', result, { request: req, response: resp });
 
       return resp.status(200).json({
         body: result
