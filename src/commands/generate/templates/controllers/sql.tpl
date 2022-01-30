@@ -120,9 +120,11 @@ class <%= entityClass %>Controller {
       }
       await SchemaValidator.validateAsync(data, modelName);
 
-      const result = {};
-      result.body = await repository
-        .create(data);
+      const result = {
+        body: await repository
+        .create(data)
+      };
+      result.body = result.body.get();
       await execHook(modelName, 'afterApiCreate', result, { request: req, response: resp });
 
       resp.status(200).json(result);
@@ -152,6 +154,9 @@ class <%= entityClass %>Controller {
       }
 
       const sequelizeQuery = { where: { [primaryKey]: id } };
+      sequelizeQuery.individualHooks = true;
+      sequelizeQuery.raw = false;
+
       await execHook(modelName, 'beforeApiUpdate', { request: req, sequelizeQuery });
       await SchemaValidator.validateAsync(data, modelName);
 
@@ -164,10 +169,14 @@ class <%= entityClass %>Controller {
           errors: ['item_not_found']
         });
       }
+
       await repository.update(data, sequelizeQuery);
 
-      const result = {};
-      result.body = await repository.findOne(sequelizeQuery);
+      const result = {
+        body: await repository
+        .create(data)
+      };
+      result.body = result.body.get();
       await execHook(modelName, 'afterApiUpdate', result, { request: req, response: resp });
 
       return resp.status(200).json({
@@ -196,16 +205,18 @@ class <%= entityClass %>Controller {
         throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
       }
       const sequelizeQuery = { where: { [primaryKey]: id } };
-
+      // make sure hooks are triggered
+      sequelizeQuery.individualHooks = true;
+      sequelizeQuery.raw = false;
       await execHook(modelName, 'beforeApiDelete', { request: req, sequelizeQuery });
-      const result = {};
-      result.body = await repository
-        .destroy(sequelizeQuery);
+      const result = {
+      body: await repository
+        .destroy(sequelizeQuery)
+      };
+        result.body = result.body.get();
       await execHook(modelName, 'afterApiDelete', result, { request: req, response: resp });
 
-      return resp.status(200).json({
-        body: result
-      });
+      return resp.status(200).json(result);
     } catch (err) {
       next(err);
     }
