@@ -33,21 +33,21 @@ module.exports.afterFind = (<%= identity %>s, options) => {}
 
 
 // API middlewares
-// ctx is an alias for context
-// const {request : ExpressRequest, sequelizeQuery: SequelizeRequest } = ctx;
+// context is an alias for context
+// const {request : ExpressRequest, sequelizeQuery: SequelizeRequest } = context;
 // api middlewares must return a promise or throw an error.
-module.exports.beforeApiFind = async (ctx) => {}
-module.exports.beforeApiFindOne = async (ctx) => {}
-module.exports.beforeApiCreate = async (ctx) => {}
-module.exports.beforeApiUpdate = async (ctx) => {}
-module.exports.beforeApiDelete = async (ctx) => {}
+module.exports.beforeApiFind    = (context) => {}
+module.exports.beforeApiFindOne = (context) => {}
+module.exports.beforeApiCreate  = (context) => {}
+module.exports.beforeApiUpdate  = (context) => {}
+module.exports.beforeApiDelete  = (context) => {}
 
 /**
 * result the body of the response sent to the client
-* ctx  = {request: Express Request, response: Express Response}
+* context  = {request: Express Request, response: Express Response}
 */
-module.exports.afterApiFind = async (result, ctx) => {}
-module.exports.afterApiFindOne = async (result, ctx) => {}
-module.exports.afterApiCreate = async (result, ctx) => {}
-module.exports.afterApiUpdate = async (result, ctx) => {}
-module.exports.afterApiDelete = async (result, ctx) => {}
+module.exports.afterApiFind    = (result, context) => {}
+module.exports.afterApiFindOne = (result, context) => {}
+module.exports.afterApiCreate  = (result, context) => {}
+module.exports.afterApiUpdate  = (result, context) => {}
+module.exports.afterApiDelete  = (result, context) => {}

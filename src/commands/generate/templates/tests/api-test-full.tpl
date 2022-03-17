@@ -11,18 +11,28 @@ jsf.option('ignoreProperties', ['createdOn', 'lastModifiedOn', axel.config.frame
 const testConfig = require(`${axel.rootPath}/tmp/testConfig.json`);
 const model = require('../../src/api/models/schema/<%= entity %>');
 
+function generateData() {
+  const data = jsf.generate(model.schema);
+  // here you can update your data as you wish
+  return data;
+}
+
 describe('<%= entity %> APIS TESTING :: ', () => {
   let testStore = {};
   const entity = model.identity || '<%= entityCamelCased %>';  // @todo change as needed
   const entityApiUrl = model.apiUrl || '/api/<%= entityApiUrl || entity %>';  // @todo change as needed
   const primaryKey = model.primaryKeyField || axel.config.framework.primaryKey;  // @todo change as needed
 
+  function logError(err, context) {
+    console.error(context || ' > ', entity, err.response && err.response.body ? err.response.body : err.message);
+  }
+
   console.log('TESTS:: Starting tests on ', entity);
   beforeAll(async (done) => {
     app.on('app-ready', () => {
       console.log('TESTS:: beforeAll tests on ');
     // @todo customize if needed =>  const data = {  // insert your test preparation data here};
-      const data = jsf.generate(model.schema);
+      const data = generateData(model.schema);
       console.log('TESTS:: beforeAll tests on ', data);
       request(app)
         .post(entityApiUrl)
@@ -37,7 +47,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
           done();
         })
         .catch((err) => {
-          console.error(err);
+          console.error('BEFORE ALL', entity, err.response && err.response.body ? err.response.body : err.message);
           done(err);
         });
     });
@@ -46,7 +56,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
   describe('#POST() :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
-        const data = jsf.generate(model.schema);
+        const data = generateData(model.schema);
         request(app)
           .post(entityApiUrl)
           .send(data)
@@ -57,7 +67,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
             done();
           })
           .catch((err) => {
-            console.error(err);
+            logError(err);
             done(err);
           });
       });
@@ -67,7 +77,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
       model.schema.required.forEach((field) => {
         describe(field + ' :: ', () => {
           it('should give 400 error', (done) => {
-            const data = jsf.generate(model.schema);
+            const data = generateData(model.schema);
             delete data[field];
             request(app)
               .post(entityApiUrl)
@@ -89,7 +99,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
 
     describe('WITH PROPER DATA :: ', () => {
       it('should add values and return the data', (done) => {
-        const data = jsf.generate(model.schema);
+        const data = generateData(model.schema);
         request(app)
           .post(entityApiUrl)
           .set('Authorization', 'Bearer ' + testConfig.auth)
@@ -118,7 +128,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
 
       // ADD SECOND DATA WITH DIFFERENT POST VALUES
       it('should add values and return the data 2', (done) => {
-        const data = jsf.generate(model.schema);
+        const data = generateData(model.schema);
         request(app)
           .post(entityApiUrl)
           .set('Authorization', 'Bearer ' + testConfig.auth)
@@ -140,7 +150,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
           })
           .catch((err) => {
-            console.error(err);
+            logError(err);
             done(err);
           });
       });
@@ -160,7 +170,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
             done();
           })
           .catch((err) => {
-            console.error(err);
+            logError(err);
             done(err);
           });
       });
@@ -187,7 +197,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
@@ -213,7 +223,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
@@ -225,7 +235,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
   describe('#UPDATE() :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
-        const data = jsf.generate(model.schema);
+        const data = generateData(model.schema);
         request(app)
           .put(entityApiUrl + '/' + testStore.savedData[primaryKey])
           .send(data)
@@ -236,7 +246,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
             done();
           })
           .catch((err) => {
-            console.error(err);
+            logError(err);
             done(err);
           });
       });
@@ -244,7 +254,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
 
     describe('WRONG ID :: ', () => {
       it('should give 404 error', (done) => {
-        const data = jsf.generate(model.schema);
+        const data = generateData(model.schema);
         request(app)
           .put(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
           .set('Authorization', 'Bearer ' + testConfig.auth)
@@ -255,7 +265,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
             done();
           })
           .catch((err) => {
-            console.error(err);
+            logError(err);
             done(err);
           });
       });
@@ -274,7 +284,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
@@ -291,7 +301,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
@@ -319,7 +329,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
@@ -339,7 +349,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
@@ -356,7 +366,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
@@ -377,7 +387,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
@@ -394,7 +404,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
               done();
             })
             .catch((err) => {
-              console.error(err);
+              logError(err);
               done(err);
             });
         });
