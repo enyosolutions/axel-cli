@@ -141,7 +141,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  asnyc put(req, resp) {
+  async put(req, resp) {
     const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
 
     const id = req.params.id;
