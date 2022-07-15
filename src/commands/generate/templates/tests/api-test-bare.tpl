@@ -10,22 +10,26 @@ jsf.option('ignoreProperties', ['createdOn', 'lastModifiedOn', axel.config.frame
 
 const testConfig = require(`${axel.rootPath}/tmp/testConfig.json`);
 const model = require('../../src/api/models/schema/<%= entity %>');
+const entityApiUrl = model.apiUrl || '/api/<%= entityApiUrl || entity %>';  // @todo change as needed
+const primaryKey = model.primaryKeyField || axel.config.framework.primaryKey;  // @todo change as needed
 
+function generateData() {
+  const data = jsf.generate(model.schema);
+  // modify data as needed
+  // delete data.id;
+  return data;
+}
+
+const entity = model.identity || '<%= entity %>';  // @todo change as needed
 
 describe('<%= entity %> APIS :: ', () => {
   let testStore = {};
-  const entity = model.identity || '<%= entity %>';  // @todo change as needed
-  const entityApiUrl = model.apiUrl || '/api/<%= entityApiUrl || entity %>';  // @todo change as needed
-  const primaryKey = model.primaryKeyField || axel.config.framework.primaryKey;  // @todo change as needed
 
-
-  console.log('TESTS:: Starting tests on ', entity);
   beforeAll(async (done) => {
     app.on('app-ready', () => {
-      console.log('TESTS:: beforeAll tests on ');
       const data = {
       // insert your test preparation data here
-    }; // try => const data = jsf.generate(model.schema);
+    }; // try => const data = generateData();
 
       request(app)
         .post(entityApiUrl)
@@ -33,24 +37,21 @@ describe('<%= entity %> APIS :: ', () => {
         .send(data)
         .then((response) => {
           if (response.error || response.body.message) {
-            console.log("[RESPONSE: ERROR]", response.error);
+            console.warn("[RESPONSE: ERROR]", response.error);
             return done(response.error);
           }
           global.testStore.savedData = response.body['body']; // @todo change as needed
 
           done();
         })
-        .catch((err) => {
-          console.error(err);
-          done(err);
-        });
+        .catch(done);
     });
   });
   // POST
   describe('#POST() :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
-        const data = jsf.generate(model.schema);
+        const data = generateData();
         request(app)
           .post(entityApiUrl)
           .set('Authorization', 'Bearer ' + 'fake_api_auth')
@@ -58,23 +59,20 @@ describe('<%= entity %> APIS :: ', () => {
           .expect(401)
           .then((responsetoBeUefined()) => {
             if (response.error || response.body.message) {
-              console.log("[RESPONSE: ERROR]", response.error);
+              console.warn("[RESPONSE: ERROR]", response.error);
               return done(response.error);
             }
             expect(response.body['body']).toBeUndefined();
             expect(response.body['message']).toBeDefined();
             done();
           })
-          .catch((err) => {
-            console.error(err);
-            done(err);
-          });
+          .catch(done);
       });
     });
 
         describe('WITH TOKEN :: ', () => {
       it('should give work', (done) => {
-        const data = jsf.generate(model.schema);
+        const data = generateData();
         request(app)
           .post(entityApiUrl)
           .set('Authorization', `Bearer ${testConfig.auth}`)
@@ -82,16 +80,13 @@ describe('<%= entity %> APIS :: ', () => {
           .expect(401)
           .then((responsetoBeUefined()) => {
             if (response.error || response.body.message) {
-              console.log("[RESPONSE: ERROR]", response.error);
+              console.warn("[RESPONSE: ERROR]", response.error);
               return done(response.error);
             }
             expect(response.body['body']).toBeDefined();
             done();
           })
-          .catch((err) => {
-            console.error(err);
-            done(err);
-          });
+          .catch(done);
       });
     });
   });

@@ -3,20 +3,6 @@
  *
  * @description :: Server-side logic for managing <%= entityClass %> endpoints
  */
-
-/**
- * UserSqlController
- *
- * @description :: Server-side logic for managing users
- * @help        :: See http://links.axel.s.org/docs/controllers
- */
-
-/**
- * Api/CrudSqlController
- *
- * @description :: Server-side logic for managing all endpoints
- * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
- */
 import { Request, Response } from 'express';
 import Utils from '../../../common/services/Utils';
 import ExtendedError from '../../../axel'; // adjust path as needed
@@ -36,8 +22,8 @@ class CrudSqlController {
       limit,
       offset,
       order
-    } = Utils.injectPaginationQuery(req);
-    let query = Utils.injectQueryParams(req);
+    } = req.pagination || Utils.injectPaginationQuery(req);
+    let query = req.parsedQuery || Utils.injectQueryParams(req);
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
       resp.status(400).json({ message: 'error_model_not_found_for_this_url' });

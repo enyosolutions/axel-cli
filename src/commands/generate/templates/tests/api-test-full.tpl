@@ -1,4 +1,6 @@
-const request = require('supertest');
+const defaults = require('superagent-defaults');
+const supertest = require('supertest');
+
 const faker = require('faker');
 const jsf = require('json-schema-faker');
 const axel = global.axel || require('axel-core');
@@ -10,33 +12,36 @@ jsf.option('ignoreProperties', ['createdOn', 'lastModifiedOn', axel.config.frame
 
 const testConfig = require(`${axel.rootPath}/tmp/testConfig.json`);
 const model = require('../../src/api/models/schema/<%= entity %>');
+const entity = model.identity || '<%= entityCamelCased %>';  // @todo change as needed
+const entityApiUrl = model.apiUrl || '/api/<%= entityApiUrl || entity %>';  // @todo change as needed
+const primaryKey = model.primaryKeyField || axel.config.framework.primaryKey;  // @todo change as needed
+
+const request = defaults(supertest(app)); // or url
+request.set('Authorization', 'Bearer ' + testConfig.auth);
 
 function generateData() {
   const data = jsf.generate(model.schema);
   // here you can update your data as you wish
+  // ex:
+  // delete data.id;
   return data;
 }
 
+function logError(err, context) {
+  console.error(context || ' > ', entity, err.response && err.response.body ? err.response.body : err.message);
+}
+
+
 describe('<%= entity %> APIS TESTING :: ', () => {
   let testStore = {};
-  const entity = model.identity || '<%= entityCamelCased %>';  // @todo change as needed
-  const entityApiUrl = model.apiUrl || '/api/<%= entityApiUrl || entity %>';  // @todo change as needed
-  const primaryKey = model.primaryKeyField || axel.config.framework.primaryKey;  // @todo change as needed
-
-  function logError(err, context) {
-    console.error(context || ' > ', entity, err.response && err.response.body ? err.response.body : err.message);
-  }
-
-  console.log('TESTS:: Starting tests on ', entity);
   beforeAll(async (done) => {
     app.on('app-ready', () => {
       console.log('TESTS:: beforeAll tests on ');
     // @todo customize if needed =>  const data = {  // insert your test preparation data here};
-      const data = generateData(model.schema);
+      const data = generateData();
       console.log('TESTS:: beforeAll tests on ', data);
       request(app)
         .post(entityApiUrl)
-        .set('Authorization', 'Bearer ' + testConfig.auth)
         .send(data)
         .then((response) => {
           if (response.error || response.body.message) {
@@ -56,9 +61,10 @@ describe('<%= entity %> APIS TESTING :: ', () => {
   describe('#POST() :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
-        const data = generateData(model.schema);
+        const data = generateData();
         request(app)
           .post(entityApiUrl)
+          .set('Authorization', '')
           .send(data)
           .expect(401)
           .then((response) => {
@@ -77,11 +83,10 @@ describe('<%= entity %> APIS TESTING :: ', () => {
       model.schema.required.forEach((field) => {
         describe(field + ' :: ', () => {
           it('should give 400 error', (done) => {
-            const data = generateData(model.schema);
+            const data = generateData();
             delete data[field];
             request(app)
               .post(entityApiUrl)
-              .set('Authorization', 'Bearer ' + testConfig.auth)
               .send(data)
               .expect(400)
               .then((response) => {
@@ -99,10 +104,9 @@ describe('<%= entity %> APIS TESTING :: ', () => {
 
     describe('WITH PROPER DATA :: ', () => {
       it('should add values and return the data', (done) => {
-        const data = generateData(model.schema);
+        const data = generateData();
         request(app)
           .post(entityApiUrl)
-          .set('Authorization', 'Bearer ' + testConfig.auth)
           .send(data)
           .expect(200)
           .then((response) => {
@@ -128,10 +132,9 @@ describe('<%= entity %> APIS TESTING :: ', () => {
 
       // ADD SECOND DATA WITH DIFFERENT POST VALUES
       it('should add values and return the data 2', (done) => {
-        const data = generateData(model.schema);
+        const data = generateData();
         request(app)
           .post(entityApiUrl)
-          .set('Authorization', 'Bearer ' + testConfig.auth)
           .send(data)
           .expect(200)
           .then((response) => {
@@ -163,6 +166,7 @@ describe('<%= entity %> APIS TESTING :: ', () => {
       it('should give 401 error', (done) => {
         request(app)
           .get(entityApiUrl)
+          .set('Authorization', '')
           .expect(401)
           .then((response) => {
             expect(response.body['body']).toBeUndefined();
@@ -181,7 +185,6 @@ describe('<%= entity %> APIS TESTING :: ', () => {
         it('should give list with default pagination', (done) => {
           request(app)
             .get(entityApiUrl)
-            .set('Authorization', 'Bearer ' + testConfig.auth)
             .expect(200)
             .then((response) => {
               if (response.error || response.body.message) {
@@ -207,7 +210,6 @@ describe('<%= entity %> APIS TESTING :: ', () => {
         it('should give list with lov pagination', (done) => {
           request(app)
             .get(entityApiUrl + '?listOfValues=true')
-            .set('Authorization', 'Bearer ' + testConfig.auth)
             .expect(200)
             .then((response) => {
               if (response.error || response.body.message) {
@@ -235,9 +237,10 @@ describe('<%= entity %> APIS TESTING :: ', () => {
   describe('#UPDATE() :: ', () => {
     describe('WITHOUT TOKEN :: ', () => {
       it('should give 401 error', (done) => {
-        const data = generateData(model.schema);
+        const data = generateData();
         request(app)
           .put(entityApiUrl + '/' + testStore.savedData[primaryKey])
+          .set('Authorization', '')
           .send(data)
           .expect(401)
           .then((response) => {
@@ -254,10 +257,9 @@ describe('<%= entity %> APIS TESTING :: ', () => {
 
     describe('WRONG ID :: ', () => {
       it('should give 404 error', (done) => {
-        const data = generateData(model.schema);
+        const data = generateData();
         request(app)
           .put(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
-          .set('Authorization', 'Bearer ' + testConfig.auth)
           .send(data)
           .expect(404)
           .then((response) => {
@@ -270,145 +272,142 @@ describe('<%= entity %> APIS TESTING :: ', () => {
           });
       });
     });
-
-    // GET
-    describe('#GET() :: ', () => {
-      describe('WITHOUT TOKEN :: ', () => {
-        it('should give 401', (done) => {
-          request(app)
-            .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
-            .expect(401)
-            .then((response) => {
-              expect(response.body['body']).toBeUndefined();
-              expect(response.body['message']).toBe('error_no_authorization_header');
-              done();
-            })
-            .catch((err) => {
-              logError(err);
-              done(err);
-            });
-        });
-      });
-
-      describe('WRONG ID :: ', () => {
-        it('should give 404 error', (done) => {
-          request(app)
-            .get(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
-            .set('Authorization', 'Bearer ' + testConfig.auth)
-            .expect(404)
-            .then((response) => {
-              expect(response.body['body']).toBeUndefined();
-              done();
-            })
-            .catch((err) => {
-              logError(err);
-              done(err);
-            });
-        });
-      });
-
-      describe('PROPER DATA :: ', () => {
-        it('should return value (extended)', (done) => {
-          request(app)
-            .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
-            .set('Authorization', 'Bearer ' + testConfig.auth)
-            .expect(200)
-            .then((response) => {
-              if (response.error || response.body.message) {
-                console.log("[RESPONSE: ERROR]", response.error);
-                return done(response.body.message || response.error);
-              }
-              expect(response.body['body']).toBeDefined();
-              expect(response.body['body'][primaryKey]).toBeDefined();
-              for (const key in model.schema.required) {
-                if ([primaryKey, 'lastModifiedOn', 'createdOn'].indexOf(key) !== -1) {
-                  continue;
-                }
-                expect(response.body['body'][key]).toBe(testStore.savedData[key] );
-              }
-              done();
-            })
-            .catch((err) => {
-              logError(err);
-              done(err);
-            });
-        });
+  });
+  // GET
+  describe('#GET() :: ', () => {
+    describe('WITHOUT TOKEN :: ', () => {
+      it('should give 401', (done) => {
+        request(app)
+          .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
+          .set('Authorization', '')
+          .expect(401)
+          .then((response) => {
+            expect(response.body['body']).toBeUndefined();
+            expect(response.body['message']).toBe('error_no_authorization_header');
+            done();
+          })
+          .catch((err) => {
+            logError(err);
+            done(err);
+          });
       });
     });
 
-    // DELETE
-    describe('#DELETE() :: ', () => {
-      describe('WITHOUT TOKEN :: ', () => {
-        it('should give 401', (done) => {
-          request(app)
-            .delete(entityApiUrl + '/' + testStore.savedData[primaryKey])
-            .expect(401)
-            .then((response) => {
-              expect(response.body['body']).toBeUndefined();
-              expect(response.body['message']).toBe('error_no_authorization_header');
-              done();
-            })
-            .catch((err) => {
-              logError(err);
-              done(err);
-            });
-        });
+    describe('WRONG ID :: ', () => {
+      it('should give 404 error', (done) => {
+        request(app)
+          .get(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
+          .expect(404)
+          .then((response) => {
+            expect(response.body['body']).toBeUndefined();
+            done();
+          })
+          .catch((err) => {
+            logError(err);
+            done(err);
+          });
       });
+    });
 
-      describe('WRONG ID :: ', () => {
-        it('should give 404 error', (done) => {
-          request(app)
-            .delete(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
-            .set('Authorization', 'Bearer ' + testConfig.auth)
-            .expect(404)
-            .then((response) => {
-              expect(response.body['body']).toBeUndefined();
-              done();
-            })
-            .catch((err) => {
-              logError(err);
-              done(err);
-            });
-        });
-      });
-
-      describe('PROPER DATA :: ', () => {
-        it('should return value (simple)', (done) => {
-          request(app)
-            .delete(entityApiUrl + '/' + testStore.savedData[primaryKey])
-            .set('Authorization', 'Bearer ' + testConfig.auth)
-            .expect(200)
-            .then((response) => {
-              if (response.error || response.body.message) {
-                console.log("[RESPONSE: ERROR]", response.error);
-                return done(response.body.message || response.error);
+    describe('PROPER DATA :: ', () => {
+      it('should return value (extended)', (done) => {
+        request(app)
+          .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
+          .expect(200)
+          .then((response) => {
+            if (response.error || response.body.message) {
+              console.log("[RESPONSE: ERROR]", response.error);
+              return done(response.body.message || response.error);
+            }
+            expect(response.body['body']).toBeDefined();
+            expect(response.body['body'][primaryKey]).toBeDefined();
+            for (const key in model.schema.required) {
+              if ([primaryKey, 'lastModifiedOn', 'createdOn'].indexOf(key) !== -1) {
+                continue;
               }
-              expect(response.body.status).toBe('OK');
-              done();
-            })
-            .catch((err) => {
-              logError(err);
-              done(err);
-            });
-        });
-      });
-
-      describe('CHECK IF DELETED :: ', () => {
-        it('should give 404 error', (done) => {
-          request(app)
-            .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
-            .set('Authorization', 'Bearer ' + testConfig.auth)
-            .expect(404)
-            .then((response) => {
-              expect(response.body['body']).toBeUndefined();
-              done();
-            })
-            .catch((err) => {
-              logError(err);
-              done(err);
-            });
-        });
+              expect(response.body['body'][key]).toBe(testStore.savedData[key] );
+            }
+            done();
+          })
+          .catch((err) => {
+            logError(err);
+            done(err);
+          });
       });
     });
   });
+
+  // DELETE
+  describe('#DELETE() :: ', () => {
+    describe('WITHOUT TOKEN :: ', () => {
+      it('should give 401', (done) => {
+        request(app)
+          .delete(entityApiUrl + '/' + testStore.savedData[primaryKey])
+          .set('Authorization', '')
+          .expect(401)
+          .then((response) => {
+            expect(response.body['body']).toBeUndefined();
+            expect(response.body['message']).toBe('error_no_authorization_header');
+            done();
+          })
+          .catch((err) => {
+            logError(err);
+            done(err);
+          });
+      });
+    });
+
+    describe('WRONG ID :: ', () => {
+      it('should give 404 error', (done) => {
+        request(app)
+          .delete(entityApiUrl + '/wrong' + testStore.savedData[primaryKey])
+          .expect(404)
+          .then((response) => {
+            expect(response.body['body']).toBeUndefined();
+            done();
+          })
+          .catch((err) => {
+            logError(err);
+            done(err);
+          });
+      });
+    });
+
+    describe('PROPER DATA :: ', () => {
+      it('should return value (simple)', (done) => {
+        request(app)
+          .delete(entityApiUrl + '/' + testStore.savedData[primaryKey])
+          .expect(200)
+          .then((response) => {
+            if (response.error || response.body.message) {
+              console.log("[RESPONSE: ERROR]", response.error);
+              return done(response.body.message || response.error);
+            }
+            expect(response.body.status).toBe('OK');
+            done();
+          })
+          .catch((err) => {
+            logError(err);
+            done(err);
+          });
+      });
+    });
+
+    describe('CHECK IF DELETED :: ', () => {
+      it('should give 404 error', (done) => {
+        request(app)
+          .get(entityApiUrl + '/' + testStore.savedData[primaryKey])
+          .expect(404)
+          .then((response) => {
+            expect(response.body['body']).toBeUndefined();
+            done();
+          })
+          .catch((err) => {
+            logError(err);
+            done(err);
+          });
+      });
+    });
+  });
+
 });
