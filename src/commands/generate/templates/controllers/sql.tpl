@@ -23,7 +23,7 @@ const primaryKey = getPrimaryKey(modelName);
 
 class <%= entityClass %>Controller {
 
-  async list(req, resp) {
+  async list(req, resp, next) {
     try {
       let items = [];
       const {
@@ -31,7 +31,7 @@ class <%= entityClass %>Controller {
       } = req.pagination;
       let query = req.parsedQuery;
 
-      const repository = Utils.getEntityManager(modelName, resp);
+      const repository = Utils.getEntityManager(req, resp);
       if (!repository) {
         throw new ExtendedError({
           code: 400,
@@ -74,10 +74,9 @@ class <%= entityClass %>Controller {
     }
   }
 
-  async get(req, resp) {
+  async get(req, resp, next) {
     const id = req.params.id;
     try {
-      const primaryKey = getPrimaryKey(modelName);
       const repository = Utils.getEntityManager(req, resp);
       if (!repository) {
         throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
@@ -110,11 +109,11 @@ class <%= entityClass %>Controller {
     }
   }
 
-  async post(req, resp) {
+  async post(req, resp, next) {
     const data = Utils.injectUserId(req.body, req.user, ['createdBy']); // replace field by userId or any other relevant field
     try {
       await execHook(modelName, 'beforeApiCreate', { request: req, sequelizeQuery: data });
-      const repository = Utils.getEntityManager(entity, resp);
+      const repository = Utils.getEntityManager(req, resp);
       if (!repository) {
         throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
       }
@@ -141,13 +140,12 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  async put(req, resp) {
+  async put(req, resp, next) {
     const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
 
     const id = req.params.id;
 
     try {
-      const primaryKey = getPrimaryKey(modelName);
       const repository = Utils.getEntityManager(req, resp);
       if (!repository) {
         throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
@@ -195,10 +193,9 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  async delete (req, resp) {
+  async delete (req, resp, next) {
     try {
       const id = req.params.id;
-      const primaryKey = getPrimaryKey(modelName);
       const repository = Utils.getEntityManager(req, resp);
 
       if (!repository) {
@@ -213,7 +210,7 @@ class <%= entityClass %>Controller {
       body: await repository
         .destroy(sequelizeQuery)
       };
-        result.body = result.body.get();
+      result.body = result.body.get();
       await execHook(modelName, 'afterApiDelete', result, { request: req, response: resp });
 
       return resp.status(200).json(result);
@@ -234,7 +231,7 @@ class <%= entityClass %>Controller {
 
     Promise.resolve()
       .then(() => {
-        repository = Utils.getEntityManager(modelName, resp);
+        repository = Utils.getEntityManager(req, resp);
         if (!repository) {
           throw new Error('table_model_not_found_error_O');
         }
@@ -273,7 +270,7 @@ class <%= entityClass %>Controller {
 
   getImportTemplate(req, resp) {
 
-    const repository = Utils.getEntityManager(modelName, resp);
+    const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
       throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
     }
@@ -318,7 +315,7 @@ class <%= entityClass %>Controller {
   }
 
   import(req, resp) {
-    const repository = Utils.getEntityManager(modelName, resp);
+    const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
       return;
     }
