@@ -14,7 +14,7 @@ declare const axel;
 const primaryKey = axel.config.enyo.primaryKey;
 
 class CrudSqlController {
-  list(req, resp) {
+  findAll(req, resp) {
     let items: Array<object> = [];
 
     const {
@@ -63,7 +63,7 @@ class CrudSqlController {
       });
   }
 
-  get(req, resp) {
+  findOne(req, resp) {
     const id = req.param('id');
     if (!id) {
       return false;
@@ -120,7 +120,7 @@ class CrudSqlController {
       });
   }
 
-  post(req, resp) {
+  create(req, resp) {
     const data = Utils.injectUserId(req.body, req.user);
 
     const repository = Utils.getEntityManager(req, resp);
@@ -176,7 +176,7 @@ class CrudSqlController {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  put(req, resp) {
+  update(req, resp) {
     const id = req.param('id');
     let data = req.body;
 
@@ -270,7 +270,7 @@ class CrudSqlController {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  delete(req, resp) {
+  deleteOne(req, resp) {
     const id = req.param('id');
 
     const repository = Utils.getEntityManager(req, resp);

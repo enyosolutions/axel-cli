@@ -18,6 +18,7 @@
  * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
  */
 const { ExtendedError, Utils } = require('axel-core'); // adjust path as needed
+const { stats, findAll, findOne, create, update, deleteOne, export, import, importTemplate } = require('axel-core/src/controllers/CrudSqlController');
 
 /*
 Uncomment if you need the following features:
@@ -29,35 +30,35 @@ Uncomment if you need the following features:
 // const { ExcelService, DocumentManager } = require('axel-core');
 
 const primaryKey = axel.config.framework.primaryKey;
-const entity = '<%= entity %>';
+const modelName = '<%= entity %>';
 
 class <%= entityClass %>Controller {
   stats(request, response, next) {
       // your route related code goes here.
-
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      stats(request, response, next);
   }
 
   list(request, response, next) {
        // your route related code goes here.
-
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      findAll(request, response, next);
   }
 
   get(request, response, next) {
        // your route related code goes here.
-
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      findOne(request, response, next);
   }
 
   post(request, response, next) {
         // your route related code goes here.
-
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      create(request, response, next);
   }
 
   /**
@@ -70,9 +71,9 @@ class <%= entityClass %>Controller {
    */
   put(request, response, next) {
        // your route related code goes here.
-
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      update(request, response, next);
   }
 
   /**
@@ -83,33 +84,33 @@ class <%= entityClass %>Controller {
    * @param  {[type]} response [description]
    * @return {[type]}      [description]
    */
-  delete(request, response, next) {
- // your route related code goes here.
-
+  deleteOne(request, response, next) {
+      // your route related code goes here.
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      deleteOne(request, response, next);
   }
 
   export(request, response, next) {
 
       // your route related code goes here.
-
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      export(request, response, next);
   }
 
   importTemplate(request, response, next) {
        // your route related code goes here.
-
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      importTemplate(request, response, next);
   }
 
   import(request, response, next) {
       // your route related code goes here.
-
+      request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      next();
+      import(request, response, next);
   }
 }
 

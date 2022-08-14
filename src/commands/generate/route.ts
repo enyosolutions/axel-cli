@@ -20,11 +20,11 @@ export const generateRoute = (routeName: string) => {
         // Endpoints for ${_.startCase(name)}
         // If you don't need some of them, be sure to delete the route AND the action in the controller...
         'GET /api/${route}/stats': '${folderPath}${file}Controller.stats',
-        'GET /api/${route}': '${folderPath}${file}Controller.list',
-        'GET /api/${route}/:id': '${folderPath}${file}Controller.get',
-        'POST /api/${route}': '${folderPath}${file}Controller.post',
-        'PUT /api/${route}/:id': '${folderPath}${file}Controller.put',
-        'DELETE /api/${route}/:id': '${folderPath}${file}Controller.delete',
+        'GET /api/${route}': '${folderPath}${file}Controller.findAll',
+        'GET /api/${route}/:id': '${folderPath}${file}Controller.findOne',
+        'POST /api/${route}': '${folderPath}${file}Controller.create',
+        'PUT /api/${route}/:id': '${folderPath}${file}Controller.update',
+        'DELETE /api/${route}/:id': '${folderPath}${file}Controller.deleteOne',
 
         /*
         // UNCOMMENT IF YOU NEED IMPORT AND EXPORT FORM EXCEL FEATURES
