@@ -18,7 +18,7 @@
  * @help        :: See http://axel.s.org/#!/documentation/concepts/Controllers
  */
 const { ExtendedError, Utils } = require('axel-core'); // adjust path as needed
-const { stats, findAll, findOne, create, update, deleteOne, export, import, importTemplate } = require('axel-core/src/controllers/CrudSqlController');
+const { stats, findAll, findOne, create, update, deleteOne, exportData, importData, importTemplate } = require('axel-core/src/controllers/CrudSqlController');
 
 /*
 Uncomment if you need the following features:
@@ -91,12 +91,12 @@ class <%= entityClass %>Controller {
       deleteOne(request, response, next);
   }
 
-  export(request, response, next) {
+  exportData(request, response, next) {
 
       // your route related code goes here.
       request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      export(request, response, next);
+      exportData(request, response, next);
   }
 
   importTemplate(request, response, next) {
@@ -106,11 +106,11 @@ class <%= entityClass %>Controller {
       importTemplate(request, response, next);
   }
 
-  import(request, response, next) {
+  importData(request, response, next) {
       // your route related code goes here.
       request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
-      import(request, response, next);
+      importData(request, response, next);
   }
 }
 

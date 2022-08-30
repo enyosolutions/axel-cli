@@ -223,7 +223,7 @@ class <%= entityClass %>Controller {
   }
 
   /*
-  export(req, resp) {
+  exportData(req, resp) {
     let repository;
     const schema = axel.models[modelName] && axel.models[modelName].schema;
     let data = [];
@@ -317,7 +317,7 @@ class <%= entityClass %>Controller {
       });
   }
 
-  import(req, resp) {
+  importData(req, resp) {
     const repository = Utils.getEntityManager(modelName, resp);
     if (!repository) {
       return;

@@ -28,8 +28,8 @@ export const generateRoute = (routeName: string) => {
 
         /*
         // UNCOMMENT IF YOU NEED IMPORT AND EXPORT FORM EXCEL FEATURES
-        'GET /api/${route}/export': '${folderPath}${file}Controller.export',
-        'POST /api/${route}/import': '${folderPath}${file}Controller.import',
+        'GET /api/${route}/export': '${folderPath}${file}Controller.exportData',
+        'POST /api/${route}/import': '${folderPath}${file}Controller.importData',
         'GET /api/${route}/import-template': '${folderPath}${file}Controller.getImportTemplate',
         */
         `,
