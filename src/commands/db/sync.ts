@@ -25,6 +25,10 @@ export default class Sync extends Command {
       default: false,
       description: 'Do not ask for confirmation',
     }),
+    match: flags.string({
+      char: 'm',
+      description: 'name of table to match (ex: _test)',
+    }),
   };
 
   async run() {
@@ -57,6 +61,7 @@ export default class Sync extends Command {
     const alter = flags.alter;
     const force = flags.force;
     const silent = flags.silent;
+    const match = flags.match ? new RegExp(flags.match, 'g') : undefined;
 
     if (force && !silent) {
       const confirm = await cli.confirm(
@@ -67,39 +72,39 @@ export default class Sync extends Command {
         return;
       }
     }
-    import(resource)
-      .then((db) => {
-        Object.values(db.sequelize.models).forEach((model: any) => {
-          if (model.attributes) {
-            Object.keys(model.attributes).forEach((idx) => {
-              const attr = model.attributes[idx];
-              if (typeof attr.type === 'string') {
-                const type = attr.type
-                  .replace('DataTypes.', '')
-                  .replace('sequelize.', '')
-                  .replace(/\(.+\)/, '');
-                const args = attr.type.match(/\(.+\)/);
-                const resolvedType = _.get(db.Sequelize.DataTypes, type);
-                if (resolvedType) {
-                  attr.type = resolvedType;
-                  if (args && args[0]) {
-                    attr.type = attr.type(
-                      ...args[0]
-                        .replace(/\(|\)/g, '')
-                        .split(',')
-                        .map((s: string) => s.replace(/["']/g, '').trim())
-                    );
-                  }
+    try {
+      const db = await import(resource);
+      Object.values(db.sequelize.models).forEach((model: any) => {
+        if (model.attributes) {
+          Object.keys(model.attributes).forEach((idx) => {
+            const attr = model.attributes[idx];
+            if (typeof attr.type === 'string') {
+              const type = attr.type
+                .replace('DataTypes.', '')
+                .replace('sequelize.', '')
+                .replace(/\(.+\)/, '');
+              const args = attr.type.match(/\(.+\)/);
+              const resolvedType = _.get(db.Sequelize.DataTypes, type);
+              if (resolvedType) {
+                attr.type = resolvedType;
+                if (args && args[0]) {
+                  attr.type = attr.type(
+                    ...args[0]
+                      .replace(/\(|\)/g, '')
+                      .split(',')
+                      .map((s: string) => s.replace(/["']/g, '').trim())
+                  );
                 }
               }
-            });
-          }
-        });
-
-        return (db.default || db).sequelize.sync({ alter, force });
-      })
-      .catch((error: Error) => {
-        this.error(error);
+            }
+          });
+        }
       });
+
+      await (db.default || db).sequelize.sync({ alter, force, match });
+      return process.exit(0);
+    } catch (error: Error) {
+      this.error(error);
+    }
   }
 }
