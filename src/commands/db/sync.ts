@@ -102,9 +102,10 @@ export default class Sync extends Command {
       });
 
       await (db.default || db).sequelize.sync({ alter, force, match });
+      // eslint-disable-next-line unicorn/no-process-exit
       return process.exit(0);
-    } catch (error: Error) {
-      this.error(error);
+    } catch (error) {
+      this.error(error as Error);
     }
   }
 }

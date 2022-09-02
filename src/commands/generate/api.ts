@@ -91,7 +91,6 @@ export default class Generate extends Command {
     const { interactive, force } = flags;
     let fields = flags.fields;
     const type: ApiType = flags.type as ApiType;
-    console.log('"fields', fields);
 
     if (flags.interactive) {
       this.log(

@@ -119,7 +119,6 @@ export const generateModel = ({
       filePath,
       config
     );
-    console.log('type', type);
     // if type is sql render the hooks also
     if (type === 'sql') {
       renderTemplate(

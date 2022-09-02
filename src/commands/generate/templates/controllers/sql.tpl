@@ -331,7 +331,6 @@ class <%= entityClass %>Controller {
     })
       // @ts-ignore
       .then((document) => {
-        console.log('doc', document);
         if (!document && !req.file) {
           throw new ExtendedError({
             code: 404,
