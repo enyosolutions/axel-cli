@@ -103,7 +103,7 @@ class <%= entityClass %>Controller {
       const result = {
         body: item.get()
       };
-      execHook(modelName, 'afterApiFindOne', result, { request: req, response: resp });
+      await execHook(modelName, 'afterApiFindOne', result, { request: req, response: resp });
       return resp.status(200).json(result);
     } catch (err) {
       next(err);
