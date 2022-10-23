@@ -78,6 +78,7 @@ export default class Sync extends Command {
         if (model.attributes) {
           Object.keys(model.attributes).forEach((idx) => {
             const attr = model.attributes[idx];
+            // transform strng real sequelize values
             if (typeof attr.type === 'string') {
               const type = attr.type
                 .replace('DataTypes.', '')
@@ -100,7 +101,7 @@ export default class Sync extends Command {
           });
         }
       });
-
+      console.log('(db.default || db).sequelize', (db.default || db).sequelize);
       await (db.default || db).sequelize.sync({ alter, force, match });
       // eslint-disable-next-line unicorn/no-process-exit
       return process.exit(0);
