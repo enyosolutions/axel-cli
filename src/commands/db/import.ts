@@ -41,6 +41,7 @@ export default class Import extends Command {
     const force = flags.force;
     const schemas = flags.schemas;
     const tables = flags.tables;
+
     // if (force && !silent) {
     //   const confirm = await cli.confirm(
     //     'Are you sure you want to overwrite tables ? (this operation is irreversible...)'
@@ -50,20 +51,23 @@ export default class Import extends Command {
     //     return;
     //   }
     // }
-    let folder;
+    let file;
     const oldFolderExists = fs.existsSync(
-      path.resolve(process.cwd(), 'resources/sequelize/config/config')
+      path.resolve(process.cwd(), 'resources/sequelize/config/config.js')
     );
 
     if (oldFolderExists) {
-      folder = path.resolve(process.cwd(), 'resources/sequelize/config/config');
-    } else {
-      folder = path.resolve(
+      file = path.resolve(
         process.cwd(),
-        'src/resources/sequelize/config/config'
+        'resources/sequelize/config/config.js'
+      );
+    } else {
+      file = path.resolve(
+        process.cwd(),
+        'src/resources/sequelize/config/config.js'
       );
     }
-    import(path.resolve(process.cwd(), folder)).then((config) => {
+    import(path.resolve(process.cwd(), file)).then((config) => {
       const env = process.env.NODE_ENV || 'development';
       const auto = new SequelizeAuto(
         config[env].database,
@@ -88,81 +92,98 @@ export default class Import extends Command {
             'axelModelConfig',
             'axel-model-field-config',
             'axel-model-config',
+            'axelUser',
+            'axel-user',
           ],
           // ...
         }
       );
-
-      auto.run((err: Error) => {
-        if (err) {
-          this.error(err.message);
-          return;
-        }
-
-        const format: 'camelCase' | 'kebabCase' | 'snakeCase' =
-          this.projectConfig && this.projectConfig.modelIdentityFormat;
-        if (!format || !_[format]) {
-          this.log(format);
-          this.error(
-            'Unsupported value in project config [modelIdentityFormat]'
-          );
-          return;
-        }
-        this.log('format:', format);
-        // auto foreign keys
-        // console.log('auto', auto.foreignKeys)
-        // fs.moveSync(
-        //   path.resolve(modelsLocation, 'db.d.js'),
-        //   path.resolve(process.cwd(), 'src/types/models.d.js'),
-        //   {overwrite: true}
-        // )
-        // fs.moveSync(
-        //   path.resolve(modelsLocation, 'db.tables.js'),
-        //   path.resolve(process.cwd(), 'src/types/ModelsList.d.js'),
-        //   {overwrite: true}
-        // )
-        Object.keys(auto.tables).forEach((table) => {
-          const filename = _.upperFirst(_.camelCase(table));
-          this.log(filename, table);
-          if (table !== filename) {
-            fs.renameSync(
-              path.resolve(modelsLocation, table + '.js'),
-              path.resolve(modelsLocation, filename + '.js')
+      this.log('Starting import...');
+      auto
+        .run()
+        .then((data: { tables: any; relations: any }) => {
+          // console.log('Imported tables: ', data.relations);
+          this.log('Generating models from database');
+          const format: 'camelCase' | 'kebabCase' | 'snakeCase' =
+            this.projectConfig && this.projectConfig.modelIdentityFormat;
+          if (!format || !_[format]) {
+            this.log(format);
+            this.error(
+              'Unsupported value in project config [modelIdentityFormat]'
             );
+            return;
           }
+          // auto foreign keys
+          // console.log('auto', auto.foreignKeys)
+          // fs.moveSync(
+          //   path.resolve(modelsLocation, 'db.d.js'),
+          //   path.resolve(process.cwd(), 'src/types/models.d.js'),
+          //   {overwrite: true}
+          // )
+          // fs.moveSync(
+          //   path.resolve(modelsLocation, 'db.tables.js'),
+          //   path.resolve(process.cwd(), 'src/types/ModelsList.d.js'),
+          //   {overwrite: true}
+          // )
 
-          renderTemplate(
-            `${__dirname}/templates/models/sql-hooks.tpl`,
-            modelsLocation.replace('/sequelize/', '/hooks/'),
-            { identity: _[format](table) }
-          );
-
-          migrateSequelizeModels(
-            path.resolve(
-              process.cwd(),
-              'src/api/models/sequelize',
-              filename + '.js'
-            ),
-            {
-              force,
-              schemas,
-              tables,
-              format,
-              filename,
-              tableName: table,
-              entityClass: filename,
-              identity: _[format](table),
-              automaticApi:
-                this.projectConfig && this.projectConfig.automaticApi,
-              jsonSchemaValidation:
-                this.projectConfig && this.projectConfig.jsonSchemaValidation,
+          fs.unlink(path.resolve(modelsLocation, 'init-models.js'));
+          Object.keys(data.tables).forEach((table) => {
+            if (table.includes('.') && config[env].dialect === 'postgres') {
+              table = table.split('.').pop() || '';
             }
-          );
-        });
+            if (!table) {
+              return;
+            }
 
-        // for each table run the migrator.
-        // if schema is true
-      });
+            const filename = _.upperFirst(_.camelCase(table));
+            this.log(filename, table);
+            if (table !== filename) {
+              this.log('Renaming table', table, 'to', filename);
+
+              fs.renameSync(
+                path.resolve(modelsLocation, table + '.js'),
+                path.resolve(modelsLocation, filename + '.js')
+              );
+            }
+
+            this.log('generate hook', table, modelsLocation);
+            renderTemplate(
+              `${__dirname}/../generate/templates/models/sql-hooks.tpl`,
+              `${modelsLocation.replace('/sequelize', '/hooks')}/${_[format](
+                table
+              )}.js`,
+              { identity: _[format](table) }
+            );
+
+            migrateSequelizeModels(
+              path.resolve(
+                process.cwd(),
+                'src/api/models/sequelize',
+                filename + '.js'
+              ),
+              {
+                force,
+                schemas,
+                tables,
+                format,
+                filename,
+                tableName: table,
+                entityClass: filename,
+                identity: _[format](table),
+                automaticApi:
+                  this.projectConfig && this.projectConfig.automaticApi,
+                jsonSchemaValidation:
+                  this.projectConfig && this.projectConfig.jsonSchemaValidation,
+              }
+            );
+          });
+
+          // for each table run the migrator.
+          // if schema is true
+        })
+        .catch((err: Error) => {
+          this.error(err.message);
+        });
     });
   }
 }

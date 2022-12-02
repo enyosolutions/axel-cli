@@ -23,7 +23,7 @@ const primaryKey = getPrimaryKey(modelName);
 
 class <%= entityClass %>Controller {
 
-  async list(req, resp) {
+  async findAll(req, resp, next) {
     try {
       let items = [];
       const {
@@ -74,7 +74,7 @@ class <%= entityClass %>Controller {
     }
   }
 
-  async get(req, resp) {
+  async get(req, resp, next) {
     const id = req.params.id;
     try {
       const primaryKey = getPrimaryKey(modelName);
@@ -110,11 +110,11 @@ class <%= entityClass %>Controller {
     }
   }
 
-  async post(req, resp) {
+  async post(req, resp, next) {
     const data = Utils.injectUserId(req.body, req.user, ['createdBy']); // replace field by userId or any other relevant field
     try {
       await execHook(modelName, 'beforeApiCreate', { request: req, sequelizeQuery: data });
-      const repository = Utils.getEntityManager(entity, resp);
+      const repository = Utils.getEntityManager(modelName, resp);
       if (!repository) {
         throw new ExtendedError({ code: 400, message: 'error_model_not_found_for_this_url' });
       }
@@ -141,7 +141,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  async put(req, resp) {
+  async put(req, resp, next) {
     const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
 
     const id = req.params.id;
@@ -195,7 +195,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  async delete (req, resp) {
+  async delete (req, resp, next) {
     try {
       const id = req.params.id;
       const primaryKey = getPrimaryKey(modelName);
@@ -223,7 +223,7 @@ class <%= entityClass %>Controller {
   }
 
   /*
-  exportData(req, resp) {
+  exportData(req, resp, next) {
     let repository;
     const schema = axel.models[modelName] && axel.models[modelName].schema;
     let data = [];

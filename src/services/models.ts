@@ -27,6 +27,8 @@ const typeMap = {
   DATE: 'string',
   DATETIME: 'string',
   DATEONLY: 'string',
+  DECIMAL: 'string',
+  'INTEGER[]': 'array',
 };
 
 export const cliTypesToSqlTypesMap: { [key: string]: any } = {
@@ -64,18 +66,18 @@ export function sequelizeFieldToSchemaField(
   }
   let type = field.type.toString();
   type = type
-  .replace(/\(\d+\)/, '')
-  .replace(/(Sequelize|DataTypes)/i, '')
-  .replace('.', '');
+    .replace(/\(\d+\)/, '')
+    .replace(/(Sequelize|DataTypes)/i, '')
+    .replace('.', '');
   // @ts-ignore
   if (!typeMap[type]) {
     console.error('field.type', field.type, type);
-    throw new Error('unkown_type_' + type);
+    console.warn('[WARN] [Schema] unkown_type_' + type);
   }
 
   const schema: any = {
     // @ts-ignore
-    type: typeMap[type],
+    type: typeMap[type] || 'string',
     column: {},
     field: {},
   };
@@ -91,39 +93,39 @@ export function sequelizeFieldToSchemaField(
   }
 
   switch (type) {
-  case 'VARCHAR':
-    schema.enum = field.type.values;
-    break;
-  case 'ENUM':
-    schema.enum = field.type.values;
-    break;
-  case 'TEXT':
-    schema.field.type = 'textArea';
-    break;
-  case 'DATE':
-    schema.field.format = 'date-time';
-    schema.column.type = 'date';
-    schema.field.type = 'dateTime';
-    break;
-  case 'DATEONLY':
-    schema.field.format = 'date-time';
-    schema.column.type = 'datetime';
-    schema.field.type = 'dateTime';
-    schema.field.fieldOptions = {
-      type: 'date',
-    };
-    break;
-  case 'TIME':
-    schema.field.format = 'date-time';
-    schema.field.type = 'dateTime';
-    schema.field.fieldOptions = {
-      type: 'time',
-    };
-    break;
-  case 'INTEGER':
-    if (field.type.options) {
-      schema.maxLength = field.type.options.length;
-    }
+    case 'VARCHAR':
+      schema.enum = field.type.values;
+      break;
+    case 'ENUM':
+      schema.enum = field.type.values;
+      break;
+    case 'TEXT':
+      schema.field.type = 'textArea';
+      break;
+    case 'DATE':
+      schema.field.format = 'date-time';
+      schema.column.type = 'date';
+      schema.field.type = 'dateTime';
+      break;
+    case 'DATEONLY':
+      schema.field.format = 'date-time';
+      schema.column.type = 'datetime';
+      schema.field.type = 'dateTime';
+      schema.field.fieldOptions = {
+        type: 'date',
+      };
+      break;
+    case 'TIME':
+      schema.field.format = 'date-time';
+      schema.field.type = 'dateTime';
+      schema.field.fieldOptions = {
+        type: 'time',
+      };
+      break;
+    case 'INTEGER':
+      if (field.type.options) {
+        schema.maxLength = field.type.options.length;
+      }
   }
   return schema;
 }
@@ -160,7 +162,7 @@ export function generateSchemaFromModel(
       },
     };
 
-    Object.keys(model.entity.attributes).forEach(key => {
+    Object.keys(model.entity.attributes).forEach((key) => {
       const field = model.entity.attributes[key];
 
       const schema: any = sequelizeFieldToSchemaField(key, field);
@@ -217,7 +219,7 @@ export function generateSchemaFromModel(
         `
 
       module.exports = ${JSON.stringify(destination, null, 2)}`,
-        {flag: options.force ? 'w' : 'wx'}
+        { flag: options.force ? 'w' : 'wx' }
       );
     } catch (error) {
       console.warn('[MIGRATON]', `${tableName}.ts`, error.message);
@@ -229,17 +231,21 @@ export const migrateSequelizeModels = async (
   file: string,
   options: any = {}
 ) => {
+  console.log('[MIGRATON]', 'migrateSequelizeModels', file);
   await replace({
     regex: /.*jshint indent: 1.*/,
-    replacement: `
-    const sequelize = require('sequelize');
-    const { DataTypes } = sequelize;
-
-    `,
+    replacement: '\n',
     paths: [file],
     recursive: true,
     silent: true,
   });
+  fs.writeFileSync(
+    file,
+    `\nconst sequelize = require('sequelize');\nconst { DataTypes } = sequelize;
+    \n${fs.readFileSync(file, 'utf8')}
+    `,
+    { encoding: 'utf8' }
+  );
 
   await replace({
     regex: 'module.exports = function.+\n.+\\(',
@@ -310,9 +316,6 @@ export const migrateSequelizeModels = async (
     recursive: true,
     silent: true,
   });
-  if (options.schemas) {
-    generateSchemaFromModel(file, file.replace('sequelize', 'schema'), options);
-  }
   //   replace({
   //     regex: 'tableName',
   //     replacement: `

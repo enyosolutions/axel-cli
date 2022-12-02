@@ -101,7 +101,6 @@ export default class Sync extends Command {
           });
         }
       });
-      console.log('(db.default || db).sequelize', (db.default || db).sequelize);
       await (db.default || db).sequelize.sync({ alter, force, match });
       // eslint-disable-next-line unicorn/no-process-exit
       return process.exit(0);
