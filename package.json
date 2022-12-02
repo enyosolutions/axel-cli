@@ -1,16 +1,16 @@
 {
   "name": "axel-cli",
-  "version": "0.11.1",
+  "version": "0.17.0",
   "author": "fb@enyosolutions.com @enyosolutions",
   "bin": {
     "axel": "./bin/run"
   },
   "bugs": "https://github.com/enyosolutions-team/axel-cli/issues",
   "dependencies": {
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
+    "@oclif/command": "^1.8.20",
+    "@oclif/config": "^1.18.6",
+    "@oclif/parser": "^3.8.9",
     "@oclif/plugin-help": "^2",
-    "@types/lodash": "^4.14.150",
     "cli-ux": "^5.4.5",
     "cosmiconfig": "^7.0.0",
     "fs-extra": "^9.0.1",
@@ -32,7 +32,8 @@
     "@types/chalk": "^2.2.0",
     "@types/fs-extra": "^8.1.0",
     "@types/glob": "^7.1.3",
-    "@types/inquirer": "^6.5.0",
+    "@types/inquirer": "^9.0.3",
+    "@types/lodash": "^4.14.150",
     "@types/node": "^13.13.2",
     "@types/through": "^0.0.30",
     "eslint": "^5.13",
@@ -42,7 +43,8 @@
     "json-schema-faker": "^0.5.0-rcv.24",
     "oclif": "^2.0.1",
     "ts-node": "^8",
-    "typescript": "^3.3"
+    "tsup": "^6.5.0",
+    "typescript": "^4.9.3"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -68,10 +70,10 @@
   },
   "repository": "enyosolutions-team/axel-cli",
   "scripts": {
-    "build": "tsc -b && cp -r src/commands/generate/templates lib/commands/generate",
+    "build": "tsup && cp -r src/commands/generate/templates lib/commands/generate",
     "postpack": "rm -f oclif.manifest.json && cp -r src/commands/generate/templates lib/commands/generate",
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && cp -r src/commands/generate/templates lib/commands/generate && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsup && cp -r src/commands/generate/templates lib/commands/generate && oclif-dev manifest && oclif-dev readme",
     "test": "echo 'please add tests'",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "lint:fix": "npx eslint ./src/**/*.ts --fix",
