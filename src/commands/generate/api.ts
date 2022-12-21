@@ -43,7 +43,9 @@ export const generateApi = async ({
     await generateController({ name, type, force });
     await generateRoute(name);
   } catch (error) {
-    console.warn(error.message);
+    if (error instanceof Error) {
+      console.warn(error.message);
+    }
     throw error;
   }
 };

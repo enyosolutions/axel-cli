@@ -25,9 +25,14 @@ export default class Sync extends Command {
       default: false,
       description: 'Do not ask for confirmation',
     }),
+    tables: flags.string({
+      char: 't',
+      description: 'name of table to sync (ex: user)',
+      multiple: true,
+    }),
     match: flags.string({
       char: 'm',
-      description: 'name of table to match (ex: _test)',
+      description: 'name of database to match (ex: _test)',
     }),
   };
 
@@ -57,10 +62,11 @@ export default class Sync extends Command {
       );
       return;
     }
-
+    console.log('Loading models...', flags);
     const alter = flags.alter;
     const force = flags.force;
     const silent = flags.silent;
+    const tables = flags.tables || [];
     const match = flags.match ? new RegExp(flags.match, 'g') : undefined;
 
     if (force && !silent) {
@@ -101,7 +107,22 @@ export default class Sync extends Command {
           });
         }
       });
-      await (db.default || db).sequelize.sync({ alter, force, match });
+      if (tables.length > 0) {
+        this.log('Syncing tables ', tables);
+        const promises = Object.keys(db.sequelize.models)
+          .filter((model) => {
+            console.log('model', model);
+
+            return tables.includes(model);
+          })
+          .map((model: any) => {
+            this.log('Syncing table ', model);
+            return db.sequelize.models[model].sync({ alter, force, match });
+          });
+        await Promise.all(promises);
+      } else {
+        await (db.default || db).sequelize.sync({ alter, force, match });
+      }
       // eslint-disable-next-line unicorn/no-process-exit
       return process.exit(0);
     } catch (error) {

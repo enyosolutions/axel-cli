@@ -25,8 +25,11 @@ export default class Hook extends Command {
 
     const identity = _.snakeCase(name);
     const filename = identity;
-
-    const hookPath = `./src/api/models/hooks/${_.upperFirst(filename)}.js`;
+    const modelIdentityFormat =
+      this.projectConfig && this.projectConfig.modelIdentityFormat;
+    const hookPath = `./src/api/models/hooks/${
+      modelIdentityFormat === 'camelCase' ? _.upperFirst(filename) : filename
+    }.js`;
     if (fs.existsSync(hookPath) && !flags.force) {
       this.warn(`File ${hookPath} already exists. Use --force to overwrite.`);
     } else {

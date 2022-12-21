@@ -6,30 +6,30 @@
 * Be sure sure to set the hooks for both individual and bulkUpdates
 */
 // before
-module.exports.beforeCreate = (<%= identity %>, options) => { return true; }
-module.exports.beforeDestroy = (<%= identity %>, options) => {  return true; }
-module.exports.beforeUpdate = (<%= identity %>, options) => { return true; }
-module.exports.beforeSave = (<%= identity %>, options) => { return true; }
-module.exports.beforeUpsert = (values, options) => { return true; }
+module.exports.beforeCreate = (<%= identity %>, sequelizeoptions) => { return true; }
+module.exports.beforeDestroy = (<%= identity %>, sequelizeoptions) => {  return true; }
+module.exports.beforeUpdate = (<%= identity %>, sequelizeoptions) => { return true; }
+module.exports.beforeSave = (<%= identity %>, sequelizeoptions) => { return true; }
+module.exports.beforeUpsert = (values, sequelizeoptions) => { return true; }
 
-module.exports.beforeBulkCreate = (<%= identity %>s, options) => { return true; }
-module.exports.beforeBulkDestroy = (options) => { return true; }
-module.exports.beforeBulkUpdate = (options) => { return true; }
+module.exports.beforeBulkCreate = (<%= identity %>s, sequelizeoptions) => { return true; }
+module.exports.beforeBulkDestroy = (sequelizeoptions) => { return true; }
+module.exports.beforeBulkUpdate = (sequelizeoptions) => { return true; }
 
-module.exports.beforeFind = (<%= identity %>s, options) => { return true; }
+module.exports.beforeFind = (<%= identity %>s, sequelizeoptions) => { return true; }
 
 // After
-module.exports.afterCreate = (<%= identity %>, options) => { return true; }
-module.exports.afterDestroy = (<%= identity %>, options) => { return true; }
-module.exports.afterUpdate = (<%= identity %>, options) => { return true; }
-module.exports.afterSave = (<%= identity %>, options) => { return true; }
-module.exports.afterUpsert = (created, options) => { return true; }
+module.exports.afterCreate = (<%= identity %>, sequelizeoptions) => { return true; }
+module.exports.afterDestroy = (<%= identity %>, sequelizeoptions) => { return true; }
+module.exports.afterUpdate = (<%= identity %>, sequelizeoptions) => { return true; }
+module.exports.afterSave = (<%= identity %>, sequelizeoptions) => { return true; }
+module.exports.afterUpsert = (created, sequelizeoptions) => { return true; }
 
-module.exports.afterBulkCreate = (<%= identity %>s, options) => { return true; }
-module.exports.afterBulkDestroy = (options) => { return true; }
-module.exports.afterBulkUpdate = (options) => { return true; }
+module.exports.afterBulkCreate = (<%= identity %>s, sequelizeoptions) => { return true; }
+module.exports.afterBulkDestroy = (sequelizeoptions) => { return true; }
+module.exports.afterBulkUpdate = (sequelizeoptions) => { return true; }
 
-module.exports.afterFind = (<%= identity %>s, options) => { return true; }
+module.exports.afterFind = (<%= identity %>s, sequelizeoptions) => { return true; }
 
 
 // API middlewares

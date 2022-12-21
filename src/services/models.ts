@@ -1,5 +1,5 @@
-import * as fs from 'fs-extra';
 // import * as path from 'path'
+import * as fs from 'fs-extra';
 import * as _ from 'lodash';
 import * as replace from 'replace';
 
@@ -29,6 +29,10 @@ const typeMap = {
   DATEONLY: 'string',
   DECIMAL: 'string',
   'INTEGER[]': 'array',
+  NAME: 'string',
+  // eslint-disable-next-line @typescript-eslint/quotes
+  "GEOMETRY('POLYGON')": 'string',
+  GEOMETRY: 'string',
 };
 
 export const cliTypesToSqlTypesMap: { [key: string]: any } = {
@@ -71,7 +75,13 @@ export function sequelizeFieldToSchemaField(
     .replace('.', '');
   // @ts-ignore
   if (!typeMap[type]) {
-    console.error('field.type', field.type, type);
+    console.error(
+      'fieldName %s has an unkown type',
+      fieldName,
+      field.type,
+      type,
+      field
+    );
     console.warn('[WARN] [Schema] unkown_type_' + type);
   }
 
@@ -130,7 +140,7 @@ export function sequelizeFieldToSchemaField(
   return schema;
 }
 
-export function generateSchemaFromModel(
+export async function generateSchemaFromModel(
   file: string,
   target: string,
   options: any = {}
@@ -162,7 +172,7 @@ export function generateSchemaFromModel(
       },
     };
 
-    Object.keys(model.entity.attributes).forEach((key) => {
+    Object.keys(model.entity.attributes).forEach((key: string) => {
       const field = model.entity.attributes[key];
 
       const schema: any = sequelizeFieldToSchemaField(key, field);
@@ -175,7 +185,6 @@ export function generateSchemaFromModel(
       }
       destination.schema.properties[key] = schema;
     });
-
     destination.admin = {
       name: null,
       namePlural: null,
@@ -222,7 +231,9 @@ export function generateSchemaFromModel(
         { flag: options.force ? 'w' : 'wx' }
       );
     } catch (error) {
-      console.warn('[MIGRATON]', `${tableName}.ts`, error.message);
+      if (error instanceof Error) {
+        console.warn('[MIGRATON]', `${tableName}.ts`, error.message);
+      }
     }
   }
 }
@@ -299,13 +310,41 @@ export const migrateSequelizeModels = async (
     recursive: true,
     silent: true,
   });
-
+  await replace({
+    regex: /"POLYGON",/g,
+    replacement: "DataTypes.GEOMETRY('POLYGON'),",
+    paths: [file],
+    recursive: true,
+    silent: true,
+  });
+  await replace({
+    regex: /"POINT",/g,
+    replacement: "DataTypes.GEOMETRY('POINT'),",
+    paths: [file],
+    recursive: true,
+    silent: true,
+  });
+  await replace({
+    regex: /"NAME",/g,
+    replacement: "DataTypes.STRING('63'),",
+    paths: [file],
+    recursive: true,
+    silent: true,
+  });
+  await replace({
+    regex: /ARRAY\(null\),/g,
+    replacement: 'ARRAY(DataTypes.STRING),',
+    paths: [file],
+    recursive: true,
+    silent: true,
+  });
+  // add section associations
   await replace({
     regex: /}, {/,
     replacement: `
     },
     associations: (models) => {
-      // models.address.belongsTo(models.user, {
+      // models.${options.identity}.belongsTo(models.address, {
         //     foreignKey: 'userId',
         //     targetKey: 'id',
         // });
@@ -313,8 +352,32 @@ export const migrateSequelizeModels = async (
       options: {
         `,
     paths: [file],
-    recursive: true,
+    recursive: false,
     silent: true,
+  });
+
+  // add assocations belongsTo
+  console.warn('options.relations', options.relations);
+  await replace({
+    regex: /associations: \(models\).+ {/,
+    replacement: `
+    associations: (models) => {
+      ${options.relations
+        .filter(
+          (relation: { [key: string]: any }) =>
+            relation.childModel === options.identity
+        )
+        .map(
+          (relation: any) =>
+            `models.${options.identity}.belongsTo(models.${relation.parentModel}, {
+            foreignKey: '${relation.parentId}',
+            targetKey: 'id',
+           });`
+        )
+        .join('\n\t')} `,
+    paths: [file],
+    recursive: false,
+    silent: false,
   });
   //   replace({
   //     regex: 'tableName',

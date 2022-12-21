@@ -1,0 +1,8 @@
+{
+  "entry": ["src/**/*.ts"],
+  "splitting": false,
+  "sourcemap": true,
+  "clean": true,
+  "outDir": "lib",
+  "format": ["esm", "cjs"]
+}

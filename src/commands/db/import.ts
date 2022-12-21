@@ -6,7 +6,10 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 // import * as SequelizeAuto from 'sequelize-auto'
 const SequelizeAuto = require('sequelize-auto');
-import { migrateSequelizeModels } from '../../services/models';
+import {
+  generateSchemaFromModel,
+  migrateSequelizeModels,
+} from '../../services/models';
 import { renderTemplate } from '../../services/utils';
 
 const modelsLocation = `${process.cwd()}/src/api/models/sequelize`;
@@ -102,7 +105,7 @@ export default class Import extends Command {
       auto
         .run()
         .then((data: { tables: any; relations: any }) => {
-          // console.log('Imported tables: ', data.relations);
+          // console.log('Imported relations: ', data.relations);
           this.log('Generating models from database');
           const format: 'camelCase' | 'kebabCase' | 'snakeCase' =
             this.projectConfig && this.projectConfig.modelIdentityFormat;
@@ -127,7 +130,13 @@ export default class Import extends Command {
           // )
 
           fs.unlink(path.resolve(modelsLocation, 'init-models.js'));
-          Object.keys(data.tables).forEach((table) => {
+          const schemasLocation = `${modelsLocation.replace(
+            '/sequelize',
+            '/schema'
+          )}`;
+
+          // transform each model
+          Object.keys(data.tables).forEach(async (table) => {
             if (table.includes('.') && config[env].dialect === 'postgres') {
               table = table.split('.').pop() || '';
             }
@@ -135,7 +144,10 @@ export default class Import extends Command {
               return;
             }
 
-            const filename = _.upperFirst(_.camelCase(table));
+            const filename =
+              format === 'camelCase'
+                ? _.upperFirst(_[format](table))
+                : _[format](table);
             this.log(filename, table);
             if (table !== filename) {
               this.log('Renaming table', table, 'to', filename);
@@ -146,16 +158,7 @@ export default class Import extends Command {
               );
             }
 
-            this.log('generate hook', table, modelsLocation);
-            renderTemplate(
-              `${__dirname}/../generate/templates/models/sql-hooks.tpl`,
-              `${modelsLocation.replace('/sequelize', '/hooks')}/${_[format](
-                table
-              )}.js`,
-              { identity: _[format](table) }
-            );
-
-            migrateSequelizeModels(
+            await migrateSequelizeModels(
               path.resolve(
                 process.cwd(),
                 'src/api/models/sequelize',
@@ -174,12 +177,36 @@ export default class Import extends Command {
                   this.projectConfig && this.projectConfig.automaticApi,
                 jsonSchemaValidation:
                   this.projectConfig && this.projectConfig.jsonSchemaValidation,
+                relations: data.relations,
               }
             );
-          });
 
-          // for each table run the migrator.
-          // if schema is true
+            // for each table run the migrator.
+            // if schema is true
+            if (schemas) {
+              this.log('Generating schemas from sequelize models');
+              await generateSchemaFromModel(
+                modelsLocation + '/' + filename + '.js',
+                schemasLocation + '/' + filename + '.js',
+                { force }
+              ).catch((err) =>
+                console.warn(
+                  'Error while generatiing schema',
+                  filename,
+                  err.message
+                )
+              );
+            }
+
+            this.log('generate hook', table, modelsLocation);
+            renderTemplate(
+              `${__dirname}/../generate/templates/models/sql-hooks.tpl`,
+              `${modelsLocation.replace('/sequelize', '/hooks')}/${_[format](
+                table
+              )}.js`,
+              { identity: _[format](table) }
+            );
+          });
         })
         .catch((err: Error) => {
           this.error(err.message);
