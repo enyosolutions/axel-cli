@@ -6,7 +6,7 @@
 
 const { ExtendedError, Utils, SchemaValidator, ControllerUtils } = require('axel-core');
 const { get } = require('lodash');
-const path = require('path');
+// const path = require('path');
 
 /**
 Uncomment if you need the following features:

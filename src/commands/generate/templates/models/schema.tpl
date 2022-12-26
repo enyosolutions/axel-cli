@@ -6,6 +6,7 @@ module.exports = {
   automaticApi: <%= automaticApi %>,
   primaryKeyField: 'id',
   displayField: null,
+  searchableFields: null, // array of fields
   autoValidate: <%= jsonSchemaValidation %>,
   schema: {
     $id: 'http://acme.com/schemas/<%= entity %>.json',
@@ -62,19 +63,23 @@ module.exports = {
           '<%= fields[i].name %>',
        <% }
         } %>
+        } %>
     ]
   },
   admin: {
       name: null,
       namePlural: null,
       pageTitle: null,
+      tabTitle: null,
       routerPath: null,
+      menuIsVisible: true,
+      tabIsVisible: true,
       options:  undefined,
       actions: undefined,
       formOptions:  undefined,
       listOptions:  undefined,
       kanbanOptions:  undefined,
-      tableOptions:  undefined,
+      tableOptions:  undefined,ain
       detailPageMode: 'page',
       tableRowClickAction: 'view',
       tableRowDoubleClickAction: 'none',
