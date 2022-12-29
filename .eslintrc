@@ -1,10 +1,16 @@
 {
   "extends": ["oclif", "oclif-typescript"],
   "rules": {
-    "quotes": "off",
     "@typescript-eslint/quotes": ["error", "single"],
     "@typescript-eslint/ban-ts-ignore": "off",
-    "quotemark": [true, "single"],
+
+    "max-len": [
+      "error",
+      {
+        "code": 150,
+        "ignoreUrls": true
+      }
+    ],
     "newline-per-chained-call": [
       1,
       {
@@ -34,13 +40,9 @@
         "allowForLoopAfterthoughts": true
       }
     ],
-    "max-len": [
-      "error",
-      {
-        "code": 150,
-        "ignoreUrls": true
-      }
-    ],
-    "semi": [2, "always"]
+    "quotes": "off",
+    "quotemark": [true, "single"],
+    "semi": [2, "always"],
+    "unicorn/no-abusive-eslint-disable": "off"
   }
 }

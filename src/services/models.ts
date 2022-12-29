@@ -1,8 +1,12 @@
-// import * as path from 'path'
+/* eslint-disable unicorn/no-abusive-eslint-disable */
+/*
+ * models services
+ */
 import * as fs from 'fs-extra';
 import * as _ from 'lodash';
 import * as replace from 'replace';
 
+/* eslint-disable @typescript-eslint/quotes */
 const typeMap = {
   INTEGER: 'integer',
   'INTEGER(11)': 'integer',
@@ -30,10 +34,11 @@ const typeMap = {
   DECIMAL: 'string',
   'INTEGER[]': 'array',
   NAME: 'string',
-  // eslint-disable-next-line @typescript-eslint/quotes
+
   "GEOMETRY('POLYGON')": 'string',
   GEOMETRY: 'string',
 };
+/* eslint-enable @typescript-eslint/quotes */
 
 export const cliTypesToSqlTypesMap: { [key: string]: any } = {
   integer: 'DataTypes.INTEGER',
@@ -70,9 +75,9 @@ export function sequelizeFieldToSchemaField(
   }
   let type = field.type.toString();
   type = type
-    .replace(/\(\d+\)/, '')
-    .replace(/(Sequelize|DataTypes)/i, '')
-    .replace('.', '');
+  .replace(/\(\d+\)/, '')
+  .replace(/(Sequelize|DataTypes)/i, '')
+  .replace('.', '');
   // @ts-ignore
   if (!typeMap[type]) {
     console.error(
@@ -103,39 +108,39 @@ export function sequelizeFieldToSchemaField(
   }
 
   switch (type) {
-    case 'VARCHAR':
-      schema.enum = field.type.values;
-      break;
-    case 'ENUM':
-      schema.enum = field.type.values;
-      break;
-    case 'TEXT':
-      schema.field.type = 'textArea';
-      break;
-    case 'DATE':
-      schema.field.format = 'date-time';
-      schema.column.type = 'date';
-      schema.field.type = 'dateTime';
-      break;
-    case 'DATEONLY':
-      schema.field.format = 'date-time';
-      schema.column.type = 'datetime';
-      schema.field.type = 'dateTime';
-      schema.field.fieldOptions = {
-        type: 'date',
-      };
-      break;
-    case 'TIME':
-      schema.field.format = 'date-time';
-      schema.field.type = 'dateTime';
-      schema.field.fieldOptions = {
-        type: 'time',
-      };
-      break;
-    case 'INTEGER':
-      if (field.type.options) {
-        schema.maxLength = field.type.options.length;
-      }
+  case 'VARCHAR':
+    schema.enum = field.type.values;
+    break;
+  case 'ENUM':
+    schema.enum = field.type.values;
+    break;
+  case 'TEXT':
+    schema.field.type = 'textArea';
+    break;
+  case 'DATE':
+    schema.field.format = 'date-time';
+    schema.column.type = 'date';
+    schema.field.type = 'dateTime';
+    break;
+  case 'DATEONLY':
+    schema.field.format = 'date-time';
+    schema.column.type = 'datetime';
+    schema.field.type = 'dateTime';
+    schema.field.fieldOptions = {
+      type: 'date',
+    };
+    break;
+  case 'TIME':
+    schema.field.format = 'date-time';
+    schema.field.type = 'dateTime';
+    schema.field.fieldOptions = {
+      type: 'time',
+    };
+    break;
+  case 'INTEGER':
+    if (field.type.options) {
+      schema.maxLength = field.type.options.length;
+    }
   }
   return schema;
 }
@@ -228,7 +233,7 @@ export async function generateSchemaFromModel(
         `
 
       module.exports = ${JSON.stringify(destination, null, 2)}`,
-        { flag: options.force ? 'w' : 'wx' }
+        {flag: options.force ? 'w' : 'wx'}
       );
     } catch (error) {
       if (error instanceof Error) {
@@ -242,7 +247,6 @@ export const migrateSequelizeModels = async (
   file: string,
   options: any = {}
 ) => {
-  console.log('[MIGRATON]', 'migrateSequelizeModels', file);
   await replace({
     regex: /.*jshint indent: 1.*/,
     replacement: '\n',
@@ -255,7 +259,7 @@ export const migrateSequelizeModels = async (
     `\nconst sequelize = require('sequelize');\nconst { DataTypes } = sequelize;
     \n${fs.readFileSync(file, 'utf8')}
     `,
-    { encoding: 'utf8' }
+    {encoding: 'utf8'}
   );
 
   await replace({
@@ -312,21 +316,21 @@ export const migrateSequelizeModels = async (
   });
   await replace({
     regex: /"POLYGON",/g,
-    replacement: "DataTypes.GEOMETRY('POLYGON'),",
+    replacement: 'DataTypes.GEOMETRY(\'POLYGON\'),',
     paths: [file],
     recursive: true,
     silent: true,
   });
   await replace({
     regex: /"POINT",/g,
-    replacement: "DataTypes.GEOMETRY('POINT'),",
+    replacement: 'DataTypes.GEOMETRY(\'POINT\'),',
     paths: [file],
     recursive: true,
     silent: true,
   });
   await replace({
     regex: /"NAME",/g,
-    replacement: "DataTypes.STRING('63'),",
+    replacement: 'DataTypes.STRING(\'63\'),',
     paths: [file],
     recursive: true,
     silent: true,
@@ -357,24 +361,24 @@ export const migrateSequelizeModels = async (
   });
 
   // add assocations belongsTo
-  console.warn('options.relations', options.relations);
+  // console.warn('options.relations', options.relations);
   await replace({
     regex: /associations: \(models\).+ {/,
     replacement: `
     associations: (models) => {
       ${options.relations
-        .filter(
-          (relation: { [key: string]: any }) =>
-            relation.childModel === options.identity
-        )
-        .map(
-          (relation: any) =>
-            `models.${options.identity}.belongsTo(models.${relation.parentModel}, {
+  .filter(
+    (relation: { [key: string]: any }) =>
+      relation.childModel === options.identity
+  )
+  .map(
+    (relation: any) =>
+      `models.${options.identity}.belongsTo(models.${relation.parentModel}, {
             foreignKey: '${relation.parentId}',
             targetKey: 'id',
            });`
-        )
-        .join('\n\t')} `,
+  )
+  .join('\n\t')} `,
     paths: [file],
     recursive: false,
     silent: false,

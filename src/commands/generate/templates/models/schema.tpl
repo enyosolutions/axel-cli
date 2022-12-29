@@ -79,7 +79,7 @@ module.exports = {
       formOptions:  undefined,
       listOptions:  undefined,
       kanbanOptions:  undefined,
-      tableOptions:  undefined,ain
+      tableOptions:  undefined,
       detailPageMode: 'page',
       tableRowClickAction: 'view',
       tableRowDoubleClickAction: 'none',

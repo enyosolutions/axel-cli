@@ -1,20 +1,22 @@
-# @axel/cli
+# axel-cli
 
 ![](https://github.com/enyosolutions-team/axel-cli/workflows/CI/badge.svg)
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@axel/cli.svg)](https://npmjs.org/package/@axel/cli)
-[![Downloads/week](https://img.shields.io/npm/dw/@axel/cli.svg)](https://npmjs.org/package/@axel/cli)
-[![License](https://img.shields.io/npm/l/@axel/cli.svg)](https://github.com/enyosolutions-team/axel-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/axel-cli.svg)](https://npmjs.org/package/axel-cli)
+[![Downloads/week](https://img.shields.io/npm/dw/axel-cli.svg)](https://npmjs.org/package/axel-cli)
+[![License](https://img.shields.io/npm/l/axel-cli.svg)](https://github.com/enyosolutions-team/axel-cli/blob/master/package.json)
 
 <!-- toc -->
-* [@axel/cli](#axelcli)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [axel-cli](#axelcli)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g axel-cli
 $ axel COMMAND
@@ -26,26 +28,28 @@ USAGE
   $ axel COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`axel admin:eject`](#axel-admineject)
-* [`axel db:import`](#axel-dbimport)
-* [`axel db:sync`](#axel-dbsync)
-* [`axel generate TARGET`](#axel-generate-target)
-* [`axel generate:api NAME`](#axel-generateapi-name)
-* [`axel generate:controller NAME`](#axel-generatecontroller-name)
-* [`axel generate:hook NAME`](#axel-generatehook-name)
-* [`axel generate:model NAME`](#axel-generatemodel-name)
-* [`axel generate:route NAME`](#axel-generateroute-name)
-* [`axel generate:test NAME`](#axel-generatetest-name)
-* [`axel hello [FILE]`](#axel-hello-file)
-* [`axel help [COMMAND]`](#axel-help-command)
-* [`axel init [NAME]`](#axel-init-name)
-* [`axel new [NAME]`](#axel-new-name)
-* [`axel run [FILE]`](#axel-run-file)
+
+- [`axel admin:eject`](#axel-admineject)
+- [`axel db:import`](#axel-dbimport)
+- [`axel db:sync`](#axel-dbsync)
+- [`axel generate TARGET`](#axel-generate-target)
+- [`axel generate:api NAME`](#axel-generateapi-name)
+- [`axel generate:controller NAME`](#axel-generatecontroller-name)
+- [`axel generate:hook NAME`](#axel-generatehook-name)
+- [`axel generate:model NAME`](#axel-generatemodel-name)
+- [`axel generate:route NAME`](#axel-generateroute-name)
+- [`axel generate:test NAME`](#axel-generatetest-name)
+- [`axel hello [FILE]`](#axel-hello-file)
+- [`axel help [COMMAND]`](#axel-help-command)
+- [`axel init [NAME]`](#axel-init-name)
+- [`axel new [NAME]`](#axel-new-name)
+- [`axel run [FILE]`](#axel-run-file)
 
 ## `axel admin:eject`
 
@@ -302,7 +306,7 @@ Create a new axel project.
   - Unzip it,
   - install peer dependencies,
   - Place relevant crud controller, auth controller, and Authservices according to the database system.
-  
+
 
 USAGE
   $ axel new [NAME]
@@ -338,6 +342,7 @@ OPTIONS
 ```
 
 _See code: [src/commands/run.ts](https://github.com/enyosolutions-team/axel-cli/blob/v0.19.1/src/commands/run.ts)_
+
 <!-- commandsstop -->
 
 ## Features / Todo
