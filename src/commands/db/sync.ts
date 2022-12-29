@@ -62,7 +62,6 @@ export default class Sync extends Command {
       );
       return;
     }
-    console.log('Loading models...', flags);
     const alter = flags.alter;
     const force = flags.force;
     const silent = flags.silent;
@@ -111,8 +110,6 @@ export default class Sync extends Command {
         this.log('Syncing tables ', tables);
         const promises = Object.keys(db.sequelize.models)
           .filter((model) => {
-            console.log('model', model);
-
             return tables.includes(model);
           })
           .map((model: any) => {
@@ -123,7 +120,7 @@ export default class Sync extends Command {
       } else {
         await (db.default || db).sequelize.sync({ alter, force, match });
       }
-      // eslint-disable-next-line unicorn/no-process-exit
+      // eslint-disable-next-line unicorn/no-process-exit,no-process-exit
       return process.exit(0);
     } catch (error) {
       this.error(error as Error);

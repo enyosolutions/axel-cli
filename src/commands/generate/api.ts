@@ -94,7 +94,7 @@ export default class Generate extends Command {
     let fields = flags.fields;
     const type: ApiType = flags.type as ApiType;
 
-    if (flags.interactive) {
+    if (interactive) {
       this.log(
         'Type in the field name that you need in your model, one field at a time.'
       );
@@ -102,14 +102,13 @@ export default class Generate extends Command {
       fields = await promptFields();
     } else if (fields && typeof fields === 'string') {
       // @ts-ignore
-      if (fields.indexOf('[') > -1 || fields.indexOf('{') > -1) {
+      if ((fields as string).indexOf('[') > -1 || fields.indexOf('{') > -1) {
         fields = JSON.parse(fields);
-      }
-      // @ts-ignore
-      else if (fields.indexOf(',') > -1) {
+      } else if ((fields as string).indexOf(',') > -1) {
         // @ts-ignore
         fields = fields.split(',');
       }
+      // @ts-ignore
     }
     generateApi({
       name,

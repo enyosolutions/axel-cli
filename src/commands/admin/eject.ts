@@ -1,7 +1,7 @@
 /* eslint-disable arrow-parens */
 import Command from '../../base';
 import { flags } from '@oclif/command';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as replace from 'replace';

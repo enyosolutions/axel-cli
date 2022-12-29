@@ -16,7 +16,7 @@ import {
 
 const modelsLocation = `${process.cwd()}/src/api/models/sequelize`;
 const schemasLocation = `${process.cwd()}/src/api/models/schema`;
-const hooksLocation = `${process.cwd()}/src/api/models/hooks`;
+// const hooksLocation = `${process.cwd()}/src/api/models/hooks`;
 
 export type ModelType = 'sql' | 'schema' | 'all';
 type OptionsType = {

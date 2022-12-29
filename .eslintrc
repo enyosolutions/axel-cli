@@ -4,6 +4,8 @@
     "@typescript-eslint/quotes": ["error", "single"],
     "@typescript-eslint/ban-ts-ignore": "off",
 
+    "arrow-parens": "off",
+    "indent": "off",
     "max-len": [
       "error",
       {
@@ -40,6 +42,8 @@
         "allowForLoopAfterthoughts": true
       }
     ],
+    "object-curly-spacing": "off",
+    "operator-linebreak": "off",
     "quotes": "off",
     "quotemark": [true, "single"],
     "semi": [2, "always"],
