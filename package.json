@@ -1,6 +1,6 @@
 {
   "name": "axel-cli",
-  "version": "0.32.9",
+  "version": "0.32.12",
   "author": "fb@enyosolutions.com @enyosolutions",
   "bin": {
     "axel": "./bin/run"
