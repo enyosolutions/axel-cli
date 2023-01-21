@@ -67,6 +67,7 @@ export default class Sync extends Command {
     const silent = flags.silent;
     const tables = flags.tables || [];
     const match = flags.match ? new RegExp(flags.match, 'g') : undefined;
+    cli.action.start('Sync database');
 
     if (force && !silent) {
       const confirm = await cli.confirm(
@@ -79,7 +80,12 @@ export default class Sync extends Command {
     }
     try {
       const db = await import(resource);
-      Object.values(db.sequelize.models).forEach((model: any) => {
+      const models = db.models || db.sequelize.models;
+      if (!db.sequelize) {
+        console.warn('db.sequelize', Object.keys(db));
+        throw new Error('missing sequelize models');
+      }
+      Object.values(models).forEach((model: any) => {
         if (model.attributes) {
           Object.keys(model.attributes).forEach((idx) => {
             const attr = model.attributes[idx];
@@ -108,20 +114,30 @@ export default class Sync extends Command {
       });
       if (tables.length > 0) {
         this.log('Syncing tables ', tables);
-        const promises = Object.keys(db.sequelize.models)
-          .filter((model) => {
+        const promises = Object.keys(models).filter((model) => {
+            if (!tables.includes(model)) {
+              this.log('skipping', model);
+            }
             return tables.includes(model);
           })
           .map((model: any) => {
             this.log('Syncing table ', model);
-            return db.sequelize.models[model].sync({ alter, force, match });
+            const m = models[model];
+
+            return m.sync({ alter, force, match, log: true });
           });
         await Promise.all(promises);
       } else {
-        await (db.default || db).sequelize.sync({ alter, force, match });
+        await (db.default || db).sequelize.sync({
+          alter,
+          force,
+          match,
+        });
       }
+      cli.action.stop('Sync completed');
+      this.log('Sync completed');
       // eslint-disable-next-line unicorn/no-process-exit,no-process-exit
-      return process.exit(0);
+      setTimeout(() => process.exit(0), 3000);
     } catch (error) {
       this.error(error as Error);
     }

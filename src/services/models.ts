@@ -4,7 +4,7 @@
  */
 import * as fs from 'fs-extra';
 import * as _ from 'lodash';
-import * as replace from 'replace';
+const replace = require('replace');
 
 /* eslint-disable @typescript-eslint/quotes */
 const typeMap = {

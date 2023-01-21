@@ -17,7 +17,11 @@ module.exports = {
         $id: 'id',
         <% if (isSql) { %>type: 'number',<% } else { %>type: ['object', 'string'],<% } %>
         title: '<%= entityClass %> id', // serves for front form fields
-        description: 'The id of this item' // serves for front form hint
+        description: 'The id of this item', // serves for front form hint
+        field: {
+          readonly: true,
+          visible: '{{ context.mode === "create"}}'
+        },
       },
       <% } %>
       <% for (var i = 0; i < fields.length; i++) { %>

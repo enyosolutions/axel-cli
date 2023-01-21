@@ -4,7 +4,7 @@ import { flags } from '@oclif/command';
 // import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as replace from 'replace';
+const replace = require('replace');
 
 // import * as SequelizeAuto from 'sequelize-auto'
 

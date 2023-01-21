@@ -64,7 +64,7 @@ class CrudSqlController {
   }
 
   findOne(req, resp) {
-    const id = req.param('id');
+    const id = req.params.id;
     if (!id) {
       return false;
     }
@@ -177,10 +177,10 @@ class CrudSqlController {
    * @return {[type]}      [description]
    */
   update(req, resp) {
-    const id = req.param('id');
+    const id = req.params.id;
     let data = req.body;
 
-    const endpoint = req.param('endpoint');
+    const endpoint = req.params.endpoint;
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
       resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
@@ -271,7 +271,7 @@ class CrudSqlController {
    * @return {[type]}      [description]
    */
   deleteOne(req, resp) {
-    const id = req.param('id');
+    const id = req.params.id;
 
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
@@ -309,7 +309,7 @@ class CrudSqlController {
   }
 
   export(req, resp) {
-    const endpoint = req.param('endpoint');
+    const endpoint = req.params.endpoint;
     let repository = Utils.getEntityManager(req, resp);
     if (!repository) {
       resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
@@ -365,7 +365,7 @@ class CrudSqlController {
   }
 
   importTemplate(req, resp) {
-    const endpoint = req.param('endpoint');
+    const endpoint = req.params.endpoint;
 
     const repository = Utils.getEntityManager(req, resp);
     if (!repository) {
@@ -423,7 +423,7 @@ class CrudSqlController {
       resp.status(400).json({ message: 'error_model_not_found_for_this_url' });
       return;
     }
-    const endpoint = req.param('endpoint');
+    const endpoint = req.params.endpoint;
     const properData = [];
     const improperData = [];
     let doc;
