@@ -79,11 +79,24 @@ export default class Sync extends Command {
       }
     }
     try {
-      const db = await import(resource);
-      const models = db.models || db.sequelize.models;
+      let db = await import(resource);
+
+      if (db.default) {
+        db = db.default;
+      }
+      if (db.then) {
+        // eslint-disable-next-line require-atomic-updates
+        db = await db;
+      }
+
       if (!db.sequelize) {
         console.warn('db.sequelize', Object.keys(db));
-        throw new Error('missing sequelize models');
+        throw new Error('Missing sequelize instance in db resource');
+      }
+      const models = db.models || db.sequelize.models;
+
+      if (!models) {
+        throw new Error('Missing models object in db resource');
       }
       Object.values(models).forEach((model: any) => {
         if (model.attributes) {
