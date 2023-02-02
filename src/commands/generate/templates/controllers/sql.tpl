@@ -19,7 +19,6 @@ Uncomment if you need the following features:
 
 const { execHook, getPrimaryKey } = ControllerUtils;
 const modelName = '<%= entityCamelCased %>';
-const primaryKey = getPrimaryKey(modelName);
 
 class <%= entityClass %>Controller {
 
@@ -74,7 +73,7 @@ class <%= entityClass %>Controller {
     }
   }
 
-  async get(req, resp, next) {
+  async findOne(req, resp, next) {
     const id = req.params.id;
     try {
       const primaryKey = getPrimaryKey(modelName);
@@ -110,7 +109,7 @@ class <%= entityClass %>Controller {
     }
   }
 
-  async post(req, resp, next) {
+  async create(req, resp, next) {
     const data = Utils.injectUserId(req.body, req.user, ['createdBy']); // replace field by userId or any other relevant field
     try {
       await execHook(modelName, 'beforeApiCreate', { request: req, sequelizeQuery: data });
@@ -141,7 +140,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  async put(req, resp, next) {
+  async updateOne(req, resp, next) {
     const data = Utils.injectUserId(req.body, req.user, ['lastModifiedBy']); // replace field by userId or any other relevant field
 
     const id = req.params.id;
@@ -195,7 +194,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} resp [description]
    * @return {[type]}      [description]
    */
-  async delete (req, resp, next) {
+  async deleteOne (req, resp, next) {
     try {
       const id = req.params.id;
       const primaryKey = getPrimaryKey(modelName);

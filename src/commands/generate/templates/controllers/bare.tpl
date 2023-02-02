@@ -40,21 +40,21 @@ class <%= entityClass %>Controller {
       stats(request, response, next);
   }
 
-  list(request, response, next) {
+  findAll(request, response, next) {
        // your route related code goes here.
       request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
       findAll(request, response, next);
   }
 
-  get(request, response, next) {
+  findOne(request, response, next) {
        // your route related code goes here.
       request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
       findOne(request, response, next);
   }
 
-  post(request, response, next) {
+  create(request, response, next) {
         // your route related code goes here.
       request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.
@@ -69,7 +69,7 @@ class <%= entityClass %>Controller {
    * @param  {[type]} response [description]
    * @return {[type]}      [description]
    */
-  put(request, response, next) {
+  updateOne(request, response, next) {
        // your route related code goes here.
       request.modelName = modelName;
       // This sends the request to the default crud controller, delete if you implement your own action code.

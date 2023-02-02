@@ -23,7 +23,7 @@ export const generateRoute = (routeName: string) => {
         'GET /api/${route}': '${folderPath}${file}Controller.findAll',
         'GET /api/${route}/:id': '${folderPath}${file}Controller.findOne',
         'POST /api/${route}': '${folderPath}${file}Controller.create',
-        'PUT /api/${route}/:id': '${folderPath}${file}Controller.update',
+        'PUT /api/${route}/:id': '${folderPath}${file}Controller.updateOne',
         'DELETE /api/${route}/:id': '${folderPath}${file}Controller.deleteOne',
 
         /*

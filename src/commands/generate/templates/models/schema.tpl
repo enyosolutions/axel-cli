@@ -7,6 +7,7 @@ module.exports = {
   primaryKeyField: 'id',
   displayField: null,
   searchableFields: null, // array of fields
+  includeInServedModels: true,
   autoValidate: <%= jsonSchemaValidation %>,
   schema: {
     $id: 'http://acme.com/schemas/<%= entity %>.json',
@@ -78,12 +79,6 @@ module.exports = {
       routerPath: null,
       menuIsVisible: true,
       tabIsVisible: true,
-      options:  undefined,
-      actions: undefined,
-      formOptions:  undefined,
-      listOptions:  undefined,
-      kanbanOptions:  undefined,
-      tableOptions:  undefined,
       detailPageMode: 'page',
       tableRowClickAction: 'view',
       tableRowDoubleClickAction: 'none',
@@ -93,7 +88,7 @@ module.exports = {
       enabledListingModes: ['table', 'kanban', 'list'],
       customInlineActions: [],
       customTopActions: [],
-      customTabletopActions: []
+      customTabletopActions: [],
       options: {
         apiUrl: '/api/<%= entity %>',
         dataPaginationMode: 'remote', // remote | local
