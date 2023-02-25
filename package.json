@@ -21,7 +21,7 @@
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
     "replace": "^1.1.5",
-    "sequelize": "^6.26.0",
+    "sequelize": "^6.29.0",
     "sequelize-auto": "^0.8.8",
     "tslib": "^1",
     "unzipper": "^0.10.11"
