@@ -22,6 +22,14 @@ const modelName = '<%= entityCamelCased %>';
 
 class <%= entityClass %>Controller {
 
+  /**
+     * [find all Item]
+     * [description]
+     * @method
+     * @param  {import('express').Request} req
+     * @param  {import('express').Response} resp
+     * @return {void}      [description]
+     */
   async findAll(req, resp, next) {
     try {
       let items = [];
@@ -73,6 +81,14 @@ class <%= entityClass %>Controller {
     }
   }
 
+  /**
+     * [find one Item]
+     * [description]
+     * @method
+     * @param  {import('express').Request} req
+     * @param  {import('express').Response} resp
+     * @return {void}      [description]
+     */
   async findOne(req, resp, next) {
     const id = req.params.id;
     try {
@@ -109,6 +125,14 @@ class <%= entityClass %>Controller {
     }
   }
 
+  /**
+     * [create Item]
+     * [description]
+     * @method
+     * @param  {import('express').Request} req
+     * @param  {import('express').Response} resp
+     * @return {void}      [description]
+     */
   async create(req, resp, next) {
     const data = Utils.injectUserId(req.body, req.user, ['createdBy']); // replace field by userId or any other relevant field
     try {
