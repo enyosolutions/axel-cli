@@ -30,7 +30,7 @@ class CrudSqlController {
       return;
     }
     if (req.query.search) {
-      query = Utils.injectSqlSearchParams(req, query, {
+      query = Utils.injectSqlSearchParams(req.query.search, query, {
         modelName: req.params.endpoint
       });
     }

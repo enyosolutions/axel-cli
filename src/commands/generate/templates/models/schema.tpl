@@ -133,6 +133,7 @@ module.exports = {
         subtitleField: 'currentPosition',
         labelsField: 'currentCompany',
         descriptionField: 'description',
+        itemComponent: null
       },
       kanbanOptions: {},
       tableOptions: {},
