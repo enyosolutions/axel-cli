@@ -147,7 +147,10 @@ class <%= entityClass %>Controller {
         body: await repository
         .create(data)
       };
-      result.body = result.body.get();
+
+      if(result.body.get) {
+        result.body = result.body.get();
+      }
       await execHook(modelName, 'afterApiCreate', result, { request: req, response: resp });
 
       resp.status(200).json(result);
@@ -197,9 +200,11 @@ class <%= entityClass %>Controller {
 
       const result = {
         body: await repository
-        .create(data)
+        .findOne(sequelizeQuery)
       };
-      result.body = result.body.get();
+      if(result.body.get) {
+        result.body = result.body.get();
+      }
       await execHook(modelName, 'afterApiUpdate', result, { request: req, response: resp });
 
       return resp.status(200).json({
@@ -236,7 +241,6 @@ class <%= entityClass %>Controller {
       body: await repository
         .destroy(sequelizeQuery)
       };
-        result.body = result.body.get();
       await execHook(modelName, 'afterApiDelete', result, { request: req, response: resp });
 
       return resp.status(200).json(result);
